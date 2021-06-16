@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+        <title>Escribiendo tu propia shellcode. Parte 1 - BHF</title><meta name="Description" content="Hacking, sysadmin, beer."><meta property="og:title" content="Escribiendo tu propia shellcode. Parte 1" />
+<meta property="og:description" content="Introduccion Escribir y entender como funciona una shellcode es un tema que tengo pendiente desde hace mucho tiempo y que mejor manera de intentarlo que con una serie de posts sobre el tema. Creo que el conocimiento sobre esta temática esta pendiente en varias personas, muchos de los que nos dedicamos a infosec en algun momento aprendimos como realizar el análisis de una vulnerabilidad del tipo buffer overflow, descubrimos donde falla la aplicación, como redirigir el flujo del programa, buscamos los &ldquo;bad chars&rdquo;, pero al momento de escribir la shellcode usamos nuestro querido msfvenom o copiamos una del sitio &ldquo;shell-storm&rdquo; a modo de POC, esto no es casualidad desarrollar y entender como se escribe una shellcode requiere una serie de conocimientos previos algunos de los cuales ya los adquirimos mientras aprendíamos sobre BOF como por ejemplo, manejar un debugger, lenguaje ensamblador, como funciona el stack, etc." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://bhf.com.ar/write-shellcode/" />
+<meta property="og:image" content="https://cdn.iconscout.com/icon/premium/png-256-thumb/hacker-81-1105283.png"/>
+<meta property="article:published_time" content="2021-06-15T09:11:03-03:00" />
+<meta property="article:modified_time" content="2021-06-15T09:11:03-03:00" />
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://cdn.iconscout.com/icon/premium/png-256-thumb/hacker-81-1105283.png"/>
+
+<meta name="twitter:title" content="Escribiendo tu propia shellcode. Parte 1"/>
+<meta name="twitter:description" content="Introduccion Escribir y entender como funciona una shellcode es un tema que tengo pendiente desde hace mucho tiempo y que mejor manera de intentarlo que con una serie de posts sobre el tema. Creo que el conocimiento sobre esta temática esta pendiente en varias personas, muchos de los que nos dedicamos a infosec en algun momento aprendimos como realizar el análisis de una vulnerabilidad del tipo buffer overflow, descubrimos donde falla la aplicación, como redirigir el flujo del programa, buscamos los &ldquo;bad chars&rdquo;, pero al momento de escribir la shellcode usamos nuestro querido msfvenom o copiamos una del sitio &ldquo;shell-storm&rdquo; a modo de POC, esto no es casualidad desarrollar y entender como se escribe una shellcode requiere una serie de conocimientos previos algunos de los cuales ya los adquirimos mientras aprendíamos sobre BOF como por ejemplo, manejar un debugger, lenguaje ensamblador, como funciona el stack, etc."/>
+<meta name="application-name" content="BHF">
+<meta name="apple-mobile-web-app-title" content="BHF"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://bhf.com.ar/write-shellcode/" /><link rel="prev" href="https://bhf.com.ar/wifialdea/" /><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.13.0/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.7.2/animate.min.css"><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Escribiendo tu propia shellcode. Parte 1",
+        "inLanguage": "es",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/bhf.com.ar\/write-shellcode\/"
+        },"image": {
+                "@type": "ImageObject",
+                "url": "https:\/\/bhf.com.ar\/cover.png",
+                "width":  800 ,
+                "height":  600 
+            },"genre": "posts","keywords": "x86, x64, ASM, Shellcode","wordcount":  2486 ,
+        "url": "https:\/\/bhf.com.ar\/write-shellcode\/","datePublished": "2021-06-15T09:11:03-03:00","dateModified": "2021-06-15T09:11:03-03:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
+                "@type": "Organization",
+                "name": "xxxx",
+                "logo": {
+                "@type": "ImageObject",
+                "url": "https:\/\/bhf.com.ar\/logo.png",
+                "width":  127 ,
+                "height":  40 
+                }
+            },"author": {
+                "@type": "Person",
+                "name": "Matias Ramirez"
+            },"description": ""
+    }
+    </script></head>
+    <body header-desktop="fixed" header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('dark' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'dark' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="BHF"><span class="header-title-pre"><i class='fas fa-laptop fa-fw'></i></span><span id="id-1" class="typeit"></span></a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> Posts </a><a class="menu-item" href="/tags/"> Tags </a><a class="menu-item" href="/categories/"> Categorias </a><a class="menu-item" href="/about/"> About </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="Busca títulos o contenido..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Buscar">
+                            <i class="fas fa-search fa-fw"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="Limpiar">
+                            <i class="fas fa-times-circle fa-fw"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="Cambia el tema">
+                    <i class="fas fa-adjust fa-fw"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="BHF"><span class="header-title-pre"><i class='fas fa-laptop fa-fw'></i></span><span id="id-2" class="typeit"></span></a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="Busca títulos o contenido..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="Buscar">
+                            <i class="fas fa-search fa-fw"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="Limpiar">
+                            <i class="fas fa-times-circle fa-fw"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        Cancelar
+                    </a>
+                </div><a class="menu-item" href="/posts/" title="">Posts</a><a class="menu-item" href="/tags/" title="">Tags</a><a class="menu-item" href="/categories/" title="">Categorias</a><a class="menu-item" href="/about/" title="">About</a><a href="javascript:void(0);" class="menu-item theme-switch" title="Cambia el tema">
+                <i class="fas fa-adjust fa-fw"></i>
+            </a></div>
+    </div>
+</header>
+<div class="search-dropdown desktop">
+    <div id="search-dropdown-desktop"></div>
+</div>
+<div class="search-dropdown mobile">
+    <div id="search-dropdown-mobile"></div>
+</div>
+<main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">Contenido</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animated flipInX">Escribiendo tu propia shellcode. Parte 1</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>Matias Ramirez</a></span>&nbsp;<span class="post-category">incluido en <a href="/categories/reversing/"><i class="far fa-folder fa-fw"></i>reversing</a>&nbsp;<a href="/categories/malware/"><i class="far fa-folder fa-fw"></i>malware</a>&nbsp;<a href="/categories/asm/"><i class="far fa-folder fa-fw"></i>ASM</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="06-15-2021">06-15-2021</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;2486 palabras&nbsp;
+                <i class="far fa-clock fa-fw"></i>&nbsp;12 minutos&nbsp;</div>
+        </div><div class="featured-image"><img
+        class="lazyload"
+        src="/svg/loading/normal.min.svg"
+        data-src="/images/write-shellcode/portada.png"
+        data-srcset="/images/write-shellcode/portada.png, /images/write-shellcode/portada.png 1.5x, /images/write-shellcode/portada.png 2x"
+        data-sizes="auto"
+        alt="/images/write-shellcode/portada.png"
+        title="/images/write-shellcode/portada.png" /></div><div class="details toc" id="toc-static"  kept="">
+                <div class="details-summary toc-title">
+                    <span>Contenido</span>
+                    <span><i class="details-icon fas fa-angle-right"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#introduccion">Introduccion</a></li>
+    <li><a href="#por-que-aprender-escribir-tu-propia-shellcode">¿Por que aprender escribir tu propia shellcode?</a></li>
+    <li><a href="#que-es-una-shellcode">¿Que es una shellcode?</a></li>
+    <li><a href="#como-funciona-una-shellcode">¿Como funciona una shellcode?</a></li>
+    <li><a href="#syscalls-en-linux">Syscalls en Linux</a>
+      <ul>
+        <li><a href="#interrupciones-en-lenguaje-ensamblador">Interrupciones en lenguaje ensamblador</a></li>
+        <li><a href="#desarrollando-nuestra-primer-shellcode">Desarrollando nuestra primer shellcode</a>
+          <ul>
+            <li><a href="#paso--a-paso">Paso  a paso</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><h2 id="introduccion">Introduccion</h2>
+<p>Escribir y entender como funciona una shellcode es un tema que tengo pendiente desde hace mucho tiempo y que mejor manera de intentarlo que con una serie de posts sobre el tema. Creo que el conocimiento sobre esta temática esta pendiente en varias personas, muchos de los que nos dedicamos a infosec en algun momento aprendimos como realizar el análisis de una vulnerabilidad del tipo buffer overflow, descubrimos donde falla la aplicación, como redirigir el flujo del programa, buscamos los &ldquo;bad chars&rdquo;, pero al momento de escribir la shellcode usamos nuestro querido msfvenom o copiamos una del sitio &ldquo;shell-storm&rdquo; a modo de POC, esto no es casualidad desarrollar y entender como se escribe una shellcode requiere una serie de conocimientos previos algunos de los cuales ya los adquirimos mientras aprendíamos sobre BOF como por ejemplo, manejar un debugger, lenguaje ensamblador, como funciona el stack, etc. Pero con esto no alcanza, para que nuestra shellcode sea util necesitamos aprender un poco mas de lenguaje ensamblador y como interactuar con el sistema operativo subyacente para realizar tareas que nos beneficien, las instrucciones necesarias en ensamblador para realizar acciones en el sistema operativo cambian dependiendo del mismo y hay mas de una manera de hacerlo, no es lo mismo escribir una shellcode para Linux que para Windows.</p>
+<h2 id="por-que-aprender-escribir-tu-propia-shellcode">¿Por que aprender escribir tu propia shellcode?</h2>
+<p>Que mejor que estar en una fiesta y contarles a los presentes que podes escribir una shellcode para ganar una shell inversa en 1 byte(bueno quizás estoy exagerando), vas a ser el alma de la fiesta y todos se van a arrodillar ante tal poder.</p>
+<p><figure><a class="lightgallery" href="/images/write-shellcode/almadelafiesta.png" title="Partyhard" data-thumbnail="/images/write-shellcode/almadelafiesta.png" data-sub-html="<h2>Tienen que saberlo</h2><p>Partyhard</p>">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/images/write-shellcode/almadelafiesta.png"
+            data-srcset="/images/write-shellcode/almadelafiesta.png, /images/write-shellcode/almadelafiesta.png 1.5x, /images/write-shellcode/almadelafiesta.png 2x"
+            data-sizes="auto"
+            alt="Partyhard" />
+    </a><figcaption class="image-caption">Tienen que saberlo</figcaption>
+    </figure></p>
+<p>Haciendo los chistes a un lado siempre que podamos es bueno en nuestra profesión/hobby aprender que es lo que sucede tras bambalinas, hay que tener un equilibrio entre usar herramientas, crearlas o modificar las existentes uno mismo, ya que esto nos da una gran ventaja sobre quienes solo utilizan herramientas sin entender el por que suceden las cosas, si entejemos que y por que estamos haciendo lo que estamos haciendo vamos a poder llegar mas lejos y obtener mejores resultados. A modo de ejemplo, mas de una vez me encontré con una inyección SQL a la cual no le  podía sacar provecho utilizando SQLMap  y tuve que recurrir a enviar sentencias SQL a mano mediante BurpSuit o en casos mas complejos desarrollar mis propios scripts para demostrar el impacto de la vulnerabilidad, lo mismo sucede en este caso, tenemos una magnifica herramienta como lo es msfvenom para crear nuestras shellcodes pero a veces no funciona en cierto contexto y si conocemos de antemano todos los procesos que involucran la ejecución de una shellcode podemos intentar arreglar el problema, lo otro es que las herramientas automatizadas como SQLMap o msfvenom ya llevan bastante tiempo y su comportamiento esta mas que documentado haciendo que cualquier solución de seguridad detecte su accionar fácilmente, saber como funciona la herramienta para luego replicar o modificar levemente su comportamiento nos ayuda en la mayoría de los casos a saltear estas protecciones, creo que estos motivos son mas que suficientes para que le dediquemos un tiempo a aprender algo que siempre usamos pero que nunca nos preguntamos como funciona.</p>
+<h2 id="que-es-una-shellcode">¿Que es una shellcode?</h2>
+<p>Una shellcode es un set de instrucciones diseñado para manipular la acciones que realiza un programa y que el mismo realice acciones que beneficien al atacante(copiar un archivo, leer un archivo, ejecutar comandos, obtener una reverse shell etc), para  que este set de instrucciones sea ejecutado la shellcode debe ser copiada a una region de memoria RAM y luego el flujo de ejecución del programa debe ser redirigido a esa sección de memoria para que las acciones se realicen</p>
+<h2 id="como-funciona-una-shellcode">¿Como funciona una shellcode?</h2>
+<p>Como mencione al principio escribir una shellcode va a ser diferente dependiendo de cual sea el sistema operativo objetivo por como se maneja internamente las llamadas al sistema creo que es mas simple comenzar por como hacerlo en Linux</p>
+<p>Para comenzar esa cadena de caracteres que siempre copiamos de nuestra salida de msfvenom no es mas que la representación en hexadecimal de código maquina, msfvenom nos da varias opciones para obtener la salida de la ejecucion del comando, podemos ejecutar lo siguiente para obtener un archivo binario para Linux equivalente a la ejecución del comando &ldquo;echo &lsquo;Hola HTB&rsquo;&rdquo;</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">msfvenom -p linux/x86/exec CMD=&#34;echo &#39;Hola Htb&#39;&#34; -f elf &gt; hola
+</code></pre></td></tr></table>
+</div>
+</div><p><figure><a class="lightgallery" href="/images/write-shellcode/hola-htb.png" title="POC-msfvenom" data-thumbnail="/images/write-shellcode/hola-htb.png" data-sub-html="<h2>Hola HTB</h2><p>POC-msfvenom</p>">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/images/write-shellcode/hola-htb.png"
+            data-srcset="/images/write-shellcode/hola-htb.png, /images/write-shellcode/hola-htb.png 1.5x, /images/write-shellcode/hola-htb.png 2x"
+            data-sizes="auto"
+            alt="POC-msfvenom" />
+    </a><figcaption class="image-caption">Hola HTB</figcaption>
+    </figure></p>
+<p>Para obtener su equivalente en codigo maquina y analizar el resultado en hexadecimal y cadenas de texto podemos ejecutar lo siguiente:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">msfvenom -p linux/x86/exec CMD=&#34;echo &#39;Hola Htb&#39;&#34; -f raw | xxd
+</code></pre></td></tr></table>
+</div>
+</div><p><figure><a class="lightgallery" href="/images/write-shellcode/msfvenom-shellcode-hex.png" title="POC-msfvenom-hex" data-thumbnail="/images/write-shellcode/msfvenom-shellcode-hex.png" data-sub-html="<h2>Shellcode hexadecimal</h2><p>POC-msfvenom-hex</p>">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/images/write-shellcode/msfvenom-shellcode-hex.png"
+            data-srcset="/images/write-shellcode/msfvenom-shellcode-hex.png, /images/write-shellcode/msfvenom-shellcode-hex.png 1.5x, /images/write-shellcode/msfvenom-shellcode-hex.png 2x"
+            data-sizes="auto"
+            alt="POC-msfvenom-hex" />
+    </a><figcaption class="image-caption">Shellcode hexadecimal</figcaption>
+    </figure></p>
+<p>Podemos observar algunas cadenas de texto existentes en el la salida del comando. &ldquo;/bin/sh&rdquo; escrito al revés(recordar que en la arquitectura x86 de Intel los bytes son representados en little endian), la cadena &ldquo;-c&rdquo; y por ultimo la cadena &ldquo;echo &lsquo;Hola Htb&rsquo;&rdquo;, solo analizando las cadenas de texto podemos inferir que lo que hace es ejecutar el comnando &ldquo;/bin/sh&rdquo; con los parámetros &ldquo;-c echo &lsquo;Hola Htb&rsquo;&rdquo;.</p>
+<p>Por ultimo podemos obtener la representación en código ensamblador de la salida de msfvenom con el siguiente comando.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">msfvenom -p linux/x86/exec CMD=&#34;echo &#39;Hola Htb&#39;&#34; -f raw | ndisasm -b32 -
+</code></pre></td></tr></table>
+</div>
+</div><p><figure><a class="lightgallery" href="/images/write-shellcode/msfvenom-shellcode-disam.png" title="POC-msfvenom-hex" data-thumbnail="/images/write-shellcode/msfvenom-shellcode-disam.png" data-sub-html="<h2>Shellcode hexadecimal</h2><p>POC-msfvenom-hex</p>">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/images/write-shellcode/msfvenom-shellcode-disam.png"
+            data-srcset="/images/write-shellcode/msfvenom-shellcode-disam.png, /images/write-shellcode/msfvenom-shellcode-disam.png 1.5x, /images/write-shellcode/msfvenom-shellcode-disam.png 2x"
+            data-sizes="auto"
+            alt="POC-msfvenom-hex" />
+    </a><figcaption class="image-caption">Shellcode hexadecimal</figcaption>
+    </figure></p>
+<p>Obtenemos el resultado en la &ldquo;lengua oscura&rdquo;(al menos para los que decidimos &ldquo;programar&rdquo; en bash) de la arquitectura X86, por mas que nos duela la vista, nos parezca incomprensible y nos intimide, aprender lenguaje ensamblador no tiene por que ser tan malo, desde mi punto de vista con que aprendamos que son y para que sirven los registros, que es el stack, algunas operaciones básicas del lenguaje (jmp,call,mov,push,pop) vamos a poder medianamente entender que es lo q sucede, tampoco hay necesidad de comerse toda la teoría primero y luego practicar por lo menos a mi me sirve practicar mientras aprendo y esto lo podemos lograr usando el debugger ejecutando instrucción por instrucción viendo como cambian los registros, el stack y por supuesto googlear todo aquello que no entendamos, luego por necesidad de realizar tareas mas complejos iremos profundizando  y aprendiendo mas sobre el lenguaje ensamblador.</p>
+<h2 id="syscalls-en-linux">Syscalls en Linux</h2>
+<p>En los lenguajes de mas alto nivel por lo general usamos funciones integradas en el lenguaje que a su vez se traducen a llamadas a funciones propias del sistema operativo para realizar tareas como leer o escribir un archivo, mostrar un mensaje en pantalla, realizar una conexión TCP, etc. En ensamblador no tenemos estas funcionalidades integradas ergo no tenemos una función llamada &ldquo;os.system&rdquo; para ejecutar comandos, aun asi  podemos interactuar con el sistema operativo para realizar esas acciones, proceso un poco mas &ldquo;tedioso&rdquo; y con algunos detalles pero que cumple con nuestro cometido.</p>
+<p>No hay una sola manera de hacerlo, tanto en Windows como en Linux podemos hacer una llamada a una librería que nos ayude en dicha tarea, por ejemplo podríamos usar &ldquo;libc&rdquo; en Linux y alguna de las funciones que exporta como &ldquo;execv&rdquo; o en Windows podríamos llamar a la función &ldquo;CreateProcessA&rdquo; de la librería &ldquo;Kernel32.dll&rdquo;, pero esto se vuelve complejo en ensamblador ya que la librería debería estar cargada, si no lo esta cargarla y debemos buscar la dirección de la función que queremos llamar al momento de ejecutar nuestra shellcode para que funcione, no es que no se pueda pero es un ejercicio bastante mas complejo y extenso como para arrancar a armar nuestra primer shellcode. Para hacerlo mas fácil vamos a usar las &ldquo;syscalls&rdquo; o &ldquo;llamadas al sistema&rdquo; en Linux</p>
+<h3 id="interrupciones-en-lenguaje-ensamblador">Interrupciones en lenguaje ensamblador</h3>
+<p>En lenguaje ensamblador tenemos una instrucción que se escribe como &ldquo;INT&rdquo; que provoca una interrupción por software, esta instrucción va precedida de un numero entre 0 y 255 en decimal, en nuestro caso vamos a usar la instrucción &ldquo;INT&rdquo; con el valor &ldquo;80&rdquo; en hexadecimal, esto provoca una interrupción que transfiere el flujo del programa al Kernel de Linux para realizar llamadas al sistema o &ldquo;syscalls&rdquo;, para que el Kernel sepa que operación queremos realizar va a tomar el valor del registro &ldquo;EAX&rdquo;.</p>
+<h3 id="desarrollando-nuestra-primer-shellcode">Desarrollando nuestra primer shellcode</h3>
+<p>Vamos a compilar un ejemplo de código en C que muestre un mensaje en pantalla.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-C" data-lang="C">    <span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
+</span><span class="cp"></span>    <span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+    	<span class="n">printf</span><span class="p">(</span><span class="s">&#34;Hola mundo!</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+    	<span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>Con el comando strace es posible ver que llamadas son realizadas por un programa, como vemos para imprimir un mensaje en por &ldquo;stdout&rdquo;(standard output) se utiliza la llamada &ldquo;write&rdquo;</p>
+<p><figure><a class="lightgallery" href="/images/write-shellcode/hello-strace.png" title="Hello-Strace" data-thumbnail="/images/write-shellcode/hello-strace.png" data-sub-html="<h2>Ejecutando comando strace</h2><p>Hello-Strace</p>">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/images/write-shellcode/hello-strace.png"
+            data-srcset="/images/write-shellcode/hello-strace.png, /images/write-shellcode/hello-strace.png 1.5x, /images/write-shellcode/hello-strace.png 2x"
+            data-sizes="auto"
+            alt="Hello-Strace" />
+    </a><figcaption class="image-caption">Ejecutando comando strace</figcaption>
+    </figure></p>
+<p>Para saber a que numero corresponde cada syscall podemos mirar el archivo &ldquo;/usr/include/asm/unistd_32.h&rdquo;.</p>
+<p><figure><a class="lightgallery" href="/images/write-shellcode/syscall-write.png" title="syscall-write" data-thumbnail="/images/write-shellcode/syscall-write.png" data-sub-html="<h2>Numeros de syscall</h2><p>syscall-write</p>">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/images/write-shellcode/syscall-write.png"
+            data-srcset="/images/write-shellcode/syscall-write.png, /images/write-shellcode/syscall-write.png 1.5x, /images/write-shellcode/syscall-write.png 2x"
+            data-sizes="auto"
+            alt="syscall-write" />
+    </a><figcaption class="image-caption">Numeros de syscall</figcaption>
+    </figure></p>
+<p>Si queremos obtener mas informacion de &ldquo;write&rdquo; podemos ejecutar</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">man 2 write
+</code></pre></td></tr></table>
+</div>
+</div><p><figure><a class="lightgallery" href="/images/write-shellcode/man-write.png" title="manwrite" data-thumbnail="/images/write-shellcode/man-write.png" data-sub-html="<h2>Manualpage de write</h2><p>manwrite</p>">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/images/write-shellcode/man-write.png"
+            data-srcset="/images/write-shellcode/man-write.png, /images/write-shellcode/man-write.png 1.5x, /images/write-shellcode/man-write.png 2x"
+            data-sizes="auto"
+            alt="manwrite" />
+    </a><figcaption class="image-caption">Manualpage de write</figcaption>
+    </figure></p>
+<p>Recapitulando, entonces para poder crear una shellcode que sea capaz de mostrar un mensaje en pantalla debemos.</p>
+<ul>
+<li>Ejecutar la instrucción &ldquo;Int 80h&rdquo; para generar una llamada al sistema</li>
+<li>Para que el Kernel sepa que syscall vamos a ejecutar debemos escribir en el registro &ldquo;EAX&rdquo; un numero en nuestro caso para usar la llamada write tenemos que escribir el valor &ldquo;4&rdquo;.</li>
+<li>Luego necesitamos pasarles los argumentos a la llamada, como el fd(file descriptor) en este caso el stdout que es equivalente a 1, el puntero a la dirección de memoria de nuestro mensaje, y por ultimo el tamaño del mensaje. Se espera que estos parámetros estén guardados en ciertos registros, &ldquo;EBX&rdquo; para el primero, &ldquo;ECX&rdquo; para el segundo y &ldquo;EDX&rdquo; para el tercero.</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">EAX =&gt; Valor 4 perteneciente a la syscall write
+EBX =&gt; 1er argumento: fd o file descriptor. Es 1 para stdout.
+ECX =&gt; 2do argumento: dirección de memoria del mensaje a imprimir.
+EDX =&gt; 3er argumento: longitud del mensaje en bytes, serian 9 bytes para el mensaje &#39;Hola Htb&#39; junto con el carácter de salto de linea .  
+</code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-ASM" data-lang="ASM"><span class="nf">section</span> <span class="no">.text</span>
+    <span class="nf">global</span> <span class="no">_start</span>
+
+<span class="nl">_start:</span>
+<span class="nf">mov</span> <span class="no">eax</span><span class="p">,</span><span class="mi">4</span> 
+<span class="c">; movemos el valor 4 a EAX para llamar a la syscall write
+</span><span class="c"></span><span class="no">mov</span> <span class="no">ebx</span><span class="p">,</span><span class="mi">1</span> 
+<span class="c">; Movemos el valor 1 a EBX como primer parámetro para write
+</span><span class="c"></span><span class="no">push</span> <span class="mi">0x0a</span> 
+<span class="c">; hacemos un &#34;push&#34; del valor &#34;0a&#34; en hexadecimal equivalente al salto de linea al stack
+</span><span class="c"></span><span class="no">push</span> <span class="mi">0x62744820</span> 
+<span class="c">; Hacemos un push del valor de la cadena &#34; Htb&#34; representada en bytes en little endian
+</span><span class="c"></span><span class="no">push</span> <span class="mi">0x616c6f48</span> 
+<span class="c">; Hacemos un push del valor de la cadena &#34;Hola&#34; representada en bytes en little endian
+</span><span class="c"></span><span class="no">mov</span> <span class="no">ecx</span><span class="p">,</span><span class="no">esp</span> 
+<span class="c">; Movemos el valor de ESP, este valor contiene la dirección de memoria del tope de la &#34;pila&#34; o &#34;stack&#34; y 
+</span><span class="c">;lo usamos como puntero para el string que queremos mostrar
+</span><span class="c"></span><span class="no">mov</span> <span class="no">edx</span><span class="p">,</span><span class="mi">9</span> 
+<span class="c">; movemos el valor 9 a EDX, 9 es el valor de la longitud de la cadena que queremos imprimir en pantalla
+</span><span class="c"></span><span class="no">int</span> <span class="mi">80</span><span class="no">h</span> 
+<span class="c">; llamamos a la interrupción 80h
+</span><span class="c"></span>
+</code></pre></td></tr></table>
+</div>
+</div><p>El código anterior no es el mejor y el mas apto para una shellcode luego vamos a ver por que, pero a fines prácticos de repasar en código ensamblador todo lo que nombramos anteriormente funciona.</p>
+<p>Podemos guardar el código anterior y compilarlo de la siguiente manera.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">nasm -f elf holahtb.asm 
+ld -m elf_i386 -o holahtb holahtb.o 
+</code></pre></td></tr></table>
+</div>
+</div><p>Al principio cuesta mucho ver el código e intentar entender que es lo que va a suceder, créanme cuando les digo que a mi también me cuesta. Por este motivo podemos agarrar el desensamblador/debugger que mas nos guste y ver instrucción por instrucción que es lo q esta ocurriendo en la memoria y los registros.</p>
+<p>En mi caso voy a usar IDA para verlo.</p>
+<p><figure><a class="lightgallery" href="/images/write-shellcode/ida-debugging.png" title="IDA" data-thumbnail="/images/write-shellcode/ida-debugging.png" data-sub-html="<h2>Analizando el codigo en IDA</h2><p>IDA</p>">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/images/write-shellcode/ida-debugging.png"
+            data-srcset="/images/write-shellcode/ida-debugging.png, /images/write-shellcode/ida-debugging.png 1.5x, /images/write-shellcode/ida-debugging.png 2x"
+            data-sizes="auto"
+            alt="IDA" />
+    </a><figcaption class="image-caption">Analizando el codigo en IDA</figcaption>
+    </figure></p>
+<p>Podemos pararnos en la primera instrucción &ldquo;mov eax,4&rdquo; y poner un breakpoint con F2, iniciar el programa y cuando IDA se pare sobre esa sección del código ir avanzando instrucción por instrucción con F7.</p>
+<p><figure><a class="lightgallery" href="/images/write-shellcode/ida-view.png" title="IDA" data-thumbnail="/images/write-shellcode/ida-view.png" data-sub-html="<h2>Instrucciones, Registros, Stack</h2><p>IDA</p>">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/images/write-shellcode/ida-view.png"
+            data-srcset="/images/write-shellcode/ida-view.png, /images/write-shellcode/ida-view.png 1.5x, /images/write-shellcode/ida-view.png 2x"
+            data-sizes="auto"
+            alt="IDA" />
+    </a><figcaption class="image-caption">Instrucciones, Registros, Stack</figcaption>
+    </figure></p>
+<ol>
+<li>Podemos ver nuestro set de instrucciones a ejecutar, IDA pauso la ejecución en la instrucción &ldquo;MOV eax,4&rdquo;</li>
+<li>Vemos los valores de los registros</li>
+<li>Los valores en el stack</li>
+<li>La vista en hexadecimal y caracteres ASCII del stack</li>
+</ol>
+<h4 id="paso--a-paso">Paso  a paso</h4>
+<p>Como dije  podemos agarrar una hoja y un papel para hacer una traza la ejecución de las instrucciones paso a paso o agarramos un debugger para ver que esta sucediendo.</p>
+<ol>
+<li>
+<p>&ldquo;MOV eax,4&rdquo;</p>
+<p>Esta instrucción va a mover el valor 4 al registro EAX, esto es necesario para poder llamar a la syscall write para mostrar nuestro mensaje
+<figure><a class="lightgallery" href="/images/write-shellcode/ida-debugging1.png" title="IDA" data-thumbnail="/images/write-shellcode/ida-debugging1.png" data-sub-html="<h2>MOV eax,4</h2><p>IDA</p>">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/images/write-shellcode/ida-debugging1.png"
+            data-srcset="/images/write-shellcode/ida-debugging1.png, /images/write-shellcode/ida-debugging1.png 1.5x, /images/write-shellcode/ida-debugging1.png 2x"
+            data-sizes="auto"
+            alt="IDA" />
+    </a><figcaption class="image-caption">MOV eax,4</figcaption>
+    </figure></p>
+</li>
+<li>
+<p>&ldquo;MOV ebx,1&rdquo;</p>
+<p>Esta instrucción va a mover el valor 1 al registro EBX, esto es necesario para establecer a donde tiene que &ldquo;escribir&rdquo; el write, en nuestro caso a stdout
+<figure><a class="lightgallery" href="/images/write-shellcode/ida-debugging2.png" title="IDA" data-thumbnail="/images/write-shellcode/ida-debugging2.png" data-sub-html="<h2>MOV ebx,1</h2><p>IDA</p>">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/images/write-shellcode/ida-debugging2.png"
+            data-srcset="/images/write-shellcode/ida-debugging2.png, /images/write-shellcode/ida-debugging2.png 1.5x, /images/write-shellcode/ida-debugging2.png 2x"
+            data-sizes="auto"
+            alt="IDA" />
+    </a><figcaption class="image-caption">MOV ebx,1</figcaption>
+    </figure></p>
+</li>
+<li>
+<p>&ldquo;PUSH 0x0a&rdquo;</p>
+<p>Esta instrucción va a mover el valor &ldquo;0x0a&rdquo; en hexadecimal al tope del stack, &ldquo;0a&rdquo; es el equivalente del salto de linea &ldquo;\n&rdquo; en hexadecimal
+<figure><a class="lightgallery" href="/images/write-shellcode/ida-debugging3.png" title="IDA" data-thumbnail="/images/write-shellcode/ida-debugging3.png" data-sub-html="<h2>PUSH 0x0a</h2><p>IDA</p>">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/images/write-shellcode/ida-debugging3.png"
+            data-srcset="/images/write-shellcode/ida-debugging3.png, /images/write-shellcode/ida-debugging3.png 1.5x, /images/write-shellcode/ida-debugging3.png 2x"
+            data-sizes="auto"
+            alt="IDA" />
+    </a><figcaption class="image-caption">PUSH 0x0a</figcaption>
+    </figure></p>
+</li>
+<li>
+<p>&ldquo;PUSH 0x62744820&rdquo;</p>
+<p>Esta instrucción va a mover el valor &ldquo;0x62744820&rdquo; en hexadecimal al tope del stack, &ldquo;0x62744820&rdquo; es el equivalente a &quot; Htb&rdquo;
+<figure><a class="lightgallery" href="/images/write-shellcode/ida-debugging4.png" title="IDA" data-thumbnail="/images/write-shellcode/ida-debugging4.png" data-sub-html="<h2>PUSH 0x62744820</h2><p>IDA</p>">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/images/write-shellcode/ida-debugging4.png"
+            data-srcset="/images/write-shellcode/ida-debugging4.png, /images/write-shellcode/ida-debugging4.png 1.5x, /images/write-shellcode/ida-debugging4.png 2x"
+            data-sizes="auto"
+            alt="IDA" />
+    </a><figcaption class="image-caption">PUSH 0x62744820</figcaption>
+    </figure></p>
+</li>
+<li>
+<p>&ldquo;PUSH 0x616C6F48&rdquo;</p>
+<p>Esta instrucción va a mover el valor &ldquo;0x616C6F48&rdquo; en hexadecimal al tope del stack, &ldquo;0x616C6F48&rdquo; es el equivalente a &ldquo;Hola&rdquo;
+<figure><a class="lightgallery" href="/images/write-shellcode/ida-debugging5.png" title="IDA" data-thumbnail="/images/write-shellcode/ida-debugging5.png" data-sub-html="<h2>PUSH 0x616C6F48</h2><p>IDA</p>">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/images/write-shellcode/ida-debugging5.png"
+            data-srcset="/images/write-shellcode/ida-debugging5.png, /images/write-shellcode/ida-debugging5.png 1.5x, /images/write-shellcode/ida-debugging5.png 2x"
+            data-sizes="auto"
+            alt="IDA" />
+    </a><figcaption class="image-caption">PUSH 0x616C6F48</figcaption>
+    </figure></p>
+</li>
+<li>
+<p>&ldquo;MOV ecx,esp&rdquo;</p>
+<p>Como vemos en la imagen ya tenemos nuestra cadena de texto &ldquo;Hola Htb\n&rdquo; cargada en el stack, para que se imprima en pantalla necesitamos que el valor de &ldquo;ECX&rdquo; apunte a donde esta alojada la cadena en memoria, para hacer eso movemos el valor de ESP que siempre apunta al tope del stack a ECX.
+<figure><a class="lightgallery" href="/images/write-shellcode/ida-debugging6.png" title="IDA" data-thumbnail="/images/write-shellcode/ida-debugging6.png" data-sub-html="<h2>MOV ecx,esp</h2><p>IDA</p>">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/images/write-shellcode/ida-debugging6.png"
+            data-srcset="/images/write-shellcode/ida-debugging6.png, /images/write-shellcode/ida-debugging6.png 1.5x, /images/write-shellcode/ida-debugging6.png 2x"
+            data-sizes="auto"
+            alt="IDA" />
+    </a><figcaption class="image-caption">MOV ecx,esp</figcaption>
+    </figure></p>
+</li>
+<li>
+<p>&ldquo;MOV edx,9&rdquo;</p>
+<p>Movemos el valor 9 a EDX para decirle a la syscall write que nuestra cadena a imprimir en pantalla tiene una longitud de 9 bytes.
+<figure><a class="lightgallery" href="/images/write-shellcode/ida-debugging7.png" title="IDA" data-thumbnail="/images/write-shellcode/ida-debugging7.png" data-sub-html="<h2>MOV edx,9</h2><p>IDA</p>">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/images/write-shellcode/ida-debugging7.png"
+            data-srcset="/images/write-shellcode/ida-debugging7.png, /images/write-shellcode/ida-debugging7.png 1.5x, /images/write-shellcode/ida-debugging7.png 2x"
+            data-sizes="auto"
+            alt="IDA" />
+    </a><figcaption class="image-caption">MOV edx,9</figcaption>
+    </figure></p>
+</li>
+<li>
+<p>&ldquo;Int 0x80&rdquo;</p>
+<p>Por ultimo se llama a la interrupcion 0x80 se le pasa el flujo de ejecución al Kernel y mediante la syscall imprime el mensaje deseado en base a los parametros que le fuimos pasando.
+<figure><a class="lightgallery" href="/images/write-shellcode/ida-debugging7.png" title="IDA" data-thumbnail="/images/write-shellcode/ida-debugging7.png" data-sub-html="<h2>Int 0x80</h2><p>IDA</p>">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/images/write-shellcode/ida-debugging7.png"
+            data-srcset="/images/write-shellcode/ida-debugging7.png, /images/write-shellcode/ida-debugging7.png 1.5x, /images/write-shellcode/ida-debugging7.png 2x"
+            data-sizes="auto"
+            alt="IDA" />
+    </a><figcaption class="image-caption">Int 0x80</figcaption>
+    </figure></p>
+</li>
+</ol>
+<p><figure><a class="lightgallery" href="/images/write-shellcode/holaasm.png" title="Hola-ASM" data-thumbnail="/images/write-shellcode/holaasm.png" data-sub-html="<h2>Hola Htb en assembler</h2><p>Hola-ASM</p>">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/images/write-shellcode/holaasm.png"
+            data-srcset="/images/write-shellcode/holaasm.png, /images/write-shellcode/holaasm.png 1.5x, /images/write-shellcode/holaasm.png 2x"
+            data-sizes="auto"
+            alt="Hola-ASM" />
+    </a><figcaption class="image-caption">Hola Htb en assembler</figcaption>
+    </figure></p>
+<p>Ya se lo que están pensando &ldquo;8 largos pasos para mostrar un mensaje un mensaje en pantalla&rdquo;, y si por cosas como esta hoy tenemos lenguajes de mas alto nivel donde no nos tenemos que preocupar por tanto funcionamiento interno de un CPU, sistema operativo, memoria, etc.</p>
+<p>Para finalizar podemos ejecutar lo siguiente para obtener la shellcode formateada:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">printf &#39;\\x&#39; &amp;&amp; objdump -d holahtb.o | grep &#34;^ &#34; | cut -f2 | tr -d &#39; &#39; | tr -d &#39;\n&#39; | sed &#39;s/.\{2\}/&amp;\\x /g&#39;| head -c-3 | tr -d &#39; &#39; &amp;&amp; echo &#39; &#39;
+</code></pre></td></tr></table>
+</div>
+</div><p>Obtenemos el siguiente resultado:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">\xb8\x04\x00\x00\x00\xbb\x01\x00\x00\x00\x6a\x0a\x68\x20\x48\x74\x62\x68\x48\x6f\x6c\x61\x89\xe1\xba\x09\x00\x00\x00\xcd\x80
+</code></pre></td></tr></table>
+</div>
+</div><p>Esta shellcode se puede mejorar mucho, se pueden evitar caracteres nulos y hacerla mas compacta, pero vamos a dejar eso para una próximo post.</p>
+<p>Espero les haya gustado, cualquier consulta no duden en escribirme.</p>
+<p>Happy Hacking.</p>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>Actualizado el 06-15-2021</span>
+            </div>
+            <div class="post-info-license"></div>
+        </div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="Compartir en Blogger" data-sharer="blogger" data-url="https://bhf.com.ar/write-shellcode/" data-title="Escribiendo tu propia shellcode. Parte 1" data-description=""><i class="fab fa-blogger fa-fw"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/x86/">x86</a>,&nbsp;<a href="/tags/x64/">x64</a>,&nbsp;<a href="/tags/asm/">ASM</a>,&nbsp;<a href="/tags/shellcode/">Shellcode</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">Regresar</a></span>&nbsp;|&nbsp;<span><a href="/">Inicio</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/wifialdea/" class="prev" rel="prev" title="WiFi Cooperativo en la aldea de montaña"><i class="fas fa-angle-left fa-fw"></i>WiFi Cooperativo en la aldea de montaña</a></div>
+</div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">Provisto por <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.74.3">Hugo</a> | Tema - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.9"><i class="far fa-kiss-wink-heart fa-fw"></i> LoveIt</a>
+                </div><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2020 - 2021</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">xxxx</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Volver arriba">
+                <i class="fas fa-arrow-up fa-fw"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="Ver comentarios">
+                <i class="fas fa-comment fa-fw"></i>
+            </a>
+        </div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery.js@1.1.3/dist/css/lightgallery.min.css"><style>.lg-toolbar .lg-icon::after { color: #999; }</style><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/smooth-scroll@16.1.3/dist/smooth-scroll.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.37.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lunr@2.3.8/lunr.min.js"></script><script type="text/javascript" src="/lib/lunr/lunr.stemmer.support.min.js"></script><script type="text/javascript" src="/lib/lunr/lunr.es.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.2.0/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery.js@1.1.3/dist/js/lightgallery.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lg-thumbnail.js@1.1.0/dist/lg-thumbnail.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lg-zoom.js@1.0.1/dist/lg-zoom.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.4.0/sharer.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/typeit@7.0.4/dist/typeit.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copiar al portapapeles","maxShownLines":10},"comment":{},"data":{"id-1":"# /home/BHF","id-2":"# /home/BHF"},"lightGallery":{"actualSize":false,"exThumbImage":"data-thumbnail","hideBarsDelay":2000,"selector":".lightgallery","speed":400,"thumbContHeight":80,"thumbWidth":80,"thumbnail":true},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","lunrLanguageCode":"es","maxResultLength":10,"noResultsFound":"No se encontraron resultados","snippetLength":30,"type":"lunr"},"typeit":{"cursorChar":"|","cursorSpeed":1000,"data":{"id-1":["id-1"],"id-2":["id-2"]},"duration":-1,"speed":100}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>

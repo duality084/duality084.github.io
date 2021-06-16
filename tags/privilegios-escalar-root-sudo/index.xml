@@ -1,0 +1,16 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>privilegios, escalar, root, sudo - Etiqueta - BHF</title>
+        <link>https://bhf.com.ar/tags/privilegios-escalar-root-sudo/</link>
+        <description>privilegios, escalar, root, sudo - Etiqueta - BHF</description>
+        <generator>Hugo -- gohugo.io</generator><language>es</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Sun, 09 Aug 2020 19:48:20 -0300</lastBuildDate><atom:link href="https://bhf.com.ar/tags/privilegios-escalar-root-sudo/" rel="self" type="application/rss+xml" /><item>
+    <title>Checklist para escalar privilegios desde www-data</title>
+    <link>https://bhf.com.ar/privilegios/</link>
+    <pubDate>Sun, 09 Aug 2020 19:48:20 -0300</pubDate>
+    <author>Autor</author>
+    <guid>https://bhf.com.ar/privilegios/</guid>
+    <description><![CDATA[<div class="featured-image">
+                <img src="/images/privilegios/checklist.png" referrerpolicy="no-referrer">
+            </div>Checklist de posibilidades para escalar privilegios desde www-data “Entramos, ¿y ahora qué hacemos?” Pregunta que me hice muchas veces cuando empecé a participar en distintos CTF (Capture The Flag). Leí libros, sites, foros, hilos, videos (¡sí!, leo videos) y quedaba fascinado, pero la teoría puede ser muy bonita (o súper boring) si no se lleva a la práctica. Por eso empecé a participar de CTF y a principios de este año logré registrarme en HTB.]]></description>
+</item></channel>
+</rss>

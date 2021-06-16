@@ -1,0 +1,17 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>brute foce - Categoría - BHF</title>
+        <link>https://bhf.com.ar/categories/brute-foce/</link>
+        <description>brute foce - Categoría - BHF</description>
+        <generator>Hugo -- gohugo.io</generator><language>es</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Wed, 13 Jan 2021 00:00:00 -0300</lastBuildDate><atom:link href="https://bhf.com.ar/categories/brute-foce/" rel="self" type="application/rss+xml" /><item>
+    <title>WiFi Cooperativo en la aldea de montaña</title>
+    <link>https://bhf.com.ar/wifialdea/</link>
+    <pubDate>Wed, 13 Jan 2021 00:00:00 -0300</pubDate>
+    <author>Autor</author>
+    <guid>https://bhf.com.ar/wifialdea/</guid>
+    <description><![CDATA[<div class="featured-image">
+                <img src="/images/wifialdea/wifipass.png" referrerpolicy="no-referrer">
+            </div>WiFi Cooperativo en la aldea de montaña Esta prueba se realizó en un entorno controlado con los permisos de los clientes adjudicatarios de los dispositivos involucrados, con el fin único de reconocer el nivel de seguridad de acceso a los dispositivos wifi desde una perspectiva ética de investigación en InfoSec.
+Pasé tres semanas en San Martín de los Andes y noté que las claves WiFi por defecto del único proveedor de Internet tienen un patrón sumamente sencillo.]]></description>
+</item></channel>
+</rss>

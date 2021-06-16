@@ -1,0 +1,26 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>ctf - Etiqueta - BHF</title>
+        <link>https://bhf.com.ar/tags/ctf/</link>
+        <description>ctf - Etiqueta - BHF</description>
+        <generator>Hugo -- gohugo.io</generator><language>es</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Wed, 09 Sep 2020 09:09:03 -0300</lastBuildDate><atom:link href="https://bhf.com.ar/tags/ctf/" rel="self" type="application/rss+xml" /><item>
+    <title>Crackeando contraseñas en la &#39;Nube&#39; y GRATIS!</title>
+    <link>https://bhf.com.ar/cloud-crackin-hashcat/</link>
+    <pubDate>Wed, 09 Sep 2020 09:09:03 -0300</pubDate>
+    <author>Autor</author>
+    <guid>https://bhf.com.ar/cloud-crackin-hashcat/</guid>
+    <description><![CDATA[<div class="featured-image">
+                <img src="/images/cloud-cracking-hashcat/crack-rig.jpg" referrerpolicy="no-referrer">
+            </div>Bienaventurados aquellos que posean el poder adquisitivo de comprarse la bestialidad que vemos en la imagen. Para aquellos que no se hayan dado cuenta en la imagen podemos observar un &ldquo;rig de cracking&rdquo; que cuenta con 9 placas de video Nvidia GeForce RTX 2080, la imagen la encontré en un posteo de un usuario de Twitter
+¿Por que? Primero comencemos en por que alguien querría gastar tanto dinero en semejante equipo, aca no solo hay que contar el costo de las placas de video que cuestan de 750 a 850 USD cada una, las fuentes de alimentación para darles energía, el gabinete capaz de albergarlas a todas, una placa madre con soporte para esa cantidad de placas, CPU, RAM.]]></description>
+</item><item>
+    <title>Volatility. Analizando la memoria RAM, NotPinkCon CTF. Parte 1)</title>
+    <link>https://bhf.com.ar/volatility-ctf-notpinkcon/</link>
+    <pubDate>Wed, 02 Sep 2020 09:11:03 -0300</pubDate>
+    <author>Autor</author>
+    <guid>https://bhf.com.ar/volatility-ctf-notpinkcon/</guid>
+    <description><![CDATA[<div class="featured-image">
+                <img src="/images/volatility-ctf-notpinkcon/ctf-flags.jpg" referrerpolicy="no-referrer">
+            </div>El 29 de Agosto se realizó la NotPinkCon, excelente conferencia de ciberseguridad impartida por mujeres cuyo objetivo principal es incentivar a las mujeres a que participen como oradoras y cada vez sean más las que asisten a eventos de seguridad informática. La jornada del 29 fue excepcional, charlas de un muy buen nivel técnico, con charlas en inglés y castellano, traducción &ldquo;on the fly&rdquo; para aquellos que no se sintieran cómodos con el inglés o castellano a través de Discord, todo muy bien organizado.]]></description>
+</item></channel>
+</rss>

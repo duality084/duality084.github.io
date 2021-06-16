@@ -1,0 +1,16 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>stego - Etiqueta - BHF</title>
+        <link>https://bhf.com.ar/tags/stego/</link>
+        <description>stego - Etiqueta - BHF</description>
+        <generator>Hugo -- gohugo.io</generator><language>es</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Wed, 30 Sep 2020 16:02:03 -0300</lastBuildDate><atom:link href="https://bhf.com.ar/tags/stego/" rel="self" type="application/rss+xml" /><item>
+    <title>WriteUp CTF Stego de Onapsis - EKOPARTY</title>
+    <link>https://bhf.com.ar/stego-onapsis-writeup/</link>
+    <pubDate>Wed, 30 Sep 2020 16:02:03 -0300</pubDate>
+    <author>Autor</author>
+    <guid>https://bhf.com.ar/stego-onapsis-writeup/</guid>
+    <description><![CDATA[<div class="featured-image">
+                <img src="/images/stego-onapsis-writeup/Steganography.jpg" referrerpolicy="no-referrer">
+            </div>El año pasado fue mi primer eko, después de bastante tiempo, retomé mi pasión por la seguridad informática. Esa curiosidad, sobre todo por entender cómo funcionan las cosas y cómo podría utilizarse ese funcionamiento para otros fines. A diferencia del año pasado, esta eko me encontró participando de un team (BHF) y además con algunas nociones para poder encarar los CTF’s, cosa que el año anterior no hubiese imaginado. Shebi nos anotó como equipo en dos CTF’s: Pucará y Onapsis.]]></description>
+</item></channel>
+</rss>

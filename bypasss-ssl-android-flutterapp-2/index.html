@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+        <title>Bypaseando la verificación SSL en una app de flutter en Android. Parte 2) - BHF</title><meta name="Description" content="Hacking, sysadmin, beer."><meta property="og:title" content="Bypaseando la verificación SSL en una app de flutter en Android. Parte 2)" />
+<meta property="og:description" content="En la primera parte vimos como encontrar el offset a parchear con frida, a partir de ahi solo deberíamos ejecutar el script de frida para que parchee la aplicacion que deseemos en memoria. Debido a que no deseaba rootear mi celular esto trajo aparejado otro desafiado.
+Para resumir lo que haremos es lo siguiente.
+ Desempaquetar nuestro APK objetivo Descargar el gadget de frida según la arquitectura de la aplicación objetivo arm64 o arm32." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://bhf.com.ar/bypasss-ssl-android-flutterapp-2/" />
+<meta property="og:image" content="https://cdn.iconscout.com/icon/premium/png-256-thumb/hacker-81-1105283.png"/>
+<meta property="article:published_time" content="2020-11-25T09:11:03-03:00" />
+<meta property="article:modified_time" content="2020-11-25T09:11:03-03:00" />
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://cdn.iconscout.com/icon/premium/png-256-thumb/hacker-81-1105283.png"/>
+
+<meta name="twitter:title" content="Bypaseando la verificación SSL en una app de flutter en Android. Parte 2)"/>
+<meta name="twitter:description" content="En la primera parte vimos como encontrar el offset a parchear con frida, a partir de ahi solo deberíamos ejecutar el script de frida para que parchee la aplicacion que deseemos en memoria. Debido a que no deseaba rootear mi celular esto trajo aparejado otro desafiado.
+Para resumir lo que haremos es lo siguiente.
+ Desempaquetar nuestro APK objetivo Descargar el gadget de frida según la arquitectura de la aplicación objetivo arm64 o arm32."/>
+<meta name="application-name" content="BHF">
+<meta name="apple-mobile-web-app-title" content="BHF"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://bhf.com.ar/bypasss-ssl-android-flutterapp-2/" /><link rel="prev" href="https://bhf.com.ar/bypasss-ssl-android-flutterapp/" /><link rel="next" href="https://bhf.com.ar/wifialdea/" /><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.13.0/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.7.2/animate.min.css"><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Bypaseando la verificación SSL en una app de flutter en Android. Parte 2)",
+        "inLanguage": "es",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/bhf.com.ar\/bypasss-ssl-android-flutterapp-2\/"
+        },"image": {
+                "@type": "ImageObject",
+                "url": "https:\/\/bhf.com.ar\/cover.png",
+                "width":  800 ,
+                "height":  600 
+            },"genre": "posts","keywords": "pentesting, mobile, flutter","wordcount":  703 ,
+        "url": "https:\/\/bhf.com.ar\/bypasss-ssl-android-flutterapp-2\/","datePublished": "2020-11-25T09:11:03-03:00","dateModified": "2020-11-25T09:11:03-03:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
+                "@type": "Organization",
+                "name": "xxxx",
+                "logo": {
+                "@type": "ImageObject",
+                "url": "https:\/\/bhf.com.ar\/logo.png",
+                "width":  127 ,
+                "height":  40 
+                }
+            },"author": {
+                "@type": "Person",
+                "name": "Matias Ramirez"
+            },"description": ""
+    }
+    </script></head>
+    <body header-desktop="fixed" header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('dark' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'dark' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="BHF"><span class="header-title-pre"><i class='fas fa-laptop fa-fw'></i></span><span id="id-1" class="typeit"></span></a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> Posts </a><a class="menu-item" href="/tags/"> Tags </a><a class="menu-item" href="/categories/"> Categorias </a><a class="menu-item" href="/about/"> About </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="Busca títulos o contenido..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Buscar">
+                            <i class="fas fa-search fa-fw"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="Limpiar">
+                            <i class="fas fa-times-circle fa-fw"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="Cambia el tema">
+                    <i class="fas fa-adjust fa-fw"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="BHF"><span class="header-title-pre"><i class='fas fa-laptop fa-fw'></i></span><span id="id-2" class="typeit"></span></a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="Busca títulos o contenido..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="Buscar">
+                            <i class="fas fa-search fa-fw"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="Limpiar">
+                            <i class="fas fa-times-circle fa-fw"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        Cancelar
+                    </a>
+                </div><a class="menu-item" href="/posts/" title="">Posts</a><a class="menu-item" href="/tags/" title="">Tags</a><a class="menu-item" href="/categories/" title="">Categorias</a><a class="menu-item" href="/about/" title="">About</a><a href="javascript:void(0);" class="menu-item theme-switch" title="Cambia el tema">
+                <i class="fas fa-adjust fa-fw"></i>
+            </a></div>
+    </div>
+</header>
+<div class="search-dropdown desktop">
+    <div id="search-dropdown-desktop"></div>
+</div>
+<div class="search-dropdown mobile">
+    <div id="search-dropdown-mobile"></div>
+</div>
+<main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">Contenido</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animated flipInX">Bypaseando la verificación SSL en una app de flutter en Android. Parte 2)</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>Matias Ramirez</a></span>&nbsp;<span class="post-category">incluido en <a href="/categories/mobile/"><i class="far fa-folder fa-fw"></i>mobile</a>&nbsp;<a href="/categories/burpsuite/"><i class="far fa-folder fa-fw"></i>burpsuite</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="11-25-2020">11-25-2020</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;703 palabras&nbsp;
+                <i class="far fa-clock fa-fw"></i>&nbsp;4 minutos&nbsp;</div>
+        </div><div class="featured-image"><img
+        class="lazyload"
+        src="/svg/loading/normal.min.svg"
+        data-src="/images/bypasss-ssl-android-flutterapp/man-in-the-middle.png"
+        data-srcset="/images/bypasss-ssl-android-flutterapp/man-in-the-middle.png, /images/bypasss-ssl-android-flutterapp/man-in-the-middle.png 1.5x, /images/bypasss-ssl-android-flutterapp/man-in-the-middle.png 2x"
+        data-sizes="auto"
+        alt="/images/bypasss-ssl-android-flutterapp/man-in-the-middle.png"
+        title="/images/bypasss-ssl-android-flutterapp/man-in-the-middle.png" /></div><div class="details toc" id="toc-static"  kept="">
+                <div class="details-summary toc-title">
+                    <span>Contenido</span>
+                    <span><i class="details-icon fas fa-angle-right"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents"></nav></div>
+            </div><div class="content" id="content"><p>En la primera <a href="https://bhf.com.ar/bypasss-ssl-android-flutterapp/" target="_blank" rel="noopener noreffer">parte</a> vimos como encontrar el offset a parchear con frida, a partir de ahi solo deberíamos ejecutar el script de frida para que parchee la aplicacion que deseemos en memoria. Debido a que no deseaba rootear mi celular esto trajo aparejado otro desafiado.</p>
+<p>Para resumir lo que haremos es lo siguiente.</p>
+<ul>
+<li>Desempaquetar nuestro APK objetivo</li>
+<li>Descargar el <a href="https://github.com/frida/frida/releases" target="_blank" rel="noopener noreffer">gadget</a> de frida según la arquitectura de la aplicación objetivo arm64 o arm32.</li>
+<li>Inyectar el gadget en la aplicacion.</li>
+<li>Reempaquetar el APK.</li>
+<li>Subirlo e instalarlo a nuestro dispositivo.</li>
+<li>Configurar nuestro Linux como puerta de enlace.</li>
+</ul>
+<p>Antes de arrancar cabe aclarar que necesitamos activar en nuestro dispositivo las &ldquo;opciones de  desarrollador&rdquo;.</p>
+<ol>
+<li>Descargamos y descomprimimos &ldquo;frida-gadget&rdquo;.</li>
+</ol>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-BASH" data-lang="BASH">wget https://github.com/frida/frida/releases/download/14.1.0/frida-gadget-14.1.0-android-arm.so.xz
+unxz -d frida-gadget-14.1.0-android-arm.so.xz
+</code></pre></td></tr></table>
+</div>
+</div><ol start="2">
+<li>Desempaquetar el APK objetivo</li>
+</ol>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-BASH" data-lang="BASH">apktool d -rs target.apk
+</code></pre></td></tr></table>
+</div>
+</div><p>Se recomienda utilizar apktool para el desempaquetado ya que unzip/zip no siempre funciona correctamente.</p>
+<ol start="3">
+<li>Copiamos &ldquo;frida-gadget&rdquo; a la carpeta donde se encuentran los archivos desempaquetados.</li>
+</ol>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-BASH" data-lang="BASH">cp frida-gadget-14.1.0-android-arm.so target/lib/armeabi-v7a/libfrida-gadget.so
+</code></pre></td></tr></table>
+</div>
+</div><ol start="4">
+<li>Escribimos un script en python para injectar &ldquo;frida-gadget&rdquo; usando la libreria <a href="https://github.com/lief-project/LIEF" target="_blank" rel="noopener noreffer">lief</a>(ver las instrucciones de instalacion en la pagina del proyecto)</li>
+</ol>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-python" data-lang="python"><span class="ch">#!/usr/bin/env python3                                                                                                                                                                                                                     </span>
+                                                                                                                                                                                                                                           
+<span class="kn">import</span> <span class="nn">lief</span>
+                                                                                                                                                                                                                     
+<span class="n">libnative</span> <span class="o">=</span> <span class="n">lief</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">&#34;target/lib/armeabi-v7a/libflutter.so&#34;</span><span class="p">)</span>                                                                                                                                                                            
+<span class="n">libnative</span><span class="o">.</span><span class="n">add_library</span><span class="p">(</span><span class="s2">&#34;libfrida-gadget.so&#34;</span><span class="p">)</span> <span class="c1"># Injection!                                                                                                                                                                                </span>
+<span class="n">libnative</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&#34;target/lib/armeabi-v7a/libflutter.so&#34;</span><span class="p">)</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>Este script una vez ejecutado va a parchear &ldquo;libflutter.so&rdquo; y agrearle el gadget de frida como libreria.</p>
+<ol start="5">
+<li>Correr el script.</li>
+</ol>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">python3 inject-gadget.py
+</code></pre></td></tr></table>
+</div>
+</div><ol start="6">
+<li>Reempaquetar el APK.</li>
+</ol>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash"><span class="c1"># &#34;target&#34; es el directorio donde desempaquetamos nuestro apk.</span>
+apktool b target
+
+</code></pre></td></tr></table>
+</div>
+</div><ol start="7">
+<li>Firmar el APK, podemos usar <a href="https://github.com/patrickfav/uber-apk-signer" target="_blank" rel="noopener noreffer">&ldquo;Uber APK signer&rdquo;</a>.</li>
+</ol>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">java -jar uber-apk-signer-1.2.1.jar -a ./target/dist/target.apk
+</code></pre></td></tr></table>
+</div>
+</div><ol start="8">
+<li>Instalar el APK. Con nuestro dispositivo con las opciones de desarrollador habilitadas podemos usar adb para hacerlo.</li>
+</ol>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">adb install -r target/dist/target-aligned-debugSigned.apk
+</code></pre></td></tr></table>
+</div>
+</div><ol start="10">
+<li>
+<p>En nuestro dispositivo abrimos la aplicación instalada si la aplicación queda congelada es un buen indicio, si se cierra hay que revisar el proceso nuevamente ya que probablemente fallamos en algún paso.</p>
+</li>
+<li>
+<p>Lo siguiente es correr el script de frida para que se &ldquo;tracear&rdquo; la aplicación y cada vez que se llame a la función encargaría de validar el certificado esta siempre devuelva que el resultado es correcto.</p>
+</li>
+</ol>
+<p>El script es el siguiente:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-JS" data-lang="JS">  <span class="kd">function</span> <span class="nx">hook_ssl_verify_result</span><span class="p">(</span><span class="nx">address</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="nx">Interceptor</span><span class="p">.</span><span class="nx">attach</span><span class="p">(</span><span class="nx">address</span><span class="p">,</span> <span class="p">{</span>
+    <span class="nx">onEnter</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">args</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&#34;Disabling SSL validation&#34;</span><span class="p">)</span>
+    <span class="p">},</span>
+    <span class="nx">onLeave</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">retval</span><span class="p">)</span>
+    <span class="p">{</span>
+      <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&#34;Retval: &#34;</span> <span class="o">+</span> <span class="nx">retval</span><span class="p">)</span>
+      <span class="nx">retval</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="mh">0x1</span><span class="p">);</span>
+
+    <span class="p">}</span>
+  <span class="p">});</span>
+<span class="p">}</span>
+<span class="kd">function</span> <span class="nx">disablePinning</span><span class="p">()</span>
+<span class="p">{</span>
+ <span class="kd">var</span> <span class="nx">m</span> <span class="o">=</span> <span class="nx">Process</span><span class="p">.</span><span class="nx">findModuleByName</span><span class="p">(</span><span class="s2">&#34;libflutter.so&#34;</span><span class="p">);</span> 
+ <span class="kd">var</span> <span class="nx">pattern</span> <span class="o">=</span> <span class="s2">&#34;2d e9 f0 4f a3 b0 81 46 50 20&#34;</span>
+ <span class="kd">var</span> <span class="nx">res</span> <span class="o">=</span> <span class="nx">Memory</span><span class="p">.</span><span class="nx">scan</span><span class="p">(</span><span class="nx">m</span><span class="p">.</span><span class="nx">base</span><span class="p">,</span> <span class="nx">m</span><span class="p">.</span><span class="nx">size</span><span class="p">,</span> <span class="nx">pattern</span><span class="p">,</span> <span class="p">{</span>
+  <span class="nx">onMatch</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">address</span><span class="p">,</span> <span class="nx">size</span><span class="p">){</span>
+      <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;[+] ssl_verify_result found at: &#39;</span> <span class="o">+</span> <span class="nx">address</span><span class="p">.</span><span class="nx">toString</span><span class="p">());</span>
+
+      <span class="c1">// Add 0x01 because it&#39;s a THUMB function
+</span><span class="c1"></span>      <span class="c1">// Otherwise, we would get &#39;Error: unable to intercept function at 0x9906f8ac; please file a bug&#39;
+</span><span class="c1"></span>      <span class="nx">hook_ssl_verify_result</span><span class="p">(</span><span class="nx">address</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span><span class="mh">0x01</span><span class="p">));</span>
+      
+    <span class="p">},</span> 
+  <span class="nx">onError</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">reason</span><span class="p">){</span>
+      <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;[!] There was an error scanning memory&#39;</span><span class="p">);</span>
+    <span class="p">},</span>
+    <span class="nx">onComplete</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span>
+    <span class="p">{</span>
+      <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&#34;All done&#34;</span><span class="p">)</span>
+    <span class="p">}</span>
+  <span class="p">});</span>
+<span class="p">}</span>
+<span class="nx">setTimeout</span><span class="p">(</span><span class="nx">disablePinning</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>Recordar cambiar la variable &ldquo;pattern&rdquo; que corresponde a los primeros bytes del inicio de la función según corresponda lo que hayamos encontrado en ghidra.</p>
+<p>Con el script una vez guardado ejecutamos lo siguiente.(Recordar que debemos <a href="https://frida.re/docs/frida-cli/" target="_blank" rel="noopener noreffer">instalar</a> frida segun corresponda en Windows, MAC, Linux)</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">frida -U Gadget -l inject.js --no-pause
+</code></pre></td></tr></table>
+</div>
+</div><ol start="12">
+<li>Por ultimo como las aplicaciones en flutter ignoran la configuración del proxy que que hayamos seteado en Android vamos a configurar nuestra maquina con Linux como puerta de enlace</li>
+</ol>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">sysctl -w net.ipv4.ip_forward=1
+iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -j REDIRECT --to-port 8080
+iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 443 -j REDIRECT --to-port 8080
+</code></pre></td></tr></table>
+</div>
+</div><p>Con esto vamos a permitir el &ldquo;fowarding&rdquo; de paquetes y vamos a redirigir todo el trafico que llegue al puerto 443 y 80 al puerto 8080(cambiar la interfaz eth0 segun corresponda, por ejemplo si tienen su kali conectado por wifi en la notebook cambiar por wlan0, chequear cual es la interfaz correcta con el comando &ldquo;ip a&rdquo;)</p>
+<ol start="13">
+<li>Cambiar la configuración de nuestro dispositivo con Android para usar nuestra maquina con Linux como puerta de enlace</li>
+</ol>
+<p>A partir de aca ya vamos poder utilizar la herramienta que deseemos para analizar el trafico generado por nuestra aplicación.</p>
+<p>Happy hacking!</p>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>Actualizado el 11-25-2020</span>
+            </div>
+            <div class="post-info-license"></div>
+        </div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="Compartir en Blogger" data-sharer="blogger" data-url="https://bhf.com.ar/bypasss-ssl-android-flutterapp-2/" data-title="Bypaseando la verificación SSL en una app de flutter en Android. Parte 2)" data-description=""><i class="fab fa-blogger fa-fw"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/pentesting/">pentesting</a>,&nbsp;<a href="/tags/mobile/">mobile</a>,&nbsp;<a href="/tags/flutter/">flutter</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">Regresar</a></span>&nbsp;|&nbsp;<span><a href="/">Inicio</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/bypasss-ssl-android-flutterapp/" class="prev" rel="prev" title="Bypaseando la verificación SSL en una app de flutter en Android. Parte 1)"><i class="fas fa-angle-left fa-fw"></i>Bypaseando la verificación SSL en una app de flutter en Android. Parte 1)</a>
+            <a href="/wifialdea/" class="next" rel="next" title="WiFi Cooperativo en la aldea de montaña">WiFi Cooperativo en la aldea de montaña<i class="fas fa-angle-right fa-fw"></i></a></div>
+</div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">Provisto por <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.74.3">Hugo</a> | Tema - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.9"><i class="far fa-kiss-wink-heart fa-fw"></i> LoveIt</a>
+                </div><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2020 - 2021</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">xxxx</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Volver arriba">
+                <i class="fas fa-arrow-up fa-fw"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="Ver comentarios">
+                <i class="fas fa-comment fa-fw"></i>
+            </a>
+        </div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery.js@1.1.3/dist/css/lightgallery.min.css"><style>.lg-toolbar .lg-icon::after { color: #999; }</style><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/smooth-scroll@16.1.3/dist/smooth-scroll.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.37.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lunr@2.3.8/lunr.min.js"></script><script type="text/javascript" src="/lib/lunr/lunr.stemmer.support.min.js"></script><script type="text/javascript" src="/lib/lunr/lunr.es.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.2.0/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery.js@1.1.3/dist/js/lightgallery.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lg-thumbnail.js@1.1.0/dist/lg-thumbnail.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lg-zoom.js@1.0.1/dist/lg-zoom.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.4.0/sharer.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/typeit@7.0.4/dist/typeit.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copiar al portapapeles","maxShownLines":10},"comment":{},"data":{"id-1":"# /home/BHF","id-2":"# /home/BHF"},"lightGallery":{"actualSize":false,"exThumbImage":"data-thumbnail","hideBarsDelay":2000,"selector":".lightgallery","speed":400,"thumbContHeight":80,"thumbWidth":80,"thumbnail":true},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","lunrLanguageCode":"es","maxResultLength":10,"noResultsFound":"No se encontraron resultados","snippetLength":30,"type":"lunr"},"typeit":{"cursorChar":"|","cursorSpeed":1000,"data":{"id-1":["id-1"],"id-2":["id-2"]},"duration":-1,"speed":100}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>

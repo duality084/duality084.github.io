@@ -1,0 +1,17 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>selfhosted - Categoría - BHF</title>
+        <link>https://bhf.com.ar/categories/selfhosted/</link>
+        <description>selfhosted - Categoría - BHF</description>
+        <generator>Hugo -- gohugo.io</generator><language>es</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Wed, 17 Jun 2020 17:11:03 -0300</lastBuildDate><atom:link href="https://bhf.com.ar/categories/selfhosted/" rel="self" type="application/rss+xml" /><item>
+    <title>Creando Blog Con Hugo</title>
+    <link>https://bhf.com.ar/creando-blog-con-hugo/</link>
+    <pubDate>Wed, 17 Jun 2020 17:11:03 -0300</pubDate>
+    <author>Autor</author>
+    <guid>https://bhf.com.ar/creando-blog-con-hugo/</guid>
+    <description><![CDATA[<div class="featured-image">
+                <img src="https://d33wubrfki0l68.cloudfront.net/30790d6888bd8af863fb2b5c33a7f337cdbda243/4e867/images/hugo-logo-wide.svg" referrerpolicy="no-referrer">
+            </div>¿Que es hugo? Hugo es un generador de sitios estáticos en el cual mediante un archivo configuración, archivos Markdown o HTML podemos crear sitios o blogs(en este caso este mismo blog).
+¿Por que no usar un CMS? Un CMS o Content Management System es un software el cual nos facilita administrar y publicar contenido en un sitio web, algunos ejemplos pueden ser Wordpress, Joomla, Drupal, etc. Estos sistemas se encuentran programados en distintos lenguajes de programación y constan de varias partes para su correcto funcionamiento como puede ser una base de datos, el lenguaje sobre el cual se ejecuta, las librerías utilizadas por la aplicación, el servidor web el cual se encarga de recibir las peticiones(NGINX, Apache, etc), muchas veces estos sistemas a su vez permiten mediante plugins agregar funcionalidades.]]></description>
+</item></channel>
+</rss>

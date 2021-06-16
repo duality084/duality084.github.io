@@ -1,0 +1,16 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>x64 - Etiqueta - BHF</title>
+        <link>https://bhf.com.ar/tags/x64/</link>
+        <description>x64 - Etiqueta - BHF</description>
+        <generator>Hugo -- gohugo.io</generator><language>es</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Tue, 15 Jun 2021 09:11:03 -0300</lastBuildDate><atom:link href="https://bhf.com.ar/tags/x64/" rel="self" type="application/rss+xml" /><item>
+    <title>Escribiendo tu propia shellcode. Parte 1</title>
+    <link>https://bhf.com.ar/write-shellcode/</link>
+    <pubDate>Tue, 15 Jun 2021 09:11:03 -0300</pubDate>
+    <author>Autor</author>
+    <guid>https://bhf.com.ar/write-shellcode/</guid>
+    <description><![CDATA[<div class="featured-image">
+                <img src="/images/write-shellcode/portada.png" referrerpolicy="no-referrer">
+            </div>Introduccion Escribir y entender como funciona una shellcode es un tema que tengo pendiente desde hace mucho tiempo y que mejor manera de intentarlo que con una serie de posts sobre el tema. Creo que el conocimiento sobre esta temática esta pendiente en varias personas, muchos de los que nos dedicamos a infosec en algun momento aprendimos como realizar el análisis de una vulnerabilidad del tipo buffer overflow, descubrimos donde falla la aplicación, como redirigir el flujo del programa, buscamos los &ldquo;bad chars&rdquo;, pero al momento de escribir la shellcode usamos nuestro querido msfvenom o copiamos una del sitio &ldquo;shell-storm&rdquo; a modo de POC, esto no es casualidad desarrollar y entender como se escribe una shellcode requiere una serie de conocimientos previos algunos de los cuales ya los adquirimos mientras aprendíamos sobre BOF como por ejemplo, manejar un debugger, lenguaje ensamblador, como funciona el stack, etc.]]></description>
+</item></channel>
+</rss>

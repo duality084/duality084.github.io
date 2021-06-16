@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+        <title>Automatizando el deploying del blog con Hugo y Travis. - BHF</title><meta name="Description" content="Hacking, sysadmin, beer."><meta property="og:title" content="Automatizando el deploying del blog con Hugo y Travis." />
+<meta property="og:description" content="Si algo caracteriza a muchos de los que trabajamos en sistemas es la aversión por hacer tareas repetitivas y monótonas, siempre que podamos vamos a recurrir a la automatización, de esta manera nos queda mas tiempo para atender cosas importantes, aprender cosas nuevas o simplemente por el reto que significa automatizar esa tarea que tanto nos fastidia hacerla manualmente.   Como funciona este blog? Primero comencemos por como funciona este blog, como comente anteriormente esta pagina esta creado con Hugo el cual mediante archivos Markdown genera archivos estáticos que pueden ser hosteados directamente en cualquier servidor web sin mas requisitos." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://bhf.com.ar/deploy-hugo-pages/" />
+<meta property="og:image" content="https://cdn.iconscout.com/icon/premium/png-256-thumb/hacker-81-1105283.png"/>
+<meta property="article:published_time" content="2020-06-18T09:11:03-03:00" />
+<meta property="article:modified_time" content="2020-06-18T09:11:03-03:00" />
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://cdn.iconscout.com/icon/premium/png-256-thumb/hacker-81-1105283.png"/>
+
+<meta name="twitter:title" content="Automatizando el deploying del blog con Hugo y Travis."/>
+<meta name="twitter:description" content="Si algo caracteriza a muchos de los que trabajamos en sistemas es la aversión por hacer tareas repetitivas y monótonas, siempre que podamos vamos a recurrir a la automatización, de esta manera nos queda mas tiempo para atender cosas importantes, aprender cosas nuevas o simplemente por el reto que significa automatizar esa tarea que tanto nos fastidia hacerla manualmente.   Como funciona este blog? Primero comencemos por como funciona este blog, como comente anteriormente esta pagina esta creado con Hugo el cual mediante archivos Markdown genera archivos estáticos que pueden ser hosteados directamente en cualquier servidor web sin mas requisitos."/>
+<meta name="application-name" content="BHF">
+<meta name="apple-mobile-web-app-title" content="BHF"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://bhf.com.ar/deploy-hugo-pages/" /><link rel="prev" href="https://bhf.com.ar/creando-blog-con-hugo/" /><link rel="next" href="https://bhf.com.ar/deerhost/" /><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.13.0/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.7.2/animate.min.css"><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Automatizando el deploying del blog con Hugo y Travis.",
+        "inLanguage": "es",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/bhf.com.ar\/deploy-hugo-pages\/"
+        },"image": {
+                "@type": "ImageObject",
+                "url": "https:\/\/bhf.com.ar\/cover.png",
+                "width":  800 ,
+                "height":  600 
+            },"genre": "posts","keywords": "github, ci\/cd, automatizacion, blog","wordcount":  503 ,
+        "url": "https:\/\/bhf.com.ar\/deploy-hugo-pages\/","datePublished": "2020-06-18T09:11:03-03:00","dateModified": "2020-06-18T09:11:03-03:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
+                "@type": "Organization",
+                "name": "xxxx",
+                "logo": {
+                "@type": "ImageObject",
+                "url": "https:\/\/bhf.com.ar\/logo.png",
+                "width":  127 ,
+                "height":  40 
+                }
+            },"author": {
+                "@type": "Person",
+                "name": "Matias, Ramirez"
+            },"description": ""
+    }
+    </script></head>
+    <body header-desktop="fixed" header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('dark' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'dark' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="BHF"><span class="header-title-pre"><i class='fas fa-laptop fa-fw'></i></span><span id="id-1" class="typeit"></span></a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> Posts </a><a class="menu-item" href="/tags/"> Tags </a><a class="menu-item" href="/categories/"> Categorias </a><a class="menu-item" href="/about/"> About </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="Busca títulos o contenido..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Buscar">
+                            <i class="fas fa-search fa-fw"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="Limpiar">
+                            <i class="fas fa-times-circle fa-fw"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="Cambia el tema">
+                    <i class="fas fa-adjust fa-fw"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="BHF"><span class="header-title-pre"><i class='fas fa-laptop fa-fw'></i></span><span id="id-2" class="typeit"></span></a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="Busca títulos o contenido..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="Buscar">
+                            <i class="fas fa-search fa-fw"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="Limpiar">
+                            <i class="fas fa-times-circle fa-fw"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        Cancelar
+                    </a>
+                </div><a class="menu-item" href="/posts/" title="">Posts</a><a class="menu-item" href="/tags/" title="">Tags</a><a class="menu-item" href="/categories/" title="">Categorias</a><a class="menu-item" href="/about/" title="">About</a><a href="javascript:void(0);" class="menu-item theme-switch" title="Cambia el tema">
+                <i class="fas fa-adjust fa-fw"></i>
+            </a></div>
+    </div>
+</header>
+<div class="search-dropdown desktop">
+    <div id="search-dropdown-desktop"></div>
+</div>
+<div class="search-dropdown mobile">
+    <div id="search-dropdown-mobile"></div>
+</div>
+<main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">Contenido</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animated flipInX">Automatizando el deploying del blog con Hugo y Travis.</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>Matias, Ramirez</a></span>&nbsp;<span class="post-category">incluido en <a href="/categories/github/"><i class="far fa-folder fa-fw"></i>github</a>&nbsp;<a href="/categories/ci/cd/"><i class="far fa-folder fa-fw"></i>ci/cd</a>&nbsp;<a href="/categories/automatizacion/"><i class="far fa-folder fa-fw"></i>automatizacion</a>&nbsp;<a href="/categories/blog/"><i class="far fa-folder fa-fw"></i>blog</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="06-18-2020">06-18-2020</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;503 palabras&nbsp;
+                <i class="far fa-clock fa-fw"></i>&nbsp;3 minutos&nbsp;</div>
+        </div><div class="featured-image"><img
+        class="lazyload"
+        src="/svg/loading/normal.min.svg"
+        data-src="/img/los-simspons-hugo-travis.png"
+        data-srcset="/img/los-simspons-hugo-travis.png, /img/los-simspons-hugo-travis.png 1.5x, /img/los-simspons-hugo-travis.png 2x"
+        data-sizes="auto"
+        alt="/img/los-simspons-hugo-travis.png"
+        title="/img/los-simspons-hugo-travis.png" /></div><div class="details toc" id="toc-static"  kept="">
+                <div class="details-summary toc-title">
+                    <span>Contenido</span>
+                    <span><i class="details-icon fas fa-angle-right"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#como-funciona-este-blog">Como funciona este blog?</a></li>
+    <li><a href="#automatizando-el-deploy-mediante-travis">Automatizando el deploy mediante Travis</a></li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><p>Si algo caracteriza a muchos de los que trabajamos en sistemas es la aversión por hacer tareas repetitivas y monótonas, siempre que podamos vamos a recurrir a la automatización, de esta manera nos queda mas tiempo para atender cosas importantes, aprender cosas nuevas o simplemente por el reto que significa automatizar esa tarea que tanto nos fastidia hacerla manualmente.
+
+<div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
+  <iframe src="https://www.youtube-nocookie.com/embed/iqBfQF5bnbE" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;" allowfullscreen title="YouTube Video"></iframe>
+</div>
+</p>
+<h2 id="como-funciona-este-blog">Como funciona este blog?</h2>
+<p>Primero comencemos por como funciona este blog, como comente <a href="http://bhf.com.ar/creando-blog-con-hugo/" target="_blank" rel="noopener noreffer">anteriormente</a> esta pagina esta creado con Hugo el cual mediante archivos Markdown genera archivos estáticos que pueden ser hosteados directamente en cualquier servidor web sin mas requisitos.
+Para comenzar cree 2 repositorios de github, el primero es para mantener versionadas las entradas y configuración de este blog, el segundo es para hospedar mediante el servicio <a href="https://pages.github.com/" target="_blank" rel="noopener noreffer">GitHub Pages</a> y olvidarme de tener que mantener mi propio web server.</p>
+<p>En un comienzo el proceso consistía en modificar o crear entradas, realizar manualmente en mi computadora el proceso de &ldquo;build&rdquo; mediante Hugo y enviar los archivos generados al segundo repositorio de github para ser visto mediante GitHub Pages. Este proceso resulta un poco engorroso ya que cada cambio necesita de resubir nuevamente los archivos modificados o nuevos.</p>
+<h2 id="automatizando-el-deploy-mediante-travis">Automatizando el deploy mediante Travis</h2>
+<p><figure><a class="lightgallery" href="/img/travis-githubpages.png" title="Travis" data-thumbnail="/img/travis-githubpages.png" data-sub-html="<h2>Travis CI y Github</h2><p>Travis</p>">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/img/travis-githubpages.png"
+            data-srcset="/img/travis-githubpages.png, /img/travis-githubpages.png 1.5x, /img/travis-githubpages.png 2x"
+            data-sizes="auto"
+            alt="Travis" />
+    </a><figcaption class="image-caption">Travis CI y Github</figcaption>
+    </figure></p>
+<p>Mediante <a href="https://travis-ci.org/" target="_blank" rel="noopener noreffer">Travis CI</a> podemos automatizar el build y despliegue de nuestro sitio en GitHub Pages, para comenzar debemos crearnos un token para que Travis pueda acceder a nuestros repositorios, esto lo vamos a hacer mediante la url <a href="https://github.com/settings/tokens/new" target="_blank" rel="noopener noreffer">https://github.com/settings/tokens/new</a></p>
+<p><figure><a class="lightgallery" href="/images/travis-hugo/tokengithub.png" title="TokenGithub" data-thumbnail="/images/travis-hugo/tokengithub.png" data-sub-html="<h2>Asignamos los permisos.</h2><p>TokenGithub</p>">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/images/travis-hugo/tokengithub.png"
+            data-srcset="/images/travis-hugo/tokengithub.png, /images/travis-hugo/tokengithub.png 1.5x, /images/travis-hugo/tokengithub.png 2x"
+            data-sizes="auto"
+            alt="TokenGithub" />
+    </a><figcaption class="image-caption">Asignamos los permisos.</figcaption>
+    </figure></p>
+<p>Una vez creado nuestro token lo guardamos para poder utilizarlo mas adelante, luego nos logueamos en <a href="https://travis-ci.org/" target="_blank" rel="noopener noreffer">Travis CI</a> con nuestra cuenta de github y habilitamos el repositorio donde estan los archivos de nuestro blog en basado en Hugo.</p>
+<p><figure><a class="lightgallery" href="/images/travis-hugo/travisenablerepo.png" title="Activar repositorio travis" data-thumbnail="/images/travis-hugo/travisenablerepo.png" data-sub-html="<h2>Habilitamos el repositorio.</h2><p>Activar repositorio travis</p>">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/images/travis-hugo/travisenablerepo.png"
+            data-srcset="/images/travis-hugo/travisenablerepo.png, /images/travis-hugo/travisenablerepo.png 1.5x, /images/travis-hugo/travisenablerepo.png 2x"
+            data-sizes="auto"
+            alt="Activar repositorio travis" />
+    </a><figcaption class="image-caption">Habilitamos el repositorio.</figcaption>
+    </figure></p>
+<p>En la configuración del repositorio agregamos la variable de entorno &ldquo;GITHUB_TOKEN&rdquo; con nuestro token generado anteriormente</p>
+<p><figure><a class="lightgallery" href="/images/travis-hugo/travisconf.png" title="Configuracion travis" data-thumbnail="/images/travis-hugo/travisconf.png" data-sub-html="<h2>Configuramos nuestro repositorio en travis.</h2><p>Configuracion travis</p>">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/images/travis-hugo/travisconf.png"
+            data-srcset="/images/travis-hugo/travisconf.png, /images/travis-hugo/travisconf.png 1.5x, /images/travis-hugo/travisconf.png 2x"
+            data-sizes="auto"
+            alt="Configuracion travis" />
+    </a><figcaption class="image-caption">Configuramos nuestro repositorio en travis.</figcaption>
+    </figure></p>
+<p>Por ultimo necesitamos agregar el archivo .travis.yml a nuestro repositorio para que travis sepa como construir el sitio en mi caso con el siguiente contenido.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-yml" data-lang="yml"><span class="k">install</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span>- curl<span class="w"> </span>-LO<span class="w"> </span>https<span class="p">:</span>//github.com/gohugoio/hugo/releases/download/v0<span class="m">.74.3</span>/hugo_extended_0<span class="m">.74</span>.3_Linux-64bit.deb<span class="w">
+</span><span class="w">  </span>- sudo<span class="w"> </span>dpkg<span class="w"> </span>-i<span class="w"> </span>hugo_extended_0<span class="m">.72</span>.0_Linux-64bit.deb<span class="w">
+</span><span class="w">
+</span><span class="w"></span><span class="k">script</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span>- hugo<span class="w"> </span><span class="c"># This commands builds your website on travis</span><span class="w">
+</span><span class="w">
+</span><span class="w"></span><span class="k">deploy</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="k">local_dir</span><span class="p">:</span><span class="w"> </span>public<span class="w"> </span><span class="c"># El directorio donde hugo va a generar los archivos estaticos</span><span class="w">
+</span><span class="w">  </span><span class="k">repo</span><span class="p">:</span><span class="w"> </span>duality084/duality084.github.io<span class="w"> </span><span class="c"># El repositorio donde se va a hacer el deploy</span><span class="w">
+</span><span class="w">  </span><span class="k">target_branch</span><span class="p">:</span><span class="w"> </span>master<span class="w"> </span><span class="c"># GitHub pages branch to deploy to (in other cases it can be gh-pages)</span><span class="w">
+</span><span class="w">  </span><span class="k">provider</span><span class="p">:</span><span class="w"> </span>pages<span class="w"> </span><span class="c">#El &#34;provider&#34; en este caso &#34;pages&#34; que nos va a dar las funcionalidades de &#34;Github Pages&#34; especificados mas adelante</span><span class="w">
+</span><span class="w">  </span><span class="k">skip_cleanup</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+</span><span class="w">  </span><span class="k">github_token</span><span class="p">:</span><span class="w"> </span>$GITHUB_TOKEN<span class="w"> </span><span class="c"># el token de autenticacion que pusimos como variable de entorno en el dashboard de travis.</span><span class="w">
+</span><span class="w">  </span><span class="k">email</span><span class="p">:</span><span class="w"> </span>asd@asd.com<span class="w">
+</span><span class="w">  </span><span class="k">name</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;Ramirez Matias&#34;</span><span class="w">
+</span><span class="w">  </span><span class="k">fqdn</span><span class="p">:</span><span class="w"> </span>bhf.com.ar<span class="w"> </span><span class="c"># Especificamos nuestro dominio si no vamos el asignado por github *.github.io, caso contrario borramos esta linea</span><span class="w">
+</span><span class="w">  </span><span class="k">on</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="k">branch</span><span class="p">:</span><span class="w"> </span>master<span class="w">
+</span></code></pre></td></tr></table>
+</div>
+</div><p>Con esto ya tenemos todo armado para que Travis construya nuestro sitio con Hugo cada vez que hagamos un cambio en nuestro repositorio, ahora solo nos dedicamos a escribir sin tener que preocuparnos por nada mas.</p>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>Actualizado el 06-18-2020</span>
+            </div>
+            <div class="post-info-license"></div>
+        </div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="Compartir en Blogger" data-sharer="blogger" data-url="https://bhf.com.ar/deploy-hugo-pages/" data-title="Automatizando el deploying del blog con Hugo y Travis." data-description=""><i class="fab fa-blogger fa-fw"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/github/">github</a>,&nbsp;<a href="/tags/ci/cd/">ci/cd</a>,&nbsp;<a href="/tags/automatizacion/">automatizacion</a>,&nbsp;<a href="/tags/blog/">blog</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">Regresar</a></span>&nbsp;|&nbsp;<span><a href="/">Inicio</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/creando-blog-con-hugo/" class="prev" rel="prev" title="Creando Blog Con Hugo"><i class="fas fa-angle-left fa-fw"></i>Creando Blog Con Hugo</a>
+            <a href="/deerhost/" class="next" rel="next" title="[Write-up] Deerhost">[Write-up] Deerhost<i class="fas fa-angle-right fa-fw"></i></a></div>
+</div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">Provisto por <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.74.3">Hugo</a> | Tema - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.9"><i class="far fa-kiss-wink-heart fa-fw"></i> LoveIt</a>
+                </div><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2020 - 2021</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">xxxx</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Volver arriba">
+                <i class="fas fa-arrow-up fa-fw"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="Ver comentarios">
+                <i class="fas fa-comment fa-fw"></i>
+            </a>
+        </div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery.js@1.1.3/dist/css/lightgallery.min.css"><style>.lg-toolbar .lg-icon::after { color: #999; }</style><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/smooth-scroll@16.1.3/dist/smooth-scroll.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.37.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lunr@2.3.8/lunr.min.js"></script><script type="text/javascript" src="/lib/lunr/lunr.stemmer.support.min.js"></script><script type="text/javascript" src="/lib/lunr/lunr.es.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.2.0/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery.js@1.1.3/dist/js/lightgallery.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lg-thumbnail.js@1.1.0/dist/lg-thumbnail.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lg-zoom.js@1.0.1/dist/lg-zoom.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.4.0/sharer.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/typeit@7.0.4/dist/typeit.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copiar al portapapeles","maxShownLines":10},"comment":{},"data":{"id-1":"# /home/BHF","id-2":"# /home/BHF"},"lightGallery":{"actualSize":false,"exThumbImage":"data-thumbnail","hideBarsDelay":2000,"selector":".lightgallery","speed":400,"thumbContHeight":80,"thumbWidth":80,"thumbnail":true},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","lunrLanguageCode":"es","maxResultLength":10,"noResultsFound":"No se encontraron resultados","snippetLength":30,"type":"lunr"},"typeit":{"cursorChar":"|","cursorSpeed":1000,"data":{"id-1":["id-1"],"id-2":["id-2"]},"duration":-1,"speed":100}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>

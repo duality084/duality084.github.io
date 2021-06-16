@@ -1,0 +1,16 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>blog - Categoría - BHF</title>
+        <link>https://bhf.com.ar/categories/blog/</link>
+        <description>blog - Categoría - BHF</description>
+        <generator>Hugo -- gohugo.io</generator><language>es</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Thu, 18 Jun 2020 09:11:03 -0300</lastBuildDate><atom:link href="https://bhf.com.ar/categories/blog/" rel="self" type="application/rss+xml" /><item>
+    <title>Automatizando el deploying del blog con Hugo y Travis.</title>
+    <link>https://bhf.com.ar/deploy-hugo-pages/</link>
+    <pubDate>Thu, 18 Jun 2020 09:11:03 -0300</pubDate>
+    <author>Autor</author>
+    <guid>https://bhf.com.ar/deploy-hugo-pages/</guid>
+    <description><![CDATA[<div class="featured-image">
+                <img src="/img/los-simspons-hugo-travis.png" referrerpolicy="no-referrer">
+            </div>Si algo caracteriza a muchos de los que trabajamos en sistemas es la aversión por hacer tareas repetitivas y monótonas, siempre que podamos vamos a recurrir a la automatización, de esta manera nos queda mas tiempo para atender cosas importantes, aprender cosas nuevas o simplemente por el reto que significa automatizar esa tarea que tanto nos fastidia hacerla manualmente.   Como funciona este blog? Primero comencemos por como funciona este blog, como comente anteriormente esta pagina esta creado con Hugo el cual mediante archivos Markdown genera archivos estáticos que pueden ser hosteados directamente en cualquier servidor web sin mas requisitos.]]></description>
+</item></channel>
+</rss>

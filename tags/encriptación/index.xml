@@ -1,0 +1,17 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>encriptación - Etiqueta - BHF</title>
+        <link>https://bhf.com.ar/tags/encriptaci%C3%B3n/</link>
+        <description>encriptación - Etiqueta - BHF</description>
+        <generator>Hugo -- gohugo.io</generator><language>es</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Mon, 10 Aug 2020 00:28:29 -0300</lastBuildDate><atom:link href="https://bhf.com.ar/tags/encriptaci%C3%B3n/" rel="self" type="application/rss+xml" /><item>
+    <title>Breve introducción al cracking - parte I</title>
+    <link>https://bhf.com.ar/cracking-time-001/</link>
+    <pubDate>Mon, 10 Aug 2020 00:28:29 -0300</pubDate>
+    <author>Autor</author>
+    <guid>https://bhf.com.ar/cracking-time-001/</guid>
+    <description><![CDATA[<div class="featured-image">
+                <img src="/images/cracking/keys.jpg" referrerpolicy="no-referrer">
+            </div>Breve introducción al cracking - parte I  No hay secreto que el tiempo no revele. - Jean-Baptiste Racine
+ Habitualmente se cree que cuando hablamos de cracking, hablamos de una práctica que vulnera la privacidad ajena de las personas o de las empresas. Pero esto no siempre es así. Crackear no es una práctica ilegal per se, sino la puesta en práctica del conocimiento sobre las ciencias de la criptografía.]]></description>
+</item></channel>
+</rss>

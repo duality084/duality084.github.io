@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+        <title>Breve introducción al cracking - parte I - BHF</title><meta name="Description" content="Hacking, sysadmin, beer."><meta property="og:title" content="Breve introducción al cracking - parte I" />
+<meta property="og:description" content="Breve introducción al cracking - parte I  No hay secreto que el tiempo no revele. - Jean-Baptiste Racine
+ Habitualmente se cree que cuando hablamos de cracking, hablamos de una práctica que vulnera la privacidad ajena de las personas o de las empresas. Pero esto no siempre es así. Crackear no es una práctica ilegal per se, sino la puesta en práctica del conocimiento sobre las ciencias de la criptografía." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://bhf.com.ar/cracking-time-001/" />
+<meta property="og:image" content="https://cdn.iconscout.com/icon/premium/png-256-thumb/hacker-81-1105283.png"/>
+<meta property="article:published_time" content="2020-08-10T00:28:29-03:00" />
+<meta property="article:modified_time" content="2020-08-10T00:28:29-03:00" />
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://cdn.iconscout.com/icon/premium/png-256-thumb/hacker-81-1105283.png"/>
+
+<meta name="twitter:title" content="Breve introducción al cracking - parte I"/>
+<meta name="twitter:description" content="Breve introducción al cracking - parte I  No hay secreto que el tiempo no revele. - Jean-Baptiste Racine
+ Habitualmente se cree que cuando hablamos de cracking, hablamos de una práctica que vulnera la privacidad ajena de las personas o de las empresas. Pero esto no siempre es así. Crackear no es una práctica ilegal per se, sino la puesta en práctica del conocimiento sobre las ciencias de la criptografía."/>
+<meta name="application-name" content="BHF">
+<meta name="apple-mobile-web-app-title" content="BHF"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://bhf.com.ar/cracking-time-001/" /><link rel="prev" href="https://bhf.com.ar/privilegios/" /><link rel="next" href="https://bhf.com.ar/volatility-ctf-notpinkcon/" /><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.13.0/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.7.2/animate.min.css"><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Breve introducción al cracking - parte I",
+        "inLanguage": "es",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/bhf.com.ar\/cracking-time-001\/"
+        },"image": {
+                "@type": "ImageObject",
+                "url": "https:\/\/bhf.com.ar\/cover.png",
+                "width":  800 ,
+                "height":  600 
+            },"genre": "posts","keywords": "cracking, encriptación, cesar","wordcount":  2015 ,
+        "url": "https:\/\/bhf.com.ar\/cracking-time-001\/","datePublished": "2020-08-10T00:28:29-03:00","dateModified": "2020-08-10T00:28:29-03:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
+                "@type": "Organization",
+                "name": "xxxx",
+                "logo": {
+                "@type": "ImageObject",
+                "url": "https:\/\/bhf.com.ar\/logo.png",
+                "width":  127 ,
+                "height":  40 
+                }
+            },"author": {
+                "@type": "Person",
+                "name": "MemoryEmpty"
+            },"description": ""
+    }
+    </script></head>
+    <body header-desktop="fixed" header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('dark' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'dark' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="BHF"><span class="header-title-pre"><i class='fas fa-laptop fa-fw'></i></span><span id="id-1" class="typeit"></span></a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> Posts </a><a class="menu-item" href="/tags/"> Tags </a><a class="menu-item" href="/categories/"> Categorias </a><a class="menu-item" href="/about/"> About </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="Busca títulos o contenido..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Buscar">
+                            <i class="fas fa-search fa-fw"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="Limpiar">
+                            <i class="fas fa-times-circle fa-fw"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="Cambia el tema">
+                    <i class="fas fa-adjust fa-fw"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="BHF"><span class="header-title-pre"><i class='fas fa-laptop fa-fw'></i></span><span id="id-2" class="typeit"></span></a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="Busca títulos o contenido..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="Buscar">
+                            <i class="fas fa-search fa-fw"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="Limpiar">
+                            <i class="fas fa-times-circle fa-fw"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        Cancelar
+                    </a>
+                </div><a class="menu-item" href="/posts/" title="">Posts</a><a class="menu-item" href="/tags/" title="">Tags</a><a class="menu-item" href="/categories/" title="">Categorias</a><a class="menu-item" href="/about/" title="">About</a><a href="javascript:void(0);" class="menu-item theme-switch" title="Cambia el tema">
+                <i class="fas fa-adjust fa-fw"></i>
+            </a></div>
+    </div>
+</header>
+<div class="search-dropdown desktop">
+    <div id="search-dropdown-desktop"></div>
+</div>
+<div class="search-dropdown mobile">
+    <div id="search-dropdown-mobile"></div>
+</div>
+<main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">Contenido</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animated flipInX">Breve introducción al cracking - parte I</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>MemoryEmpty</a></span>&nbsp;<span class="post-category">incluido en <a href="/categories/cracking/"><i class="far fa-folder fa-fw"></i>cracking</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="08-10-2020">08-10-2020</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;2015 palabras&nbsp;
+                <i class="far fa-clock fa-fw"></i>&nbsp;10 minutos&nbsp;</div>
+        </div><div class="featured-image"><img
+        class="lazyload"
+        src="/svg/loading/normal.min.svg"
+        data-src="/images/cracking/keys.jpg"
+        data-srcset="/images/cracking/keys.jpg, /images/cracking/keys.jpg 1.5x, /images/cracking/keys.jpg 2x"
+        data-sizes="auto"
+        alt="/images/cracking/keys.jpg"
+        title="/images/cracking/keys.jpg" /></div><div class="details toc" id="toc-static"  kept="">
+                <div class="details-summary toc-title">
+                    <span>Contenido</span>
+                    <span><i class="details-icon fas fa-angle-right"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#1-pero-qué-significa-cifrar">1. ¿Pero qué significa <em>&ldquo;cifrar&rdquo;</em>?</a></li>
+    <li><a href="#2-el-cifrado-por-desplazamiento-o-el-cifrado-césar">2. El cifrado por desplazamiento o &ldquo;el cifrado César&rdquo;</a></li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><h1 id="breve-introducción-al-cracking---parte-i">Breve introducción al cracking - parte I</h1>
+<blockquote>
+<p><em>No hay secreto que el tiempo no revele.</em> - Jean-Baptiste Racine</p>
+</blockquote>
+<p>Habitualmente se cree que cuando hablamos de cracking, hablamos de una práctica que vulnera la privacidad ajena de las personas o de las empresas. Pero esto no siempre es así. Crackear no es una práctica ilegal <em>per se</em>, sino la puesta en práctica del conocimiento sobre las ciencias de la criptografía. Y digo ciencias, porque cuando hablamos de cifrar y descifrar información, no solo estamos hablando de computadoras, sino también de un amplio espectro de disciplinas que van desde la lingüística, la psicología, las matemáticas y, por supuesto, la informática. En resumen, crackear es una práctica, relacionada al estado del arte de una o varias ciencias, con el objetivo de obtener algún beneficio o alguna información, la cual en principio nos era negada.</p>
+<p><figure><a class="lightgallery" href="/images/cracking/French_cypher_machine.jpg#center" title="French_cypher_machine" data-thumbnail="/images/cracking/French_cypher_machine.jpg#center" data-sub-html="<h2>Imagen 1. Máquina de cifrado francesa del siglo XVI en forma de libro de Enrique II.</h2><p>French_cypher_machine</p>">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/images/cracking/French_cypher_machine.jpg#center"
+            data-srcset="/images/cracking/French_cypher_machine.jpg#center, /images/cracking/French_cypher_machine.jpg#center 1.5x, /images/cracking/French_cypher_machine.jpg#center 2x"
+            data-sizes="auto"
+            alt="French_cypher_machine" />
+    </a><figcaption class="image-caption">Imagen 1. Máquina de cifrado francesa del siglo XVI en forma de libro de Enrique II.</figcaption>
+    </figure></p>
+<p>Hoy en día, el cracking resulta un pilar importante en investigaciones. Por ejemplo, para hallar solución a los ransomwares, para atrapar redes criminales, para análisis forenses, en tácticas militares y, por supuesto, por hackers. Básicamente, siempre que alguien oculte información y alguien intente descifrarla estarán las condiciones para que podamos hablar de cracking. En cada caso, cada bando pondrá en marcha una serie de ingeniosos artilugios para lograr el objetivo deseado: ocultar u obtener información.</p>
+<h2 id="1-pero-qué-significa-cifrar">1. ¿Pero qué significa <em>&ldquo;cifrar&rdquo;</em>?</h2>
+<p>Cifrar refiere al proceso de alteración de la información cuyo resultado oculte las características de la materia en su estado inicial, con el fin de aumentar su seguridad. ¿De cuáles características hablamos? Podemos mencionar algunas, como lo son características semánticas, sintácticas, lógicas, etc. Pero en realidad, la noción de característica que podemos alterar solo se limita a nuestra imaginación. Las características de la información que alteremos pueden ser tantas como las que se desean ocultar. Podría cifrarse un mensaje escrito y desarmar su estructura semántica o sintáctica, y sin embargo mantener los símbolos alfanuméricos, con lo cual el resultado ahora es ilegible, pero mantiene aún cierta relación con el mensaje original. Podría transformarse, por ejemplo, en una lista de caracteres ASCII, o en un mismo carácter repetido eternamente, lo que no necesariamente signifique que sea más seguro (pero no podemos negar que dichos casos nos parecen mas ingeniosos).</p>
+<p>Ahora, cada vez que alteramos la información, ¿estamos cifrándola? ciertamente no, y la razón principal es que para que podamos hablar propiamente de un cifrado, se debe tener como punto de partida el objetivo original: que no pueda ser comprendido por personas ajenas al grupo al que pertenece dicha información.</p>
+<p>Por ejemplo, el código morse no pretende ocultar la información, solo la codifica de tal forma que -efectivamente- se han alterado las características del mensaje, pero a través de un método conocido y público, al que cualquier persona podrá utilizar para obtener nuevamente el mensaje original. Si traducimos una palabra del español al sistema de kanji japonés, ciertamente será complicado de entender para alguien que no sepa leer kanjis, pero el mensaje, como tal, y el sistema para recuperarlo, no es ningún secreto. Cualquiera podrá acceder al mensaje si así lo desea. Para quienes tengan conocimientos en disciplinas humanísticas o sociales, pensarán en el polimorfismo de las diferentes lenguas, o de los códigos sociales y tribales. Estos, por más complejo que sea comprenderlos, pertenecen al universo de los códigos y no de los cifrados.</p>
+<p><figure><a class="lightgallery" href="/images/cracking/morse.jpg#center" title="morse" data-thumbnail="/images/cracking/morse.jpg#center" data-sub-html="<h2>Imagen 2. Telégrafo del siglo XIX</h2><p>morse</p>">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/images/cracking/morse.jpg#center"
+            data-srcset="/images/cracking/morse.jpg#center, /images/cracking/morse.jpg#center 1.5x, /images/cracking/morse.jpg#center 2x"
+            data-sizes="auto"
+            alt="morse" />
+    </a><figcaption class="image-caption">Imagen 2. Telégrafo del siglo XIX</figcaption>
+    </figure></p>
+<p>Código y cifrado son fenomenológicamente parecidos, pero la principal diferencia está en que el código pretende ser interpretado y/o utilizado públicamente, no oculta nada, mientras que el cifrado tiene como único objetivo que la información permanezca <strong>oculta</strong>. El cifrado no pretende comunicar &ldquo;per se&rdquo;: aunque el mensaje que haya sido cifrado puede tener un emisor y un destinatario, el cifrado no facilita la comunicación. De hecho es todo lo contrario, pretende transformar la información en algo secreto y/o incomprensible.</p>
+<p><em><strong>¿Y que tiene que ver todo esto con cracking?</strong></em></p>
+<p>Mucho, porque si cae en nuestras manos un mensaje, una cadena de texto extraña, un disco cifrado, un programa, o una grabación que sospechamos ha sido alterada, la primero que debemos preguntarnos es sobre su contexto. ¿Quién pudo haber enviado esto? ¿Cómo pudo haberse alterado la información inicial? ¿Estará codificado o estará cifrado? Y si está cifrado, seguramente nos preguntemos si podemos identificar el sistema de encriptación, o ha sido alterado por un método creado particularmente para esa ocasión (esto no es raro, en algunos malwares encontramos este tipo de prácticas). También nos preguntaremos por la clave, si es que tiene una clave, y si es posible recuperarla o encontrarla por algún método, o si podemos saltearlos los métodos de autentificación de un programa, o alterarlos para nuestro beneficio, etc. Pero eso ya es motivo de otro capítulo. Lo importante, que quiero dejar en claro, es que antes de ponernos a crackear cosas, lo mejor es intentar conocerlas y aprender de ellas. Es el camino más tedioso, pero a la larga el que más frutos y secretos nos revelará.</p>
+<p>Hasta acá la introducción teórica. El título de la entrada dice cracking y aca en BHF no podemos irnos sin haber roto algo. Como suele pasar, en la antigüedad ya podemos encontrarnos casos ejemplares y que al día de hoy suele ser ejemplo de estudio. En el transcurso de esta tirada de cracking intentaremos avanzar por más teoría acompañada de estos ejemplos conocidos, más antiguos, más modernos, pero intentando que sean fáciles de asimilar.</p>
+<h2 id="2-el-cifrado-por-desplazamiento-o-el-cifrado-césar">2. El cifrado por desplazamiento o &ldquo;el cifrado César&rdquo;</h2>
+<p><img
+        class="lazyload"
+        src="/svg/loading/small.min.svg"
+        data-src="/images/cracking/cesar.jpg#center"
+        data-srcset="/images/cracking/cesar.jpg#center, /images/cracking/cesar.jpg#center 1.5x, /images/cracking/cesar.jpg#center 2x"
+        data-sizes="auto"
+        alt="César"
+        title="César" /></p>
+<p>Aunque el uso de este tipo de cifrado puede hallarse en varias culturas, en la bibliografías es frecuente que se lo adjudiquen a Julio César, sobre todo por haber sido mencionado en varios textos de sus contemporáneos.</p>
+<p><em><strong>¿En qué consiste el cifrado por desplazamiento?</strong></em></p>
+<p>El cifrado por desplazamiento es un tipo de cifrado por sustitución. Como su nombre lo indica, se sustituye cada carácter inicial por otro a partir de n desplazamientos en el alfabeto. Así, si tomamos la clave <code>n = 3</code>, el resultado es que A pasa a ser D, D pasa a ser G, y así sucesivamente.</p>
+<p><figure><a class="lightgallery" href="/images/cracking/cesar-example.png#center" title="César-crypt" data-thumbnail="/images/cracking/cesar-example.png#center" data-sub-html="<h2>Imagen 3. Mapa de cifrado por desplazamiento</h2><p>César-crypt</p>">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/images/cracking/cesar-example.png#center"
+            data-srcset="/images/cracking/cesar-example.png#center, /images/cracking/cesar-example.png#center 1.5x, /images/cracking/cesar-example.png#center 2x"
+            data-sizes="auto"
+            alt="César-crypt" />
+    </a><figcaption class="image-caption">Imagen 3. Mapa de cifrado por desplazamiento</figcaption>
+    </figure></p>
+<p>Veamos ahora una forma de representarlo en algún código. En principio, necesitamos una lista alfabética, para ello vamos a valernos de la librería <em>string</em>:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+import string
+list_alpha = list(string.ascii_lowercase)
+list_alpha
+len(list_alpha)
+
+
+</code></pre></td></tr></table>
+</div>
+</div><p>output:</p>
+<blockquote>
+<p>[&lsquo;a&rsquo;, &lsquo;b&rsquo;, &lsquo;c&rsquo;, &rsquo;d&rsquo;, &lsquo;e&rsquo;, &lsquo;f&rsquo;, &lsquo;g&rsquo;, &lsquo;h&rsquo;, &lsquo;i&rsquo;, &lsquo;j&rsquo;, &lsquo;k&rsquo;, &lsquo;l&rsquo;, &rsquo;m&rsquo;, &lsquo;n&rsquo;, &lsquo;o&rsquo;, &lsquo;p&rsquo;, &lsquo;q&rsquo;, &lsquo;r&rsquo;, &rsquo;s&rsquo;, &rsquo;t&rsquo;, &lsquo;u&rsquo;, &lsquo;v&rsquo;, &lsquo;w&rsquo;, &lsquo;x&rsquo;, &lsquo;y&rsquo;, &lsquo;z&rsquo;]</p>
+</blockquote>
+<blockquote>
+<p>26</p>
+</blockquote>
+<p>Con el comando <code>list()</code> ya obtenemos la lista de caracteres indexados y también sabemos, a través del método <code>len()</code>, que tiene un total de 26 valores. Por lo que basta con agregarle un valor N al valor index de cada elemento y así obtendremos su valor cifrado.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">def CesarCipher(message, key):
+    code = &#34;&#34;
+    for letter in message:
+            code += list_alpha[list_alpha.index(letter)+key]
+    return code
+
+CesarCipher(&#34;bhf&#34;, 2)
+
+</code></pre></td></tr></table>
+</div>
+</div><p><strong>output:</strong> <code>djh</code></p>
+<p>Pues bien, el problema aquí es que si el valor de cada elemento + n es mayor a 25, se saldrá de la lista. Para simular la &ldquo;vuelta al inicio&rdquo; podemos restarle 26 (recuerden contar desde 0) a cualquier situación donde el valor obtenido sea &gt;= 26:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">
+def CesarCipher(message, key):
+    code = &#34;&#34;
+    for letter in message:
+        number = int()
+        number = list_alpha.index(letter)+key
+        while number &gt;= 26:
+            number = number - 26
+        code += list_alpha[number]
+    return code
+
+CesarCipher(&#34;bhf&#34;, 20)
+
+</code></pre></td></tr></table>
+</div>
+</div><p><strong>output:</strong> <code>vbz</code></p>
+<p>Un último detalle: list_alpha no incluye los signos de puntuación, por lo que será prudente pasarlos por alto. El resultado final sería este:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+import string
+list_alpha = list(string.ascii_lowercase)
+
+def CesarCipher(message, key):
+    code = &#34;&#34;
+    for letter in message:
+        if letter in list_alpha:
+            number = list_alpha.index(letter)+key
+            while number &gt;= 26:
+                number -= 26
+            code += list_alpha[number]
+        else:
+            code += letter
+    return code
+
+CesarCipher(&#34;ahora podemos usar el código de bhf para mandar mensajes cifrados.&#34;, 2)
+</code></pre></td></tr></table>
+</div>
+</div><p><strong>output:</strong> <code>cjqtc rqfgoqu wuct gn eqfkiq fg djh rctc ocpfct ogpuclgu ekhtcfqu.</code></p>
+<blockquote>
+<p><strong>nota:</strong> Quizás quieran agregarle otro <em>condicional if</em> para las mayúsculas, simplemente transformar el mensaje a lowercase.</p>
+</blockquote>
+<p><em><strong>Muy bien, ya tenemos nuestro mensaje. ¿Ahora, cómo podemos crackearlo?</strong></em></p>
+<p>Supongo que recuerdan que en la introducción hablaba de que antes de ponernos a crackear conviene hacerse algunas preguntas. Si nosotros sabemos que el mensaje se cifró por desplazamiento, pues podemos continuar desplazándose con el mismo código para obtener como resultado la posición inicial. Si se utilizó key = 2, entonces 26 - 2 = 24. Veámoslo en marcha:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">CesarCipher(&#34;gp gn ekhtcfq eguct, cn eqorngvct gn dweng fg fgurncbcokgpvq, qdvgpgoqu gn ogpuclg qtkikpcn.&#34;, 24)
+</code></pre></td></tr></table>
+</div>
+</div><p>output:
+<code>en el cifrado cesar, al completar el bucle de desplazamiento, obtenemos el mensaje original.</code></p>
+<p>Supongamos que no sabemos que la key es igual a 2. Podemos simplemente pasarlo por un <code>bucle for</code> de 26 intentos, para ver si alguno nos resultará familiar:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">message = &#34;kt kyzk igyu kr sktygpk ky jkiahokxzu vux hayigx rg igjktg hnl kt zujuy ruy xkyarzgjuy uhzktojuy.&#34;
+
+for n in range(26):
+    CesarCipher(message, n)
+</code></pre></td></tr></table>
+</div>
+</div><p>Podrán imaginarse que el output no es otra cosa que 26 líneas, y una sola es la correcta. Este tipo de ataque entra en la categoría llamada <em>&ldquo;fuerza bruta&rdquo;</em> (pero no crean que fuerza bruta es solo esto). En este caso el exceso de falsos positivos no es grave, pero si queremos aplicar esta técnica en un código con más posibilidades, vamos a necesitar filtrar el resultado correcto. Ahí es donde entra la noción que llamaremos menú, aunque también puede que lo encuentren como wordlist u otras varias formas más.</p>
+<blockquote>
+<p>En cracking, un <strong>menú</strong> es una cadena, una palabra, o un conjunto de ellas, que esperamos encontrar en el mensaje original, y que por lo tanto nos pueden servir para identificar el resultado positivo.</p>
+</blockquote>
+<p>Pensar un menú puede ser una tarea difícil si nos basamos únicamente en la programación, ya que en sí no hay razones para que una computadora diferencie entre una cadena sea o no parte del cuerpo de palabras de una lengua (aunque claro que podemos aplicar técnicas para que eso ocurra, pero eso ya es otra historia). Sin embargo, pensarlo desde el factor humano, en ocasiones, puede ahorrarnos millones de intentos. En nuestro ejemplo, podríamos pensar como menú la palabra cadena &ldquo;bhf&rdquo;, o los miembros del grupo, o algunas fechas conocidas. Veamos un ejemplo:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">message = &#34;kt kyzk igyu kr sktygpk ky jkiahokxzu vux hayigx rg igjktg hnl kt zujuy ruy xkyarzgjuy uhzktojuy.&#34;
+
+for n in range(26):
+    res = CesarCipher(message, n)
+    if &#34;bhf&#34; in res:
+        print(res)
+
+</code></pre></td></tr></table>
+</div>
+</div><p><strong>output:</strong> <code>en este caso el mensaje es decubierto por buscar la cadena bhf en todos los resultados obtenidos.</code></p>
+<blockquote>
+<p><strong>tip:</strong> En casos parecidos, en los que no sabemos nada respecto al mensaje, podemos usar una lista de palabras de uso frecuente, por ejemplo [&lsquo;para&rsquo;, &lsquo;ella&rsquo;, &lsquo;programa&rsquo;, &lsquo;dinero&rsquo;,&lsquo;etc&rsquo;,]</p>
+</blockquote>
+<p>Hasta aquí hemos repasado conceptos básicos como lo son criptografía, cracking, código, encriptación y menú o wordlist. Por curioso que resulte, estas técnicas básicas las aplicaremos con frecuencia. Muchos de los programas conocidos como <em>hashcat, John The Ripper, aircrack</em>, aplican esta misma metodología, claro que en escenarios mas complejos.</p>
+<p>Espero que les haya gustado y parecido sencillo, o al menos no tan complejo. Más adelante veremos cómo estas técnicas pueden combinarse con muchas otras, y también algunas formas para defendernos de ellas.</p>
+<p><strong>Happy cracking!</strong></p>
+<p>Referencias:</p>
+<ul>
+<li>Al Sweigart, Cracking Codes with Python: An Introduction to Building and Breaking Ciphers.</li>
+<li><a href="https://es.wikipedia.org/wiki/Cifrado_(criptograf%C3%ADa)">https://es.wikipedia.org/wiki/Cifrado_(criptograf%C3%ADa)</a></li>
+<li>[cesar]https://www.rauljaimemaestre.com/the-mathematics-behind-blockchain-parte-iii-tipos-de-cifrado-y-las-funciones-hash/</li>
+<li>Las imagenes no referenciadas pertenecen al banco de imagenes de <a href="https://commons.wikimedia.org">https://commons.wikimedia.org</a> y su información se halla los metadatos de la misma.</li>
+</ul>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>Actualizado el 08-10-2020</span>
+            </div>
+            <div class="post-info-license"></div>
+        </div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="Compartir en Blogger" data-sharer="blogger" data-url="https://bhf.com.ar/cracking-time-001/" data-title="Breve introducción al cracking - parte I" data-description=""><i class="fab fa-blogger fa-fw"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/cracking/">cracking</a>,&nbsp;<a href="/tags/encriptaci%C3%B3n/">encriptación</a>,&nbsp;<a href="/tags/cesar/">cesar</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">Regresar</a></span>&nbsp;|&nbsp;<span><a href="/">Inicio</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/privilegios/" class="prev" rel="prev" title="Checklist para escalar privilegios desde www-data"><i class="fas fa-angle-left fa-fw"></i>Checklist para escalar privilegios desde www-data</a>
+            <a href="/volatility-ctf-notpinkcon/" class="next" rel="next" title="Volatility. Analizando la memoria RAM, NotPinkCon CTF. Parte 1)">Volatility. Analizando la memoria RAM, NotPinkCon CTF. Parte 1)<i class="fas fa-angle-right fa-fw"></i></a></div>
+</div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">Provisto por <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.74.3">Hugo</a> | Tema - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.9"><i class="far fa-kiss-wink-heart fa-fw"></i> LoveIt</a>
+                </div><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2020 - 2021</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">xxxx</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Volver arriba">
+                <i class="fas fa-arrow-up fa-fw"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="Ver comentarios">
+                <i class="fas fa-comment fa-fw"></i>
+            </a>
+        </div><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/smooth-scroll@16.1.3/dist/smooth-scroll.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.37.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lunr@2.3.8/lunr.min.js"></script><script type="text/javascript" src="/lib/lunr/lunr.stemmer.support.min.js"></script><script type="text/javascript" src="/lib/lunr/lunr.es.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.2.0/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.4.0/sharer.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/typeit@7.0.4/dist/typeit.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copiar al portapapeles","maxShownLines":10},"comment":{},"data":{"id-1":"# /home/BHF","id-2":"# /home/BHF"},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","lunrLanguageCode":"es","maxResultLength":10,"noResultsFound":"No se encontraron resultados","snippetLength":30,"type":"lunr"},"typeit":{"cursorChar":"|","cursorSpeed":1000,"data":{"id-1":["id-1"],"id-2":["id-2"]},"duration":-1,"speed":100}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>

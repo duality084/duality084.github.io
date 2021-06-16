@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+        <title>Bypaseando la verificación SSL en una app de flutter en Android. Parte 1) - BHF</title><meta name="Description" content="Hacking, sysadmin, beer."><meta property="og:title" content="Bypaseando la verificación SSL en una app de flutter en Android. Parte 1)" />
+<meta property="og:description" content="Aun recuerdo cuando la vida era mas fácil para los chismosos y el SSL era utilizado con suerte solo en el envió del login, el resto de la información viajaba sin cifrar, mas o menos en 2010 eso empezó a cambiar luego de que saliera la extension de Firefox Firesheep cualquier persona con solo instalarse la extension podía realizar un ataque del tipo &ldquo;man in the middle&rdquo; robarse las cookies de sesión de sitios como Facebook, Twitter, Google y realizar un &ldquo;session hijacking&rdquo; o secuestro de sesión y sin saber la contraseña entrar en la cuenta del usuario afectado, junto con la expansión de las redes WIFI publicas esto era un gran problema,muchos se habian convertido en un potencial &ldquo;hackerman&rdquo;." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://bhf.com.ar/bypasss-ssl-android-flutterapp/" />
+<meta property="og:image" content="https://cdn.iconscout.com/icon/premium/png-256-thumb/hacker-81-1105283.png"/>
+<meta property="article:published_time" content="2020-10-16T09:11:03-03:00" />
+<meta property="article:modified_time" content="2020-10-16T09:11:03-03:00" />
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://cdn.iconscout.com/icon/premium/png-256-thumb/hacker-81-1105283.png"/>
+
+<meta name="twitter:title" content="Bypaseando la verificación SSL en una app de flutter en Android. Parte 1)"/>
+<meta name="twitter:description" content="Aun recuerdo cuando la vida era mas fácil para los chismosos y el SSL era utilizado con suerte solo en el envió del login, el resto de la información viajaba sin cifrar, mas o menos en 2010 eso empezó a cambiar luego de que saliera la extension de Firefox Firesheep cualquier persona con solo instalarse la extension podía realizar un ataque del tipo &ldquo;man in the middle&rdquo; robarse las cookies de sesión de sitios como Facebook, Twitter, Google y realizar un &ldquo;session hijacking&rdquo; o secuestro de sesión y sin saber la contraseña entrar en la cuenta del usuario afectado, junto con la expansión de las redes WIFI publicas esto era un gran problema,muchos se habian convertido en un potencial &ldquo;hackerman&rdquo;."/>
+<meta name="application-name" content="BHF">
+<meta name="apple-mobile-web-app-title" content="BHF"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://bhf.com.ar/bypasss-ssl-android-flutterapp/" /><link rel="prev" href="https://bhf.com.ar/stego-onapsis-writeup/" /><link rel="next" href="https://bhf.com.ar/bypasss-ssl-android-flutterapp-2/" /><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.13.0/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.7.2/animate.min.css"><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Bypaseando la verificación SSL en una app de flutter en Android. Parte 1)",
+        "inLanguage": "es",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/bhf.com.ar\/bypasss-ssl-android-flutterapp\/"
+        },"image": {
+                "@type": "ImageObject",
+                "url": "https:\/\/bhf.com.ar\/cover.png",
+                "width":  800 ,
+                "height":  600 
+            },"genre": "posts","keywords": "pentesting, mobile, flutter","wordcount":  1634 ,
+        "url": "https:\/\/bhf.com.ar\/bypasss-ssl-android-flutterapp\/","datePublished": "2020-10-16T09:11:03-03:00","dateModified": "2020-10-16T09:11:03-03:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
+                "@type": "Organization",
+                "name": "xxxx",
+                "logo": {
+                "@type": "ImageObject",
+                "url": "https:\/\/bhf.com.ar\/logo.png",
+                "width":  127 ,
+                "height":  40 
+                }
+            },"author": {
+                "@type": "Person",
+                "name": "Matias Ramirez"
+            },"description": ""
+    }
+    </script></head>
+    <body header-desktop="fixed" header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('dark' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'dark' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="BHF"><span class="header-title-pre"><i class='fas fa-laptop fa-fw'></i></span><span id="id-1" class="typeit"></span></a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> Posts </a><a class="menu-item" href="/tags/"> Tags </a><a class="menu-item" href="/categories/"> Categorias </a><a class="menu-item" href="/about/"> About </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="Busca títulos o contenido..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Buscar">
+                            <i class="fas fa-search fa-fw"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="Limpiar">
+                            <i class="fas fa-times-circle fa-fw"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="Cambia el tema">
+                    <i class="fas fa-adjust fa-fw"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="BHF"><span class="header-title-pre"><i class='fas fa-laptop fa-fw'></i></span><span id="id-2" class="typeit"></span></a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="Busca títulos o contenido..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="Buscar">
+                            <i class="fas fa-search fa-fw"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="Limpiar">
+                            <i class="fas fa-times-circle fa-fw"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        Cancelar
+                    </a>
+                </div><a class="menu-item" href="/posts/" title="">Posts</a><a class="menu-item" href="/tags/" title="">Tags</a><a class="menu-item" href="/categories/" title="">Categorias</a><a class="menu-item" href="/about/" title="">About</a><a href="javascript:void(0);" class="menu-item theme-switch" title="Cambia el tema">
+                <i class="fas fa-adjust fa-fw"></i>
+            </a></div>
+    </div>
+</header>
+<div class="search-dropdown desktop">
+    <div id="search-dropdown-desktop"></div>
+</div>
+<div class="search-dropdown mobile">
+    <div id="search-dropdown-mobile"></div>
+</div>
+<main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">Contenido</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animated flipInX">Bypaseando la verificación SSL en una app de flutter en Android. Parte 1)</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>Matias Ramirez</a></span>&nbsp;<span class="post-category">incluido en <a href="/categories/mobile/"><i class="far fa-folder fa-fw"></i>mobile</a>&nbsp;<a href="/categories/burpsuite/"><i class="far fa-folder fa-fw"></i>burpsuite</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="10-16-2020">10-16-2020</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;1634 palabras&nbsp;
+                <i class="far fa-clock fa-fw"></i>&nbsp;8 minutos&nbsp;</div>
+        </div><div class="featured-image"><img
+        class="lazyload"
+        src="/svg/loading/normal.min.svg"
+        data-src="/images/bypasss-ssl-android-flutterapp/man-in-the-middle.png"
+        data-srcset="/images/bypasss-ssl-android-flutterapp/man-in-the-middle.png, /images/bypasss-ssl-android-flutterapp/man-in-the-middle.png 1.5x, /images/bypasss-ssl-android-flutterapp/man-in-the-middle.png 2x"
+        data-sizes="auto"
+        alt="/images/bypasss-ssl-android-flutterapp/man-in-the-middle.png"
+        title="/images/bypasss-ssl-android-flutterapp/man-in-the-middle.png" /></div><div class="details toc" id="toc-static"  kept="">
+                <div class="details-summary toc-title">
+                    <span>Contenido</span>
+                    <span><i class="details-icon fas fa-angle-right"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#analisis-de-trafico-en-android">Analisis de trafico en Android</a></li>
+    <li><a href="#opciones">Opciones</a></li>
+    <li><a href="#flutter">Flutter</a></li>
+    <li><a href="#reversing-flutter-app">Reversing Flutter App</a></li>
+    <li><a href="#conclusion">Conclusion</a></li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><p>Aun recuerdo cuando la vida era mas fácil para los chismosos y el SSL era utilizado con suerte solo en el envió del login, el resto de la información viajaba sin cifrar, mas o menos en 2010 eso empezó a cambiar luego de que saliera la extension de Firefox <a href="https://www.dragonjar.org/firesheep-actualizado-para-capturar-las-cookies-sid-de-google.xhtml" target="_blank" rel="noopener noreffer">Firesheep</a> cualquier persona con solo instalarse la extension podía realizar un ataque del tipo &ldquo;man in the middle&rdquo; robarse las cookies de sesión de sitios como Facebook, Twitter, Google y realizar un &ldquo;session hijacking&rdquo; o secuestro de sesión y sin saber la contraseña entrar en la cuenta del usuario afectado, junto con la expansión de las redes WIFI publicas esto era un gran problema,muchos se habian convertido en un potencial &ldquo;hackerman&rdquo;.
+<figure><a class="lightgallery" href="https://i.ytimg.com/vi/KEkrWRHCDQU/maxresdefault.jpg" title="Hackerman" data-thumbnail="https://i.ytimg.com/vi/KEkrWRHCDQU/maxresdefault.jpg" data-sub-html="<h2>Hackerman</h2><p>Hackerman</p>">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="https://i.ytimg.com/vi/KEkrWRHCDQU/maxresdefault.jpg"
+            data-srcset="https://i.ytimg.com/vi/KEkrWRHCDQU/maxresdefault.jpg, https://i.ytimg.com/vi/KEkrWRHCDQU/maxresdefault.jpg 1.5x, https://i.ytimg.com/vi/KEkrWRHCDQU/maxresdefault.jpg 2x"
+            data-sizes="auto"
+            alt="Hackerman" />
+    </a><figcaption class="image-caption">Hackerman</figcaption>
+    </figure></p>
+<p>Por suerte las personas dedicadas a infosec están ahi al pie de cañon colaborando para que la seguridad de todas y todos mejore, el desarrollo de esa extension fue un tirón de oreja para que al menos los grandes como Google, Twitter, Facebook aplicaran SSL a todo el trafico web, luego mas tarde nació el proyecto &ldquo;Let&rsquo;s encrypt&rdquo; para ofrecer certificados SSL validos sin tener que poner nada de tu bolsillo, hoy no hay excusas mas que desidia del Sysadmin/desarrollador para no tener su sitio, api endpoint sin certificado SSL.</p>
+<h2 id="analisis-de-trafico-en-android">Analisis de trafico en Android</h2>
+<p>Antes que nada quiero comentarles que no soy un experto en realizar análisis de trafico o reversing en en Android, lo he realizado de manera muy casual. Las veces anteriores que lo realice fue en versiones de Android 6 y anteriores, con la version 6 y anteriores realizar el análisis de trafico de una aplicación de Android es bastante trivial, abríamos nuestro burpsiuite lo poníamos a escuchar instalábamos el certificado de Burp en nuestro dispositivo, lo configurábamos para que el use el proxy que especifiquemos y listo. En Android 7 para adelante primero que nada las aplicaciones usan solo los certificados instalados en el sistema e ignoran los instalados por el usuario, ademas se hizo mas facil para los desarrolladores verificar que la conexión se realiza realmente con el servidor que esperan y no que en caso de un man in the middle con un certificado valido un atacante pueda interceptar el trafico, este chequeo se lo conoce como &ldquo;SSL Pinning&rdquo;. Bueno para la seguridad de los usuarios de Android, malo para administradores de red de organizaciones en las cuales todo pasa por un proxy y un certificado autofirmado,para los investigadores/pentesters que deseen analizar el trafico no significa el fin pero si pone las cosas un poco mas complejas.
+<figure><a class="lightgallery" href="/images/bypasss-ssl-android-flutterapp/ssl-ssl-everywhere.jpg" title="SSL Everyhwere" data-thumbnail="/images/bypasss-ssl-android-flutterapp/ssl-ssl-everywhere.jpg" data-sub-html="<h2>SSL Everyhwere</h2><p>SSL Everyhwere</p>">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/images/bypasss-ssl-android-flutterapp/ssl-ssl-everywhere.jpg"
+            data-srcset="/images/bypasss-ssl-android-flutterapp/ssl-ssl-everywhere.jpg, /images/bypasss-ssl-android-flutterapp/ssl-ssl-everywhere.jpg 1.5x, /images/bypasss-ssl-android-flutterapp/ssl-ssl-everywhere.jpg 2x"
+            data-sizes="auto"
+            alt="SSL Everyhwere" />
+    </a><figcaption class="image-caption">SSL Everyhwere</figcaption>
+    </figure></p>
+<h2 id="opciones">Opciones</h2>
+<p>Para poder analizar el trafico en aplicaciones en Android 7 para adelante si podemos &ldquo;rootear&rdquo; el dispositivo vuelve a ser bastante trivial ya que tendríamos permisos de instalar cualquier certificado en el almacenamiento del &ldquo;sistema&rdquo;, nuevamente configuramos nuestro proxy y esta todo funcionando. El problema es que con la facilidad que se le dio desarrolladores de Android de realizar un &ldquo;SSL pining&rdquo; muchas aplicaciones tienen esta verificación y tira por la borda lo anterior. Aquí entra en juego una maravillosa herramienta que nos da la capacidad de inyectar código en las aplicaciones y cambiar el comportamiento de la misma, estoy hablando de <a href="https://frida.re/" target="_blank" rel="noopener noreffer">frida</a>. Frida es una herramienta que nos permite inyectar código en procesos en ejecución en múltiples plataformas, Android, iOS, Windows, MAC, etc. Si bien todo es mas fácil con un dispositivo rooteado en esta entrega lo voy a hacer en dispositivo sin dicha capacidad.</p>
+<h2 id="flutter">Flutter</h2>
+<p>Flutter es un Framework de codigo abierto para el desarrollo de aplicaciones moviles desarrollado por Google. Flutter promete el desarrollo de aplicaciones nativas para Android e iOS de forma fácil, rápida y sencilla (no es eso lo que prometen todos los Frameworks(?)). En mi caso particular me encontré con que la aplicación sobre la cual quise realizar el análisis de trafico estaba hecha usando flutter, asi que sumado a lo que mencione anteriormente tuve que ponerme a buscar como funcionaba y me encontré con que las aplicaciones en Flutter ignoran completamente la configuración del proxy del sistema y cuando la aplicación se compila genera su propio &ldquo;Keystore&rdquo;  usando la libreria NSS de Mozilla, para resumir instalar un certificado como root en nuestro dispositivo no nos serviría ya que las aplicaciones desarrolladas en Flutter utilizan los certificados embebidos dentro de la aplicación al momento de compilarla.</p>
+<h2 id="reversing-flutter-app">Reversing Flutter App</h2>
+<p><figure><a class="lightgallery" href="/images/bypasss-ssl-android-flutterapp/reversee.jpg" title="Ingenieria inversa flutter APP" data-thumbnail="/images/bypasss-ssl-android-flutterapp/reversee.jpg" data-sub-html="<h2>Ingenieria inversa flutter APP</h2><p>Ingenieria inversa flutter APP</p>">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/images/bypasss-ssl-android-flutterapp/reversee.jpg"
+            data-srcset="/images/bypasss-ssl-android-flutterapp/reversee.jpg, /images/bypasss-ssl-android-flutterapp/reversee.jpg 1.5x, /images/bypasss-ssl-android-flutterapp/reversee.jpg 2x"
+            data-sizes="auto"
+            alt="Ingenieria inversa flutter APP" />
+    </a><figcaption class="image-caption">Ingenieria inversa flutter APP</figcaption>
+    </figure>
+Lo expuesto a continuación no fue desarrollo propio es producto de lo aprendido de este genial <a href="https://blog.nviso.eu/2019/08/13/intercepting-traffic-from-android-flutter-applications/" target="_blank" rel="noopener noreffer">post</a> escrito en ingles, no voy a profundizar mucho en el por que de lo que se replica a continuación asi que recomendada lectura si quieren profundizar mas sobre el tema.
+Como nos comenta el autor del post que mencione gracias a que Dart el lenguaje de programación que usa Flutter es opensource y la librería BoringSSL también lo es, es &ldquo;fácil&rdquo; hacer un bypass de la validación del SSL, para ello debemos hookear la función encargarda de la verificación y para eso vamos a usar frida, para modificar el flujo de la función y hacer que siempre devuelva que verificación es correcta.
+En el post se menciona que luego de hacer un análisis de las funciones en la librería BoringSSL encuentra una función  llamada &ldquo;ssl_crypto_x509_session_verify_cert_chain&rdquo; definida en <a href="https://github.com/google/boringssl/blob/master/ssl/ssl_x509.cc#L362" target="_blank" rel="noopener noreffer">ssl_x509.cc</a>, esta funcion devuelve un tipo de dato booleano y la hace una buena candidata para realizar el hook sobre la misma. Para poder hookear la función con frida vamos a tener que saber cual es su dirección de memoria. Primero que nada vamos a tener que descargarnos el APK con la aplicacion en flutter que vamos a analizar, luego descomprimir sus archivos con la aplicación apktool(no se recomienda realizar un &ldquo;unzip&rdquo; ya que puede provocar un resultado no esperado). Una vez descargada podemos correr lo siguiente</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">apktool d -rs target.apk
+</code></pre></td></tr></table>
+</div>
+</div><p>Como mencionamos anteriormente Flutter genera aplicaciones nativas, asi que dentro de lo que descomprimimos podemos encontrar en la carpeta &ldquo;lib&rdquo; nuestra aplicación, en este caso 2 archivos en &ldquo;libapp.so&rdquo; donde se encuentra toda la lógica de aplicación y en &ldquo;libflutter.so&rdquo; todas las funcionalidades de flutter en si, como por ejemplo la función de la librería de BoringSSL que estamos buscando.
+<figure><a class="lightgallery" href="/images/bypasss-ssl-android-flutterapp/lsflutterapp.png" title="Archivos Flutter" data-thumbnail="/images/bypasss-ssl-android-flutterapp/lsflutterapp.png" data-sub-html="<h2>Archivos Flutter</h2><p>Archivos Flutter</p>">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/images/bypasss-ssl-android-flutterapp/lsflutterapp.png"
+            data-srcset="/images/bypasss-ssl-android-flutterapp/lsflutterapp.png, /images/bypasss-ssl-android-flutterapp/lsflutterapp.png 1.5x, /images/bypasss-ssl-android-flutterapp/lsflutterapp.png 2x"
+            data-sizes="auto"
+            alt="Archivos Flutter" />
+    </a><figcaption class="image-caption">Archivos Flutter</figcaption>
+    </figure>
+Luego podemos proceder a decompilar &ldquo;libflutter.so&rdquo; con <a href="https://ghidra-sre.org/" target="_blank" rel="noopener noreffer">ghidra</a>.</p>
+<p>Para buscar la funcion &ldquo;ssl_crypto_x509_session_verify_cert_chain&rdquo; vamos a tener que decompilar &ldquo;libflutter.so&rdquo; y que ghidra haga un análisis, luego de que termine se nos menciona que mediante la funcion &ldquo;Search -&gt; Find Strings&rdquo; en ghidra podemos buscar la cadena de texto &ldquo;x509.cc&rdquo;</p>
+<p><figure><a class="lightgallery" href="/images/bypasss-ssl-android-flutterapp/searchghidra.png" title="Busqueda Ghidra" data-thumbnail="/images/bypasss-ssl-android-flutterapp/searchghidra.png" data-sub-html="<h2>Busqueda Ghidra</h2><p>Busqueda Ghidra</p>">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/images/bypasss-ssl-android-flutterapp/searchghidra.png"
+            data-srcset="/images/bypasss-ssl-android-flutterapp/searchghidra.png, /images/bypasss-ssl-android-flutterapp/searchghidra.png 1.5x, /images/bypasss-ssl-android-flutterapp/searchghidra.png 2x"
+            data-sizes="auto"
+            alt="Busqueda Ghidra" />
+    </a><figcaption class="image-caption">Busqueda Ghidra</figcaption>
+    </figure></p>
+<p><figure><a class="lightgallery" href="/images/bypasss-ssl-android-flutterapp/searchresultsghidra.png" title="Resultado Ghidra" data-thumbnail="/images/bypasss-ssl-android-flutterapp/searchresultsghidra.png" data-sub-html="<h2>Resultado Ghidra</h2><p>Resultado Ghidra</p>">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/images/bypasss-ssl-android-flutterapp/searchresultsghidra.png"
+            data-srcset="/images/bypasss-ssl-android-flutterapp/searchresultsghidra.png, /images/bypasss-ssl-android-flutterapp/searchresultsghidra.png 1.5x, /images/bypasss-ssl-android-flutterapp/searchresultsghidra.png 2x"
+            data-sizes="auto"
+            alt="Resultado Ghidra" />
+    </a><figcaption class="image-caption">Resultado Ghidra</figcaption>
+    </figure></p>
+<p>En nuestro caso tenemos 8 &ldquo;lugares&rdquo; donde aparece dicha cadena, como son pocas las coincidencias podemos hacer un analisis manual de cada una de las secciones en donde se encontro el string y ver si damos con algo que se parezca a la función &ldquo;ssl_crypto_x509_session_verify_cert_chain&rdquo;.</p>
+<p><figure><a class="lightgallery" href="/images/bypasss-ssl-android-flutterapp/funcionssl.png" title="BoringSSL Funcion" data-thumbnail="/images/bypasss-ssl-android-flutterapp/funcionssl.png" data-sub-html="<h2>BoringSSL Funcion</h2><p>BoringSSL Funcion</p>">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/images/bypasss-ssl-android-flutterapp/funcionssl.png"
+            data-srcset="/images/bypasss-ssl-android-flutterapp/funcionssl.png, /images/bypasss-ssl-android-flutterapp/funcionssl.png 1.5x, /images/bypasss-ssl-android-flutterapp/funcionssl.png 2x"
+            data-sizes="auto"
+            alt="BoringSSL Funcion" />
+    </a><figcaption class="image-caption">BoringSSL Funcion</figcaption>
+    </figure></p>
+<p>En el codigo en el repo de github podemos ver que la funcion toma 3 parametros y mas abajo que &ldquo;OPENSSL_PUT_ERROR&rdquo; es llamado una sola vez.</p>
+<p><figure><a class="lightgallery" href="/images/bypasss-ssl-android-flutterapp/funcionssl2.png" title="BoringSSL Funcion" data-thumbnail="/images/bypasss-ssl-android-flutterapp/funcionssl2.png" data-sub-html="<h2>BoringSSL Funcion</h2><p>BoringSSL Funcion</p>">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/images/bypasss-ssl-android-flutterapp/funcionssl2.png"
+            data-srcset="/images/bypasss-ssl-android-flutterapp/funcionssl2.png, /images/bypasss-ssl-android-flutterapp/funcionssl2.png 1.5x, /images/bypasss-ssl-android-flutterapp/funcionssl2.png 2x"
+            data-sizes="auto"
+            alt="BoringSSL Funcion" />
+    </a><figcaption class="image-caption">BoringSSL Funcion</figcaption>
+    </figure></p>
+<p>Luego de analizar manualmente las locaciones encontradas en ghidra damos con una funcion y su codigo decompilado en C que se asemejan a lo anterior.</p>
+<p><figure><a class="lightgallery" href="/images/bypasss-ssl-android-flutterapp/funciondecompilada.png" title="Funcion decompilada" data-thumbnail="/images/bypasss-ssl-android-flutterapp/funciondecompilada.png" data-sub-html="<h2>Funcion decompilada</h2><p>Funcion decompilada</p>">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/images/bypasss-ssl-android-flutterapp/funciondecompilada.png"
+            data-srcset="/images/bypasss-ssl-android-flutterapp/funciondecompilada.png, /images/bypasss-ssl-android-flutterapp/funciondecompilada.png 1.5x, /images/bypasss-ssl-android-flutterapp/funciondecompilada.png 2x"
+            data-sizes="auto"
+            alt="Funcion decompilada" />
+    </a><figcaption class="image-caption">Funcion decompilada</figcaption>
+    </figure></p>
+<p>Perfecto encontramos nuestra funcion! Ahora ya podemos inyectar codigo con frida y modificar la función para que siempre devuelva &ldquo;1&rdquo; o verdadero y el chequeo ya no sea un problema. Para esto vamos a copiar los primeros 10 bytes de la funcion para generar una &ldquo;firma&rdquo;, luego frida va a buscar esos primeros 10 bytes en la memoria del proceso y va a realizar el hook en la direccion que encuentre esos 10 bytes, recordar que tanto la direccion en la que encontramos la funcion como los primeros 10 bytes pueden cambiar por varios factores asi que recomiendo hacer el proceso por su cuenta y encontrar la direccion para su aplicacion particular, en mi caso es &ldquo;2d e9 f0 4f a3 b0 81 46 50 20&rdquo;.</p>
+<p><figure><a class="lightgallery" href="/images/bypasss-ssl-android-flutterapp/assemblercode.png" title="Codigo ensamblador" data-thumbnail="/images/bypasss-ssl-android-flutterapp/assemblercode.png" data-sub-html="<h2>Seleccionamos los primeros 10 bytes</h2><p>Codigo ensamblador</p>">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/images/bypasss-ssl-android-flutterapp/assemblercode.png"
+            data-srcset="/images/bypasss-ssl-android-flutterapp/assemblercode.png, /images/bypasss-ssl-android-flutterapp/assemblercode.png 1.5x, /images/bypasss-ssl-android-flutterapp/assemblercode.png 2x"
+            data-sizes="auto"
+            alt="Codigo ensamblador" />
+    </a><figcaption class="image-caption">Seleccionamos los primeros 10 bytes</figcaption>
+    </figure></p>
+<p>Ya tenemos los bytes para encontrar la funcion, ahora nos falta el script encargado de realizar el hook, el cual es el siguiente</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-JS" data-lang="JS">  <span class="kd">function</span> <span class="nx">hook_ssl_verify_result</span><span class="p">(</span><span class="nx">address</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="nx">Interceptor</span><span class="p">.</span><span class="nx">attach</span><span class="p">(</span><span class="nx">address</span><span class="p">,</span> <span class="p">{</span>
+    <span class="nx">onEnter</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">args</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&#34;Disabling SSL validation&#34;</span><span class="p">)</span>
+    <span class="p">},</span>
+    <span class="nx">onLeave</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">retval</span><span class="p">)</span>
+    <span class="p">{</span>
+      <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&#34;Retval: &#34;</span> <span class="o">+</span> <span class="nx">retval</span><span class="p">)</span>
+      <span class="nx">retval</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="mh">0x1</span><span class="p">);</span>
+
+    <span class="p">}</span>
+  <span class="p">});</span>
+<span class="p">}</span>
+<span class="kd">function</span> <span class="nx">disablePinning</span><span class="p">()</span>
+<span class="p">{</span>
+ <span class="kd">var</span> <span class="nx">m</span> <span class="o">=</span> <span class="nx">Process</span><span class="p">.</span><span class="nx">findModuleByName</span><span class="p">(</span><span class="s2">&#34;libflutter.so&#34;</span><span class="p">);</span> 
+ <span class="kd">var</span> <span class="nx">pattern</span> <span class="o">=</span> <span class="s2">&#34;2d e9 f0 4f a3 b0 81 46 50 20&#34;</span>
+ <span class="kd">var</span> <span class="nx">res</span> <span class="o">=</span> <span class="nx">Memory</span><span class="p">.</span><span class="nx">scan</span><span class="p">(</span><span class="nx">m</span><span class="p">.</span><span class="nx">base</span><span class="p">,</span> <span class="nx">m</span><span class="p">.</span><span class="nx">size</span><span class="p">,</span> <span class="nx">pattern</span><span class="p">,</span> <span class="p">{</span>
+  <span class="nx">onMatch</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">address</span><span class="p">,</span> <span class="nx">size</span><span class="p">){</span>
+      <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;[+] ssl_verify_result found at: &#39;</span> <span class="o">+</span> <span class="nx">address</span><span class="p">.</span><span class="nx">toString</span><span class="p">());</span>
+
+      <span class="c1">// Add 0x01 because it&#39;s a THUMB function
+</span><span class="c1"></span>      <span class="c1">// Otherwise, we would get &#39;Error: unable to intercept function at 0x9906f8ac; please file a bug&#39;
+</span><span class="c1"></span>      <span class="nx">hook_ssl_verify_result</span><span class="p">(</span><span class="nx">address</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span><span class="mh">0x01</span><span class="p">));</span>
+      
+    <span class="p">},</span> 
+  <span class="nx">onError</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">reason</span><span class="p">){</span>
+      <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;[!] There was an error scanning memory&#39;</span><span class="p">);</span>
+    <span class="p">},</span>
+    <span class="nx">onComplete</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span>
+    <span class="p">{</span>
+      <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&#34;All done&#34;</span><span class="p">)</span>
+    <span class="p">}</span>
+  <span class="p">});</span>
+<span class="p">}</span>
+<span class="nx">setTimeout</span><span class="p">(</span><span class="nx">disablePinning</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
+</code></pre></td></tr></table>
+</div>
+</div><h2 id="conclusion">Conclusion</h2>
+<p>Por ahora terminamos con esta primer parte en la cual solo nos encargamos de encontrar la función que necesitamos para hacer el bypass, en la proxima parte vamos a re-empaquetar el APK con la aplicacion en Flutter y le vamos a agregar como dependencia el &ldquo;gadget&rdquo; de frida, de esta manera no es necesario que seamos root en el dispositivo para usar frida y realizar el hook, debido a que las aplicaciones el flutter hacen caso omiso a la configuración del proxy seteado en nuestro dispositivo vamos a tener setear a nuestra maquina con kali como puerta de enlace y redirigir todo el trafico hacia nuestro burpsuite con iptables.</p>
+<p>Happy hacking!</p>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>Actualizado el 10-16-2020</span>
+            </div>
+            <div class="post-info-license"></div>
+        </div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="Compartir en Blogger" data-sharer="blogger" data-url="https://bhf.com.ar/bypasss-ssl-android-flutterapp/" data-title="Bypaseando la verificación SSL en una app de flutter en Android. Parte 1)" data-description=""><i class="fab fa-blogger fa-fw"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/pentesting/">pentesting</a>,&nbsp;<a href="/tags/mobile/">mobile</a>,&nbsp;<a href="/tags/flutter/">flutter</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">Regresar</a></span>&nbsp;|&nbsp;<span><a href="/">Inicio</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/stego-onapsis-writeup/" class="prev" rel="prev" title="WriteUp CTF Stego de Onapsis - EKOPARTY"><i class="fas fa-angle-left fa-fw"></i>WriteUp CTF Stego de Onapsis - EKOPARTY</a>
+            <a href="/bypasss-ssl-android-flutterapp-2/" class="next" rel="next" title="Bypaseando la verificación SSL en una app de flutter en Android. Parte 2)">Bypaseando la verificación SSL en una app de flutter en Android. Parte 2)<i class="fas fa-angle-right fa-fw"></i></a></div>
+</div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">Provisto por <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.74.3">Hugo</a> | Tema - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.9"><i class="far fa-kiss-wink-heart fa-fw"></i> LoveIt</a>
+                </div><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2020 - 2021</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">xxxx</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Volver arriba">
+                <i class="fas fa-arrow-up fa-fw"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="Ver comentarios">
+                <i class="fas fa-comment fa-fw"></i>
+            </a>
+        </div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery.js@1.1.3/dist/css/lightgallery.min.css"><style>.lg-toolbar .lg-icon::after { color: #999; }</style><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/smooth-scroll@16.1.3/dist/smooth-scroll.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.37.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lunr@2.3.8/lunr.min.js"></script><script type="text/javascript" src="/lib/lunr/lunr.stemmer.support.min.js"></script><script type="text/javascript" src="/lib/lunr/lunr.es.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.2.0/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery.js@1.1.3/dist/js/lightgallery.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lg-thumbnail.js@1.1.0/dist/lg-thumbnail.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lg-zoom.js@1.0.1/dist/lg-zoom.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.4.0/sharer.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/typeit@7.0.4/dist/typeit.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copiar al portapapeles","maxShownLines":10},"comment":{},"data":{"id-1":"# /home/BHF","id-2":"# /home/BHF"},"lightGallery":{"actualSize":false,"exThumbImage":"data-thumbnail","hideBarsDelay":2000,"selector":".lightgallery","speed":400,"thumbContHeight":80,"thumbWidth":80,"thumbnail":true},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","lunrLanguageCode":"es","maxResultLength":10,"noResultsFound":"No se encontraron resultados","snippetLength":30,"type":"lunr"},"typeit":{"cursorChar":"|","cursorSpeed":1000,"data":{"id-1":["id-1"],"id-2":["id-2"]},"duration":-1,"speed":100}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>

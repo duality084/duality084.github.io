@@ -1,0 +1,19 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>write-up - Etiqueta - BHF</title>
+        <link>https://bhf.com.ar/tags/write-up/</link>
+        <description>write-up - Etiqueta - BHF</description>
+        <generator>Hugo -- gohugo.io</generator><language>es</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Sun, 02 Aug 2020 19:48:20 -0300</lastBuildDate><atom:link href="https://bhf.com.ar/tags/write-up/" rel="self" type="application/rss+xml" /><item>
+    <title>[Write-up] Deerhost</title>
+    <link>https://bhf.com.ar/deerhost/</link>
+    <pubDate>Sun, 02 Aug 2020 19:48:20 -0300</pubDate>
+    <author>Autor</author>
+    <guid>https://bhf.com.ar/deerhost/</guid>
+    <description><![CDATA[<div class="featured-image">
+                <img src="/images/deerhost/deerhost_main_photo.jpg" referrerpolicy="no-referrer">
+            </div>Ficha técnica  Nombre: Deerhost
+  Creadores: Matías Ramirez &amp; MemoryEmpty
+  Nivel: Muy fácil
+ Introducción a Deerhost Deerhost es una sandbox que desarrollamos para que los asistentes al encuentro de GDG Training puedan poner en práctica las técnicas de RCE expuestas en el encuentro &ldquo;RCE hasta la cocina en GDG&rdquo;. Este paso a paso tiene como fín servir de material de consulta para repasar lo aprendido. Les recomiendo tener a mano las diapositivas de la exposición desarrolladas por Matías, que es un material de consulta muy claro en el impacto que estas vulnerabilidades pueden llegar a alcanzar en entornos reales.]]></description>
+</item></channel>
+</rss>

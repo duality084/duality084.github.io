@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+        <title>Checklist para escalar privilegios desde www-data - BHF</title><meta name="Description" content="Hacking, sysadmin, beer."><meta property="og:title" content="Checklist para escalar privilegios desde www-data" />
+<meta property="og:description" content="Checklist de posibilidades para escalar privilegios desde www-data “Entramos, ¿y ahora qué hacemos?” Pregunta que me hice muchas veces cuando empecé a participar en distintos CTF (Capture The Flag). Leí libros, sites, foros, hilos, videos (¡sí!, leo videos) y quedaba fascinado, pero la teoría puede ser muy bonita (o súper boring) si no se lleva a la práctica. Por eso empecé a participar de CTF y a principios de este año logré registrarme en HTB." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://bhf.com.ar/privilegios/" />
+<meta property="og:image" content="https://cdn.iconscout.com/icon/premium/png-256-thumb/hacker-81-1105283.png"/>
+<meta property="article:published_time" content="2020-08-09T19:48:20-03:00" />
+<meta property="article:modified_time" content="2020-08-09T19:48:20-03:00" />
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://cdn.iconscout.com/icon/premium/png-256-thumb/hacker-81-1105283.png"/>
+
+<meta name="twitter:title" content="Checklist para escalar privilegios desde www-data"/>
+<meta name="twitter:description" content="Checklist de posibilidades para escalar privilegios desde www-data “Entramos, ¿y ahora qué hacemos?” Pregunta que me hice muchas veces cuando empecé a participar en distintos CTF (Capture The Flag). Leí libros, sites, foros, hilos, videos (¡sí!, leo videos) y quedaba fascinado, pero la teoría puede ser muy bonita (o súper boring) si no se lleva a la práctica. Por eso empecé a participar de CTF y a principios de este año logré registrarme en HTB."/>
+<meta name="application-name" content="BHF">
+<meta name="apple-mobile-web-app-title" content="BHF"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://bhf.com.ar/privilegios/" /><link rel="prev" href="https://bhf.com.ar/deerhost/" /><link rel="next" href="https://bhf.com.ar/cracking-time-001/" /><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.13.0/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.7.2/animate.min.css"><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Checklist para escalar privilegios desde www-data",
+        "inLanguage": "es",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/bhf.com.ar\/privilegios\/"
+        },"image": {
+                "@type": "ImageObject",
+                "url": "https:\/\/bhf.com.ar\/cover.png",
+                "width":  800 ,
+                "height":  600 
+            },"genre": "posts","keywords": "privilegios, escalar, root, sudo","wordcount":  405 ,
+        "url": "https:\/\/bhf.com.ar\/privilegios\/","datePublished": "2020-08-09T19:48:20-03:00","dateModified": "2020-08-09T19:48:20-03:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
+                "@type": "Organization",
+                "name": "xxxx",
+                "logo": {
+                "@type": "ImageObject",
+                "url": "https:\/\/bhf.com.ar\/logo.png",
+                "width":  127 ,
+                "height":  40 
+                }
+            },"author": {
+                "@type": "Person",
+                "name": "bronxi"
+            },"description": ""
+    }
+    </script></head>
+    <body header-desktop="fixed" header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('dark' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'dark' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="BHF"><span class="header-title-pre"><i class='fas fa-laptop fa-fw'></i></span><span id="id-1" class="typeit"></span></a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> Posts </a><a class="menu-item" href="/tags/"> Tags </a><a class="menu-item" href="/categories/"> Categorias </a><a class="menu-item" href="/about/"> About </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="Busca títulos o contenido..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Buscar">
+                            <i class="fas fa-search fa-fw"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="Limpiar">
+                            <i class="fas fa-times-circle fa-fw"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="Cambia el tema">
+                    <i class="fas fa-adjust fa-fw"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="BHF"><span class="header-title-pre"><i class='fas fa-laptop fa-fw'></i></span><span id="id-2" class="typeit"></span></a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="Busca títulos o contenido..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="Buscar">
+                            <i class="fas fa-search fa-fw"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="Limpiar">
+                            <i class="fas fa-times-circle fa-fw"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        Cancelar
+                    </a>
+                </div><a class="menu-item" href="/posts/" title="">Posts</a><a class="menu-item" href="/tags/" title="">Tags</a><a class="menu-item" href="/categories/" title="">Categorias</a><a class="menu-item" href="/about/" title="">About</a><a href="javascript:void(0);" class="menu-item theme-switch" title="Cambia el tema">
+                <i class="fas fa-adjust fa-fw"></i>
+            </a></div>
+    </div>
+</header>
+<div class="search-dropdown desktop">
+    <div id="search-dropdown-desktop"></div>
+</div>
+<div class="search-dropdown mobile">
+    <div id="search-dropdown-mobile"></div>
+</div>
+<main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">Contenido</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animated flipInX">Checklist para escalar privilegios desde www-data</h1><h2 class="single-subtitle">Entramos, ¿y ahora qué hacemos?</h2><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>bronxi</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="08-09-2020">08-09-2020</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;405 palabras&nbsp;
+                <i class="far fa-clock fa-fw"></i>&nbsp;2 minutos&nbsp;</div>
+        </div><div class="featured-image"><img
+        class="lazyload"
+        src="/svg/loading/normal.min.svg"
+        data-src="/images/privilegios/checklist.png"
+        data-srcset="/images/privilegios/checklist.png, /images/privilegios/checklist.png 1.5x, /images/privilegios/checklist.png 2x"
+        data-sizes="auto"
+        alt="/images/privilegios/checklist.png"
+        title="/images/privilegios/checklist.png" /></div><div class="details toc" id="toc-static"  kept="">
+                <div class="details-summary toc-title">
+                    <span>Contenido</span>
+                    <span><i class="details-icon fas fa-angle-right"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#1---si-soy-sudoers-estás-en-la-lista-en-etcsudoers">1° - Si soy sudoers (estás en la lista en /etc/sudoers)</a></li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><h1 id="checklist-de-posibilidades-para-escalar-privilegios-desde-www-data">Checklist de posibilidades para escalar privilegios desde www-data</h1>
+<h1 id="entramos-y-ahora-qué-hacemos">“Entramos, ¿y ahora qué hacemos?”</h1>
+<p>Pregunta que me hice muchas veces cuando empecé a participar en distintos CTF (Capture The Flag). Leí libros, sites, foros, hilos, videos (¡sí!, leo videos) y quedaba fascinado, pero la teoría puede ser muy bonita (o súper boring) si no se lleva a la práctica. Por eso empecé a participar de CTF y a principios de este año logré registrarme en HTB. Al lograr acceso a alguna máquina intentaba hacer algo, como leer archivos sensible y ejecutar determinados comandos; no lograba mucho ya que el usuario que utilizaba tenía muy bajos privilegios.
+Esto sucede en muchos CTF, ingresás al servidor web como el usuario público www-data, lográs ejecutar comandos pero es muy poco lo que se puede hacer. Al principio iba y venía entre directorios. Listaba para ver qué carpetas y archivos que podía leer o modificar. Existen varias cuestiones que podemos probar, presento las más utilizadas y, en general, las que dan resultado en los CTF. Se trata de cinco pruebas en la lista:</p>
+<ul>
+<li>Si soy sudoers</li>
+<li>Binarios SUID</li>
+<li>Archivos w &amp; x</li>
+<li>Procesos de servicios</li>
+<li>Kernel vulnerable</li>
+</ul>
+<p>Puedo ejecutar comandos, ahora pruebo:</p>
+<h2 id="1---si-soy-sudoers-estás-en-la-lista-en-etcsudoers">1° - Si soy sudoers (estás en la lista en /etc/sudoers)</h2>
+<p>En uno de esos retos aprendí que si conocemos los comandos que podemos ejecutar como root, podemos abusar de ellos (Shebi’s credit). Entonces, listamos aquellos comandos con privilegios de root que tenemos permitido ejecutar sin contraseña. En otras palabras, qué comandos puede ejecutar como súper usuario el usuario www-data, o cualquier otro con el que ingresemos. Para esto, ejecutamos el comando</p>
+<blockquote>
+<p>sudo -l</p>
+</blockquote>
+<p>Si existen comandos que podemos ejecutar como root sin uso de password, podemos abusar de estos. Imaginémos el siguente escenario:</p>
+<blockquote>
+<p>sudo -l
+bronxi@flux:~$ sudo -l</p>
+</blockquote>
+<blockquote>
+<p>Coincidiendo entradas por defecto para bronxi en flux:
+env_reset, mail_badpass,
+secure_path=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/snap/bin</p>
+</blockquote>
+<blockquote>
+<p>El usuario bronxi puede ejecutar los siguientes comandos en flux:</p>
+</blockquote>
+<blockquote>
+<p>(root) NOPASSWD: /usr/bin/find</p>
+</blockquote>
+<blockquote>
+<p>(root) NOPASSWD: /usr/bin/vim</p>
+</blockquote>
+<p>Existen dos comandos que podemos ejecutar como root sin la necesidad de la clave: find y vim. ¿Cómo abusamos de ellos? Encontramos información detallada de cualquiera de estos dos comandos y muchísimos más en</p>
+<p><a href="https://gtfobins.github.io">https://gtfobins.github.io</a></p>
+<p>A modo de ejemplo, seleccionemos “vim”, ejecutamos</p>
+<blockquote>
+<p>vim -c &lsquo;:!/bin/sh&rsquo;</p>
+</blockquote>
+<blockquote>
+<p>&lsquo;# whoami</p>
+</blockquote>
+<blockquote>
+<p>root</p>
+</blockquote>
+<blockquote>
+<p>&lsquo;#</p>
+</blockquote>
+<p>Y ya podemos ejecutar como root. Fácil, ¿cierto?</p>
+<p>En breve, publicaré cómo sigue nuestra lista mágica.</p>
+<p>*Para realizar este lista, tomé como base esta publicación y profundicé cada uno de los puntos: <a href="https://failingsilently.wordpress.com/2017/08/07/privesc/">https://failingsilently.wordpress.com/2017/08/07/privesc/</a></p>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>Actualizado el 08-09-2020</span>
+            </div>
+            <div class="post-info-license"></div>
+        </div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="Compartir en Blogger" data-sharer="blogger" data-url="https://bhf.com.ar/privilegios/" data-title="Checklist para escalar privilegios desde www-data" data-description=""><i class="fab fa-blogger fa-fw"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/privilegios-escalar-root-sudo/">privilegios, escalar, root, sudo</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">Regresar</a></span>&nbsp;|&nbsp;<span><a href="/">Inicio</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/deerhost/" class="prev" rel="prev" title="[Write-up] Deerhost"><i class="fas fa-angle-left fa-fw"></i>[Write-up] Deerhost</a>
+            <a href="/cracking-time-001/" class="next" rel="next" title="Breve introducción al cracking - parte I">Breve introducción al cracking - parte I<i class="fas fa-angle-right fa-fw"></i></a></div>
+</div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">Provisto por <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.74.3">Hugo</a> | Tema - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.9"><i class="far fa-kiss-wink-heart fa-fw"></i> LoveIt</a>
+                </div><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2020 - 2021</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">xxxx</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Volver arriba">
+                <i class="fas fa-arrow-up fa-fw"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="Ver comentarios">
+                <i class="fas fa-comment fa-fw"></i>
+            </a>
+        </div><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/smooth-scroll@16.1.3/dist/smooth-scroll.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.37.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lunr@2.3.8/lunr.min.js"></script><script type="text/javascript" src="/lib/lunr/lunr.stemmer.support.min.js"></script><script type="text/javascript" src="/lib/lunr/lunr.es.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.2.0/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.4.0/sharer.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/typeit@7.0.4/dist/typeit.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copiar al portapapeles","maxShownLines":10},"comment":{},"data":{"id-1":"# /home/BHF","id-2":"# /home/BHF"},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","lunrLanguageCode":"es","maxResultLength":10,"noResultsFound":"No se encontraron resultados","snippetLength":30,"type":"lunr"},"typeit":{"cursorChar":"|","cursorSpeed":1000,"data":{"id-1":["id-1"],"id-2":["id-2"]},"duration":-1,"speed":100}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>

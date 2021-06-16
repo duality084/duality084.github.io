@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+        <title>Crackeando contraseñas en la &#39;Nube&#39; y GRATIS! - BHF</title><meta name="Description" content="Hacking, sysadmin, beer."><meta property="og:title" content="Crackeando contraseñas en la &#39;Nube&#39; y GRATIS!" />
+<meta property="og:description" content="Bienaventurados aquellos que posean el poder adquisitivo de comprarse la bestialidad que vemos en la imagen. Para aquellos que no se hayan dado cuenta en la imagen podemos observar un &ldquo;rig de cracking&rdquo; que cuenta con 9 placas de video Nvidia GeForce RTX 2080, la imagen la encontré en un posteo de un usuario de Twitter
+¿Por que? Primero comencemos en por que alguien querría gastar tanto dinero en semejante equipo, aca no solo hay que contar el costo de las placas de video que cuestan de 750 a 850 USD cada una, las fuentes de alimentación para darles energía, el gabinete capaz de albergarlas a todas, una placa madre con soporte para esa cantidad de placas, CPU, RAM." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://bhf.com.ar/cloud-crackin-hashcat/" />
+<meta property="og:image" content="https://cdn.iconscout.com/icon/premium/png-256-thumb/hacker-81-1105283.png"/>
+<meta property="article:published_time" content="2020-09-09T09:09:03-03:00" />
+<meta property="article:modified_time" content="2020-09-09T09:09:03-03:00" />
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://cdn.iconscout.com/icon/premium/png-256-thumb/hacker-81-1105283.png"/>
+
+<meta name="twitter:title" content="Crackeando contraseñas en la &#39;Nube&#39; y GRATIS!"/>
+<meta name="twitter:description" content="Bienaventurados aquellos que posean el poder adquisitivo de comprarse la bestialidad que vemos en la imagen. Para aquellos que no se hayan dado cuenta en la imagen podemos observar un &ldquo;rig de cracking&rdquo; que cuenta con 9 placas de video Nvidia GeForce RTX 2080, la imagen la encontré en un posteo de un usuario de Twitter
+¿Por que? Primero comencemos en por que alguien querría gastar tanto dinero en semejante equipo, aca no solo hay que contar el costo de las placas de video que cuestan de 750 a 850 USD cada una, las fuentes de alimentación para darles energía, el gabinete capaz de albergarlas a todas, una placa madre con soporte para esa cantidad de placas, CPU, RAM."/>
+<meta name="application-name" content="BHF">
+<meta name="apple-mobile-web-app-title" content="BHF"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://bhf.com.ar/cloud-crackin-hashcat/" /><link rel="prev" href="https://bhf.com.ar/volatility-ctf-notpinkcon/" /><link rel="next" href="https://bhf.com.ar/redteam-ctf-writeup/" /><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.13.0/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.7.2/animate.min.css"><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Crackeando contraseñas en la 'Nube' y GRATIS!",
+        "inLanguage": "es",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/bhf.com.ar\/cloud-crackin-hashcat\/"
+        },"image": {
+                "@type": "ImageObject",
+                "url": "https:\/\/bhf.com.ar\/cover.png",
+                "width":  800 ,
+                "height":  600 
+            },"genre": "posts","keywords": "cracking, cloud, ctf","wordcount":  1457 ,
+        "url": "https:\/\/bhf.com.ar\/cloud-crackin-hashcat\/","datePublished": "2020-09-09T09:09:03-03:00","dateModified": "2020-09-09T09:09:03-03:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
+                "@type": "Organization",
+                "name": "xxxx",
+                "logo": {
+                "@type": "ImageObject",
+                "url": "https:\/\/bhf.com.ar\/logo.png",
+                "width":  127 ,
+                "height":  40 
+                }
+            },"author": {
+                "@type": "Person",
+                "name": "Matias, Ramirez"
+            },"description": ""
+    }
+    </script></head>
+    <body header-desktop="fixed" header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('dark' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'dark' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="BHF"><span class="header-title-pre"><i class='fas fa-laptop fa-fw'></i></span><span id="id-1" class="typeit"></span></a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> Posts </a><a class="menu-item" href="/tags/"> Tags </a><a class="menu-item" href="/categories/"> Categorias </a><a class="menu-item" href="/about/"> About </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="Busca títulos o contenido..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Buscar">
+                            <i class="fas fa-search fa-fw"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="Limpiar">
+                            <i class="fas fa-times-circle fa-fw"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="Cambia el tema">
+                    <i class="fas fa-adjust fa-fw"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="BHF"><span class="header-title-pre"><i class='fas fa-laptop fa-fw'></i></span><span id="id-2" class="typeit"></span></a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="Busca títulos o contenido..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="Buscar">
+                            <i class="fas fa-search fa-fw"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="Limpiar">
+                            <i class="fas fa-times-circle fa-fw"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        Cancelar
+                    </a>
+                </div><a class="menu-item" href="/posts/" title="">Posts</a><a class="menu-item" href="/tags/" title="">Tags</a><a class="menu-item" href="/categories/" title="">Categorias</a><a class="menu-item" href="/about/" title="">About</a><a href="javascript:void(0);" class="menu-item theme-switch" title="Cambia el tema">
+                <i class="fas fa-adjust fa-fw"></i>
+            </a></div>
+    </div>
+</header>
+<div class="search-dropdown desktop">
+    <div id="search-dropdown-desktop"></div>
+</div>
+<div class="search-dropdown mobile">
+    <div id="search-dropdown-mobile"></div>
+</div>
+<main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">Contenido</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animated flipInX">Crackeando contraseñas en la &#39;Nube&#39; y GRATIS!</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>Matias, Ramirez</a></span>&nbsp;<span class="post-category">incluido en <a href="/categories/ctf/"><i class="far fa-folder fa-fw"></i>ctf</a>&nbsp;<a href="/categories/cracking/"><i class="far fa-folder fa-fw"></i>cracking</a>&nbsp;<a href="/categories/cloud/"><i class="far fa-folder fa-fw"></i>cloud</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="09-09-2020">09-09-2020</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;1457 palabras&nbsp;
+                <i class="far fa-clock fa-fw"></i>&nbsp;7 minutos&nbsp;</div>
+        </div><div class="featured-image"><img
+        class="lazyload"
+        src="/svg/loading/normal.min.svg"
+        data-src="/images/cloud-cracking-hashcat/crack-rig.jpg"
+        data-srcset="/images/cloud-cracking-hashcat/crack-rig.jpg, /images/cloud-cracking-hashcat/crack-rig.jpg 1.5x, /images/cloud-cracking-hashcat/crack-rig.jpg 2x"
+        data-sizes="auto"
+        alt="/images/cloud-cracking-hashcat/crack-rig.jpg"
+        title="/images/cloud-cracking-hashcat/crack-rig.jpg" /></div><div class="details toc" id="toc-static"  kept="">
+                <div class="details-summary toc-title">
+                    <span>Contenido</span>
+                    <span><i class="details-icon fas fa-angle-right"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#por-que">¿Por que?</a></li>
+    <li><a href="#como">¿Como?</a></li>
+    <li><a href="#pero-como">PERO COMO!!???</a></li>
+    <li><a href="#google-colab">Google Colab</a></li>
+    <li><a href="#conclusion">Conclusion</a></li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><p>Bienaventurados aquellos que posean el poder adquisitivo de comprarse la bestialidad que vemos en la imagen. Para aquellos que no se hayan dado cuenta en la imagen podemos observar un &ldquo;rig de cracking&rdquo; que cuenta con 9 placas de video Nvidia GeForce RTX 2080, la imagen la encontré en un posteo de  un usuario de <a href="https://twitter.com/mrb3n813/status/1222579448215633921" target="_blank" rel="noopener noreffer">Twitter</a></p>
+<h2 id="por-que">¿Por que?</h2>
+<p>Primero comencemos en por que alguien querría gastar tanto dinero en semejante equipo, aca no solo hay que contar el costo de las placas de video que cuestan de 750 a 850 USD cada una, las fuentes de alimentación para darles energía, el gabinete capaz de albergarlas a todas, una placa madre con soporte para esa cantidad de placas, CPU, RAM. Estamos hablando de unos 8 a 9 mil USD, si esto lo queremos llevar a Argentina el precio es aun mayor.</p>
+<p>Por que alguien querría realizar semejante inversión? La utilización del poder de computo que brinda una placa de video o varias funcionando en conjunto no queda solo relegado al mundo de los video juegos, ya sabemos que se usa en otros ámbitos como minar criptomonedas, inteligencia artificial y como no también en el mundo de seguridad informatica.</p>
+<p>Comencemos dejando de hablar de &ldquo;placas de videos&rdquo; y pasemos a uno de sus componentes el GPU, el GPU a diferencia del CPU esta diseñado con un propósito especifico, compuestos de cientos o miles de nucleos &ldquo;sencillos&rdquo; para procesar grandes cantidades de datos y realizar las mismas operaciones una y otra vez, mientras que el CPU es de proposito &ldquo;general&rdquo;, compuesto por pocos nucleos &ldquo;complejos&rdquo; y esta diseñado para realizar cualquier tipo de calculo. Aprovechando la capacidad de paralelismo del GPU podemos pedirle que realice cálculos específicos a una gran velocidad. Les dejo un video para que se entiendan las diferencias.</p>
+
+<div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
+  <iframe src="https://www.youtube-nocookie.com/embed/-P28LKWTzrI" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;" allowfullscreen title="YouTube Video"></iframe>
+</div>
+
+<p>Para nuestro caso y nuestros intereses podemos usar la capacidad de una o varias GPUs para hacer fuerza bruta a los hashes de contraseñas que hayamos obtenido y conocer el valor de la contraseña.</p>
+<blockquote>
+<p>¿Que es una funcion hash?</p>
+<blockquote>
+<p>Una función criptográfica hash- usualmente conocida como “hash”- es un algoritmo matemático que transforma cualquier bloque arbitrario de datos en una nueva serie de caracteres con una longitud fija. Independientemente de la longitud de los datos de entrada, el valor hash de salida tendrá siempre la misma longitud. <a href="https://latam.kaspersky.com/blog/que-es-un-hash-y-como-funciona/2806/" target="_blank" rel="noopener noreffer">Kapersky Latam Blog</a></p>
+</blockquote>
+</blockquote>
+<h2 id="como">¿Como?</h2>
+<p>Usar capacidad de computo para romper contraseñas no es nada nuevo, pero últimamente con las mejores capacidades de los CPUs y por sobre todo GPUs las contraseñas poco complejas son vulneradas en cuestión de segundos.</p>
+<p>Herramientas para hacer fuerza bruta hay muchas, quizás la mas conocida y mas utilizada de todas es <a href="https://github.com/openwall/john" target="_blank" rel="noopener noreffer">&ldquo;John the ripper&rdquo;</a>, hoy en dia tenemos mejores herramientas sobre todo para aprovechar la capacidad de paralelismo del GPU, en este caso vamos a estar utilizando y hablando de <a href="https://hashcat.net/hashcat/" target="_blank" rel="noopener noreffer">hashcat</a>.</p>
+<p>Hashcat a diferencia de otras herramientas puede hacer uso del GPU para realizar fuerza bruta. Soporta cientos de funciones hash y las cientos de variantes que se conocen, provee la capacidad de usar un diccionario predefinido, o armar mutaciones de conjuntos de caracteres, esta entrada no va a ser extensiva con el uso de la herramienta y recomiendo dirigirse a su sitio para conocer mejor sus funcionalidades.</p>
+<h2 id="pero-como">PERO COMO!!???</h2>
+<p>Ya sabemos que de este lado del mundo poder acceder a esa capacidad de computo esta muy lejos de nuestros bolsillos, incluso solo comprarse una placa de video puede ser bastante costoso.
+<figure><a class="lightgallery" href="https://media1.tenor.com/images/8bfcd31a36c9755326622397f2cca856/tenor.gif" title="Money!" data-thumbnail="https://media1.tenor.com/images/8bfcd31a36c9755326622397f2cca856/tenor.gif" data-sub-html="<h2>Money</h2><p>Money!</p>">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="https://media1.tenor.com/images/8bfcd31a36c9755326622397f2cca856/tenor.gif"
+            data-srcset="https://media1.tenor.com/images/8bfcd31a36c9755326622397f2cca856/tenor.gif, https://media1.tenor.com/images/8bfcd31a36c9755326622397f2cca856/tenor.gif 1.5x, https://media1.tenor.com/images/8bfcd31a36c9755326622397f2cca856/tenor.gif 2x"
+            data-sizes="auto"
+            alt="Money!" />
+    </a><figcaption class="image-caption">Money</figcaption>
+    </figure></p>
+<p>Nnuca esta de mas contar con la capacidad de romper hashes, ya sea por conocer esa contraseña de esa red de Fibertel, mientras hacemos un CTF o realizamos un pentest, pero como dijimos lo mas probable es que solo contemos con aquella vieja Nvidia 9800 o simplemente con nuestra notebook y su i3 corriendo con 4 maquinas virtuales al mismo tiempo.</p>
+<h2 id="google-colab">Google Colab</h2>
+<p>Viendo videos de <a href="https://www.youtube.com/channel/UCVeW9qkBjo3zosnqUbG7CFw" target="_blank" rel="noopener noreffer">John Hammond</a> llegue a &ldquo;Google Colaboratory&rdquo; la herramienta de Google para ejecutar codigo de Python con el acceso a GPUs, Y GRATIS!, esto esta hecho para que estudiantes, cientificos de datos e investigadores en inteligencia artificial tengan acceso al uso de GPUs para sus calculos.</p>
+<p>Si bien esta pensando para ejecutar codigo de python directamente también podemos ejecutar comandos en la instancia que se nos provee e instalar software. Lo que vamos a hacer es lo siguiente:</p>
+<ul>
+<li>Instalar y configurar un servidor ssh</li>
+<li>Instalar y configurar ngrok para realizar un tunel tcp al puerto 22 y conectarnos por ssh</li>
+<li>Compilar e instalar hashcat</li>
+<li>Profit!</li>
+</ul>
+<p>Podemos acceder a Colab con nuestra cuenta de google, vamos a utilizar el siguiente <a href="https://colab.research.google.com/github/duality084/colab-hashcat-ssh/blob/master/SSH-hashcat.ipynb" target="_blank" rel="noopener noreffer">enlace</a> que ya trae todo los pasos anteriormente descritos.</p>
+<p><figure><a class="lightgallery" href="/images/cloud-cracking-hashcat/colab-hashcat.png" title="Colab" data-thumbnail="/images/cloud-cracking-hashcat/colab-hashcat.png" data-sub-html="<h2>Colab</h2><p>Colab</p>">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/images/cloud-cracking-hashcat/colab-hashcat.png"
+            data-srcset="/images/cloud-cracking-hashcat/colab-hashcat.png, /images/cloud-cracking-hashcat/colab-hashcat.png 1.5x, /images/cloud-cracking-hashcat/colab-hashcat.png 2x"
+            data-sizes="auto"
+            alt="Colab" />
+    </a><figcaption class="image-caption">Colab</figcaption>
+    </figure></p>
+<p>Mediante ese enlace se va a acceder a Colab, se va a tomar el archivo SSH-hashcat.ipynb de mi repo de Github y se va cargar, antes de comenzar vamos a necesitar 2 cosas una cuenta en <a href="https://dashboard.ngrok.com/signup" target="_blank" rel="noopener noreffer">ngrok</a> y generar una &ldquo;ssh key&rdquo; para conectarnos a nuestra instancia por ssh.</p>
+<p>Para generar una &ldquo;ssh key&rdquo; podemos en Linux ejecutar el comando &ldquo;ssh-keygen&rdquo; de la siguiente forma:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">ssh-keygen -f colab
+</code></pre></td></tr></table>
+</div>
+</div><p><figure><a class="lightgallery" href="/images/cloud-cracking-hashcat/ssh-keygen.png" title="Ssh-keygen" data-thumbnail="/images/cloud-cracking-hashcat/ssh-keygen.png" data-sub-html="<h2>ssh-keygen</h2><p>Ssh-keygen</p>">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/images/cloud-cracking-hashcat/ssh-keygen.png"
+            data-srcset="/images/cloud-cracking-hashcat/ssh-keygen.png, /images/cloud-cracking-hashcat/ssh-keygen.png 1.5x, /images/cloud-cracking-hashcat/ssh-keygen.png 2x"
+            data-sizes="auto"
+            alt="Ssh-keygen" />
+    </a><figcaption class="image-caption">ssh-keygen</figcaption>
+    </figure></p>
+<p>Esto nos va a crear la clave publica y privada en esta parte vamos a necesitar la clave publica que la podemos ver la de siguiente manera:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">cat colab.pub
+ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDcEQehlls3I58AvJB4H0Dhqvkt7OCfEFRXEH0dYIaUGqc5Ox+EM1CaywEEhbWSxbdwnaSuaVvPx9DYEMiRdDfqA0ER4y3YcvRQhsMQj/6FrBg7LZrMDrt6/MJ82F9dia8p0KkWtEqsAdbTFK1nY9ICayi/MHy4nH+KX+2hFo0egcuP1nUOD3TsaF1u1lCWiOvqtaieGQpPPoupaUIYip1EdQRcN/0IPmEBaN9oInypim1E2qX6pWe6DQwUaT0sSu3jlyGuGOxq6MxlfPhvI7nDjs6CT7eaLFFYUTuSH7fnfS5zP9E+kVae0TJ16/qo5igm5ARPhnlb6db3hZ64qmup root@8ae1bd63e6e1
+</code></pre></td></tr></table>
+</div>
+</div><p>Procedemos a ejectuar cada una de las instrucciones del archivo .ipynb en secuencia</p>
+<ol>
+<li>Esto nos va a instalar ngrok y el servidor ssh</li>
+</ol>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">! wget https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-amd64.zip &gt; /dev/null
+! unzip ngrok-stable-linux-amd64.zip &gt; /dev/null 
+! apt-get install openssh-server
+</code></pre></td></tr></table>
+</div>
+</div><ol start="2">
+<li>Esto nos va a configurar y dejar corriendo ngrok, en esta parte nos va a pedir que ingresemos el token de ngrok el cual se consiguie accediendo a <a href="https://dashboard.ngrok.com/authuna">https://dashboard.ngrok.com/authuna</a> vez tenemos una cuenta</li>
+</ol>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">print(&#34;Copy authtoken from https://dashboard.ngrok.com/auth&#34;)
+import getpass
+authtoken = getpass.getpass()
+get_ipython().system_raw(&#39;./ngrok authtoken $authtoken &amp;&amp; ./ngrok tcp 22 &amp;&#39;)
+</code></pre></td></tr></table>
+</div>
+</div><ol start="3">
+<li>Configura el servidor ssh y lo deja corriendo, en esta parte se nos va a pedir la clave publica previamente generada.</li>
+</ol>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">! echo &#34;PubkeyAuthentication yes&#34; &gt;&gt; /etc/ssh/sshd_config
+! echo &#34;PermitRootLogin prohibit-password&#34; &gt;&gt; /etc/ssh/sshd_config
+! echo &#34;AuthorizedKeysFile	.ssh/authorized_keys&#34; &gt;&gt; /etc/ssh/sshd_config
+! echo &#34;LD_LIBRARY_PATH=/usr/lib64-nvidia&#34; &gt;&gt; /root/.bashrc
+! echo &#34;export LD_LIBRARY_PATH&#34; &gt;&gt; /root/.bashrc
+! mkdir -p /var/run/sshd
+! mkdir -p /root/.ssh
+! touch /root/.ssh/authorized_keys
+! ls -lah /root/.ssh
+import getpass
+print(&#34;Paste your SSH public key: &#34;)
+publickey = getpass.getpass()
+get_ipython().system_raw(&#39;echo $publickey  &gt;&gt; /root/.ssh/authorized_keys&#39;)
+get_ipython().system_raw(&#39;/usr/sbin/sshd -D &amp;&#39;)
+</code></pre></td></tr></table>
+</div>
+</div><ol start="4">
+<li>Instala hashcat</li>
+</ol>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">!apt install cmake build-essential -y
+!apt install checkinstall git -y
+!git clone https://github.com/hashcat/hashcat.git
+!cd hashcat &amp;&amp; git submodule update --init &amp;&amp; make &amp;&amp; make install
+</code></pre></td></tr></table>
+</div>
+</div><ol start="5">
+<li>Nos muestra con que puerto y nombre de dominio podemos acceder al servicio ssh.</li>
+</ol>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">! curl -s http://localhost:4040/api/tunnels | python3 -c &#34;import sys, json; print(json.load(sys.stdin)[&#39;tunnels&#39;][0][&#39;public_url&#39;])&#34;
+</code></pre></td></tr></table>
+</div>
+</div><p>Al ejecutar este ultimo paso vamos a obtener el nombre de dominio y el puerto por el cual nos podemos conectar a nuestra instancia por SSH.</p>
+<p><figure><a class="lightgallery" href="/images/cloud-cracking-hashcat/ngrok-success.png" title="Exito" data-thumbnail="/images/cloud-cracking-hashcat/ngrok-success.png" data-sub-html="<h2>Exito!</h2><p>Exito</p>">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/images/cloud-cracking-hashcat/ngrok-success.png"
+            data-srcset="/images/cloud-cracking-hashcat/ngrok-success.png, /images/cloud-cracking-hashcat/ngrok-success.png 1.5x, /images/cloud-cracking-hashcat/ngrok-success.png 2x"
+            data-sizes="auto"
+            alt="Exito" />
+    </a><figcaption class="image-caption">Exito!</figcaption>
+    </figure></p>
+<p>Nos conectamos en nuestra maquina con Linux utilizando el comando ssh, especificando nuestra clave privada con el flag -i y con el flag -p el puerto. Ej:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">ssh -i colab -p 10448 root@0.tcp.ngrok.io
+</code></pre></td></tr></table>
+</div>
+</div><p>A continuacion podemos ver que nos encontramos con una GPU Nvidia Tesla T4</p>
+<p><figure><a class="lightgallery" href="/images/cloud-cracking-hashcat/nvidia-smi.png" title="Tesla T4" data-thumbnail="/images/cloud-cracking-hashcat/nvidia-smi.png" data-sub-html="<h2>Tesla T4</h2><p>Tesla T4</p>">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/images/cloud-cracking-hashcat/nvidia-smi.png"
+            data-srcset="/images/cloud-cracking-hashcat/nvidia-smi.png, /images/cloud-cracking-hashcat/nvidia-smi.png 1.5x, /images/cloud-cracking-hashcat/nvidia-smi.png 2x"
+            data-sizes="auto"
+            alt="Tesla T4" />
+    </a><figcaption class="image-caption">Tesla T4</figcaption>
+    </figure></p>
+<p>No podemos elegir que GPU utilizar pero cuando inicalizamos nuestra instancia nos pueden tocar las siguientes</p>
+<ul>
+<li>Nvidia Tesla K80</li>
+<li>Nvidia Tesla T4</li>
+<li>Nvidia Tesla P4</li>
+<li>Nvidia Tesla P100</li>
+</ul>
+<p>Realizamos una prueba de rendimiento con hashcat, con el tipo de hash que nos podemos encontrar en las redes Wifi protegidas con WPA.</p>
+<p><figure><a class="lightgallery" href="/images/cloud-cracking-hashcat/benchmark-colab.png" title="Benchmark Colab" data-thumbnail="/images/cloud-cracking-hashcat/benchmark-colab.png" data-sub-html="<h2>Benchmark Colab</h2><p>Benchmark Colab</p>">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/images/cloud-cracking-hashcat/benchmark-colab.png"
+            data-srcset="/images/cloud-cracking-hashcat/benchmark-colab.png, /images/cloud-cracking-hashcat/benchmark-colab.png 1.5x, /images/cloud-cracking-hashcat/benchmark-colab.png 2x"
+            data-sizes="auto"
+            alt="Benchmark Colab" />
+    </a><figcaption class="image-caption">Benchmark Colab</figcaption>
+    </figure></p>
+<p>La misma prueba en mi GPU una Nvidia 1070 arroja los siguientes resultados</p>
+<p><figure><a class="lightgallery" href="/images/cloud-cracking-hashcat/benchmark-1070.png" title="Benchmark 1070" data-thumbnail="/images/cloud-cracking-hashcat/benchmark-1070.png" data-sub-html="<h2>Benchmark 1070</h2><p>Benchmark 1070</p>">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/images/cloud-cracking-hashcat/benchmark-1070.png"
+            data-srcset="/images/cloud-cracking-hashcat/benchmark-1070.png, /images/cloud-cracking-hashcat/benchmark-1070.png 1.5x, /images/cloud-cracking-hashcat/benchmark-1070.png 2x"
+            data-sizes="auto"
+            alt="Benchmark 1070" />
+    </a><figcaption class="image-caption">Benchmark 1070</figcaption>
+    </figure></p>
+<p>Podemos ver que en Colab el resultado es por poco superior, con capacidad de realizar 357000 hashes por segundo. Mientras que la 1070 es de 342000, en otras pruebas me toco el GPU Tesla P4 y el resultado era 416000 hashes por segundo.</p>
+<p>Cabe aclarar que el performance puede no ser estable, hay que recordar que los recursos son compartidos con otras personas que utilizan la plataforma. Pero como dice el dicho &ldquo;A caballo regalado no se le miran los dientes&rdquo;</p>
+<h2 id="conclusion">Conclusion</h2>
+<p>Luego de estos pasos podemos utilizar Colab, y hashcat para seguramente por lejos obtener mejor rendimiento que en nuestro Kali virtualizado con un solo core asignado. Si bien mostre como conectarme por ssh a la instancia que nos provee google, los comandos tambien pueden ser ejecutados directamente desde la interfaz de Colab.
+<figure><a class="lightgallery" href="/images/cloud-cracking-hashcat/ejecucion-comandos-colab.png" title="Ejecucion comandos" data-thumbnail="/images/cloud-cracking-hashcat/ejecucion-comandos-colab.png" data-sub-html="<h2>Ejecucion comandos</h2><p>Ejecucion comandos</p>">
+        <img
+            class="lazyload"
+            src="/svg/loading/normal.min.svg"
+            data-src="/images/cloud-cracking-hashcat/ejecucion-comandos-colab.png"
+            data-srcset="/images/cloud-cracking-hashcat/ejecucion-comandos-colab.png, /images/cloud-cracking-hashcat/ejecucion-comandos-colab.png 1.5x, /images/cloud-cracking-hashcat/ejecucion-comandos-colab.png 2x"
+            data-sizes="auto"
+            alt="Ejecucion comandos" />
+    </a><figcaption class="image-caption">Ejecucion comandos</figcaption>
+    </figure></p>
+<p>Por ultimo les dejo los 2 repositorios de los cuales hice el archivo que comparti en mi repo, sacando ideas de los 2 y que se ajuste a mis necesidades-</p>
+<ul>
+<li><a href="https://github.com/someshkar/colabcat" target="_blank" rel="noopener noreffer">https://github.com/someshkar/colabcat</a></li>
+<li><a href="https://github.com/semihucann/hash_cracking_with_gpu" target="_blank" rel="noopener noreffer">https://github.com/semihucann/hash_cracking_with_gpu</a></li>
+</ul>
+<p>Happy Cracking!</p>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>Actualizado el 09-09-2020</span>
+            </div>
+            <div class="post-info-license"></div>
+        </div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="Compartir en Blogger" data-sharer="blogger" data-url="https://bhf.com.ar/cloud-crackin-hashcat/" data-title="Crackeando contraseñas en la &#39;Nube&#39; y GRATIS!" data-description=""><i class="fab fa-blogger fa-fw"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/cracking/">cracking</a>,&nbsp;<a href="/tags/cloud/">cloud</a>,&nbsp;<a href="/tags/ctf/">ctf</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">Regresar</a></span>&nbsp;|&nbsp;<span><a href="/">Inicio</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/volatility-ctf-notpinkcon/" class="prev" rel="prev" title="Volatility. Analizando la memoria RAM, NotPinkCon CTF. Parte 1)"><i class="fas fa-angle-left fa-fw"></i>Volatility. Analizando la memoria RAM, NotPinkCon CTF. Parte 1)</a>
+            <a href="/redteam-ctf-writeup/" class="next" rel="next" title="WriteUp Redteam CTF EKOPARTY">WriteUp Redteam CTF EKOPARTY<i class="fas fa-angle-right fa-fw"></i></a></div>
+</div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">Provisto por <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.74.3">Hugo</a> | Tema - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.9"><i class="far fa-kiss-wink-heart fa-fw"></i> LoveIt</a>
+                </div><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2020 - 2021</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">xxxx</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Volver arriba">
+                <i class="fas fa-arrow-up fa-fw"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="Ver comentarios">
+                <i class="fas fa-comment fa-fw"></i>
+            </a>
+        </div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery.js@1.1.3/dist/css/lightgallery.min.css"><style>.lg-toolbar .lg-icon::after { color: #999; }</style><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/smooth-scroll@16.1.3/dist/smooth-scroll.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.37.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lunr@2.3.8/lunr.min.js"></script><script type="text/javascript" src="/lib/lunr/lunr.stemmer.support.min.js"></script><script type="text/javascript" src="/lib/lunr/lunr.es.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.2.0/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lightgallery.js@1.1.3/dist/js/lightgallery.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lg-thumbnail.js@1.1.0/dist/lg-thumbnail.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lg-zoom.js@1.0.1/dist/lg-zoom.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.4.0/sharer.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/typeit@7.0.4/dist/typeit.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copiar al portapapeles","maxShownLines":10},"comment":{},"data":{"id-1":"# /home/BHF","id-2":"# /home/BHF"},"lightGallery":{"actualSize":false,"exThumbImage":"data-thumbnail","hideBarsDelay":2000,"selector":".lightgallery","speed":400,"thumbContHeight":80,"thumbWidth":80,"thumbnail":true},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","lunrLanguageCode":"es","maxResultLength":10,"noResultsFound":"No se encontraron resultados","snippetLength":30,"type":"lunr"},"typeit":{"cursorChar":"|","cursorSpeed":1000,"data":{"id-1":["id-1"],"id-2":["id-2"]},"duration":-1,"speed":100}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>
